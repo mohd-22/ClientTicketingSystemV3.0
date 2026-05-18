@@ -1,0 +1,16 @@
+﻿
+using ClientTicketingSystem.Application.Helpers;
+using ClientTicketingSystem.Core.Dtos;
+using ClientTicketingSystem.CORE.Dtos;
+using ClientTicketingSystem.CORE.Models.Enums;
+
+namespace ClientTicketingSystem.Application.Services.Interfaces;
+public interface IUserService
+{
+    Task<ApiResponse<UserRegistraionDto>> CreateUserAsync(UserRegistraionDto request,Guid UserId);
+    Task<ApiResponse<PaginationDto<UserDto>>> GetAllUsersAsync(string? search, string? sort, UserRole? role, bool? isActive, int pageIndex, int pageSize);
+    Task<ApiResponse<UserDto>> GetUserByIdAsync(Guid id);
+    Task<ApiResponse<bool>> ActivateUserAsync(Guid id);
+    Task<ApiResponse<bool>> DeactivateUserAsync(Guid id);
+    Task<ApiResponse<bool>> UpdtaeUserAsync(UpdateUserDto request,Guid id);
+}

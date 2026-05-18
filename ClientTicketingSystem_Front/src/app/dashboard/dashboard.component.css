@@ -1,0 +1,93 @@
+.bg-dashboard {
+	background: #f7f9fc;
+}
+
+.dashboard-sidebar {
+	width: 250px;
+	background: #222d32;
+	background-image: linear-gradient(180deg, #25313a 0%, #1f282e 100%);
+	box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.06);
+}
+
+.dashboard-topbar {
+	min-height: 60px;
+}
+
+.avatar-circle {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.72rem;
+	font-weight: 700;
+	background: linear-gradient(135deg, #6b7c8f, #32414d);
+	color: #fff;
+}
+
+.status-dot {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #4ade80;
+}
+
+.sidebar-link {
+	display: flex;
+	align-items: center;
+	padding: 0.8rem 0.9rem;
+	border-radius: 0.25rem;
+	color: rgba(255, 255, 255, 0.72);
+	text-decoration: none;
+	font-size: 0.92rem;
+	margin-bottom: 0.25rem;
+	transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+	background: rgba(255, 255, 255, 0.08);
+	color: #ffffff;
+}
+
+.search-pill {
+	min-width: 160px;
+	padding: 0.25rem 0.75rem;
+	border-radius: 0.25rem;
+	font-size: 0.92rem;
+	background: #f7f9fc;
+}
+
+.dashboard-empty {
+	min-height: calc(100vh - 60px - 2rem);
+	background: rgba(255, 255, 255, 0.92);
+}
+
+.empty-state {
+	max-width: 360px;
+}
+
+.empty-icon {
+	width: 56px;
+	height: 56px;
+	border-radius: 12px;
+	background: #edf2f7;
+	color: #64748b;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.4rem;
+}
+
+.empty-copy {
+	max-width: 280px;
+	line-height: 1.4;
+}
+
+@media (max-width: 991.98px) {
+	.dashboard-empty {
+		min-height: calc(100vh - 60px - 1.5rem);
+	}
+}

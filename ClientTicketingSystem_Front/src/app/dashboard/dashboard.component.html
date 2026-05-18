@@ -1,0 +1,113 @@
+<ng-template #sidebarNavTpl>
+	<div class="px-3 py-3 border-bottom border-secondary border-opacity-25">
+		<div class="d-flex align-items-center gap-2">
+			<img
+				src="https://dummyimage.com/40x40/4b5563/ffffff&text=SA"
+				alt="System Admin"
+				class="rounded-circle flex-shrink-0"
+			/>
+			<div class="lh-sm">
+				<div class="fw-semibold small">{{FullName}}</div>
+			</div>
+		</div>
+	</div>
+
+	<nav class="nav nav-pills flex-column gap-1 px-2 py-3" (click)="closeMobileMenu()">
+		<a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-link text-white-50 d-flex align-items-center gap-2">
+			<i class="bi bi-grid-1x2"></i><span>Dashboard</span>
+		</a>
+		<a routerLink="/dashboard/users" routerLinkActive="active" class="nav-link text-white-50 d-flex align-items-center gap-2">
+				<i class="bi bi-people"></i><span>Users</span>
+		</a>
+			<a routerLink="/dashboard/tickets" routerLinkActive="active" class="nav-link text-white-50 d-flex align-items-center gap-2">
+				<i class="bi bi-ticket-perforated"></i><span>Tickets</span>
+			</a>
+		<a routerLink="/dashboard/products" routerLinkActive="active" class="nav-link text-white-50 d-flex align-items-center gap-2">
+			<i class="bi bi-box-seam"></i><span>Products</span>
+		</a>
+		<a href="#" class="nav-link text-white-50 d-flex align-items-center gap-2">
+			<i class="bi bi-file-earmark-text"></i><span>Reports</span>
+		</a>
+	</nav>
+
+	<div class="mt-auto px-3 py-2 small text-white-50">v2.4.0</div>
+</ng-template>
+
+<div class="min-vh-100 d-flex flex-column flex-lg-row bg-light">
+	<aside
+		class="flex-column text-white bg-dark border-end"
+		[ngClass]="sidebarCollapsed ? 'd-none' : 'd-none d-lg-flex'"
+		style="width: 250px; flex-shrink: 0;"
+		[attr.aria-hidden]="sidebarCollapsed"
+	>
+		<ng-container *ngTemplateOutlet="sidebarNavTpl"></ng-container>
+	</aside>
+
+	<div
+		*ngIf="mobileMenuOpen"
+		class="d-lg-none position-fixed top-0 start-0 w-100 h-100 p-0 m-0"
+		style="z-index: 1040; background: rgba(0, 0, 0, 0.45);"
+		(click)="closeMobileMenu()"
+		aria-hidden="true"
+	></div>
+	<aside
+		*ngIf="mobileMenuOpen"
+		class="d-lg-none position-fixed top-0 start-0 h-100 d-flex flex-column text-white bg-dark border-end shadow"
+		style="width: 260px; max-width: 85vw; z-index: 1050;"
+		role="dialog"
+		aria-modal="true"
+		aria-label="Main menu"
+	>
+		<div class="d-flex justify-content-end p-2 border-bottom border-secondary border-opacity-25">
+			<button type="button" class="btn btn-sm btn-outline-light" (click)="closeMobileMenu()" aria-label="Close menu">
+				<i class="bi bi-x-lg"></i>
+			</button>
+		</div>
+		<ng-container *ngTemplateOutlet="sidebarNavTpl"></ng-container>
+	</aside>
+
+	<div class="flex-grow-1 d-flex flex-column min-vh-100">
+		<header class="navbar navbar-expand bg-white border-bottom shadow-sm py-2 px-3 px-lg-4">
+			<div class="container-fluid p-0">
+				<div class="d-flex align-items-center gap-2">
+					<button
+						type="button"
+						class="btn btn-link d-lg-none p-0 text-primary fs-5"
+						aria-label="Open menu"
+						(click)="openMobileMenu()"
+					>
+						<i class="bi bi-list"></i>
+					</button>
+					<button
+						type="button"
+						class="btn btn-link d-none d-lg-inline-flex p-1 text-secondary align-items-center justify-content-center"
+						(click)="toggleDesktopSidebar()"
+						[attr.aria-label]="sidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'"
+						[attr.aria-expanded]="!sidebarCollapsed"
+						title="{{ sidebarCollapsed ? 'Show sidebar' : 'Hide sidebar' }}"
+					>
+						<i class="bi fs-5" [ngClass]="sidebarCollapsed ? 'bi-layout-sidebar-inset-reverse' : 'bi-layout-sidebar-inset'"></i>
+					</button>
+					<span class="navbar-brand mb-0 h1 text-primary fw-bold">AdminConsole</span>
+				</div>
+
+				<div class="d-flex align-items-center gap-3 ms-auto">
+					<!-- notifications -->
+					<button
+						type="button"
+						(click)="logout()"
+						class="btn btn-link p-0 text-danger d-inline-flex align-items-center justify-content-center"
+						aria-label="Logout"
+						title="Logout"
+					>
+						<i class="bi bi-box-arrow-right fs-3"></i>
+					</button>
+				</div>
+			</div>
+		</header>
+
+		<main class="flex-grow-1 p-3 p-lg-4">
+			<router-outlet></router-outlet>
+		</main>
+	</div>
+</div>

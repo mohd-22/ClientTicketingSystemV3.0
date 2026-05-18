@@ -1,0 +1,80 @@
+<div class="container-fluid">
+	<div class="d-flex justify-content-between align-items-start mb-4">
+		<div>
+			<h1 class="h3 fw-bold text-dark mb-2">Create New Employee</h1>
+			<p class="text-muted mb-0">Fill in the details to register a new member of the workforce.</p>
+		</div>
+	</div>
+
+	<div class="card shadow-sm border-0 p-4">
+		<form [formGroup]="createForm" (ngSubmit)="onSubmit()">
+			<div class="row g-3">
+				<div class="col-12">
+					<label class="form-label small text-muted">FULL NAME</label>
+					<input class="form-control" formControlName="fullName" placeholder="e.g. Johnathan Doe" />
+					<div *ngIf="submitted && f.fullName.errors" class="text-danger small mt-1">Full name is required (min 2 chars).</div>
+				</div>
+
+				<div class="col-md-6">
+					<label class="form-label small text-muted">USERNAME</label>
+					<input class="form-control" formControlName="userName" placeholder="jdoe_sys" />
+					<div *ngIf="submitted && f.userName.errors" class="text-danger small mt-1">Username is required.</div>
+				</div>
+				<div class="col-md-6">
+					<label class="form-label small text-muted">EMAIL ADDRESS</label>
+					<input class="form-control" formControlName="email" placeholder="john.doe@company.com" />
+					<div *ngIf="submitted && f.email.errors" class="text-danger small mt-1">Valid email is required.</div>
+				</div>
+
+								<div class="col-md-6">
+										<label class="form-label small text-muted">PHONE NUMBER</label>
+										<input class="form-control" formControlName="phoneNumber" placeholder="e.g. 0712345678" inputmode="numeric" pattern="[0-9]*" maxlength="15" />
+										<div *ngIf="submitted && f.phoneNumber.errors" class="text-danger small mt-1">
+											<div *ngIf="f.phoneNumber.errors?.['required']">Phone is required.</div>
+											<div *ngIf="f.phoneNumber.errors?.['minlength']">Phone number is too short.</div>
+											<div *ngIf="f.phoneNumber.errors?.['pattern']">Phone must contain only numbers.</div>
+										</div>
+								</div>
+				<div class="col-md-6">
+					<label class="form-label small text-muted">PASSWORD</label>
+					<input type="password" class="form-control" formControlName="password" />
+					<div *ngIf="submitted && f.password.errors" class="text-danger small mt-1">Password min 6 chars required.</div>
+				</div>
+				<div class="col-md-6">
+					<label class="form-label small text-muted">CONFIRM PASSWORD</label>
+					<input type="password" class="form-control" formControlName="confirmPassword" />
+					<div *ngIf="submitted && f.confirmPassword.errors" class="text-danger small mt-1">Confirm password is required.</div>
+					<div *ngIf="submitted && createForm.errors?.['passwordMismatch']" class="text-danger small mt-1">Passwords do not match.</div>
+				</div>
+
+				<div class="col-12">
+					<label class="form-label small text-muted">ADDRESS</label>
+					<input class="form-control" formControlName="address" placeholder="Enter physical street address..." />
+					<div *ngIf="submitted && f.address.errors" class="text-danger small mt-1">Address is required.</div>
+				</div>
+
+				<div class="col-md-6">
+					<label class="form-label small text-muted">GENDER</label>
+					<select class="form-select" formControlName="gender">
+						<option value="">Select gender</option>
+						<option *ngFor="let g of genderOptions" [value]="g.value">{{ g.label }}</option>
+					</select>
+					<div *ngIf="submitted && f.gender.errors" class="text-danger small mt-1">Gender is required.</div>
+				</div>
+				<div class="col-md-6">
+					<label class="form-label small text-muted">DATE OF BIRTH</label>
+					<input type="date" class="form-control" formControlName="dateOfBirth" />
+					<div *ngIf="submitted && f.dateOfBirth.errors" class="text-danger small mt-1">Date of birth is required.</div>
+				</div>
+
+				<div class="col-12 d-flex justify-content-end gap-2 mt-3">
+					<button type="button" class="btn btn-light" (click)="router.navigate(['/dashboard/users'])">Cancel</button>
+					<button type="button" class="btn btn-primary" [disabled]="loading" (click)="onSubmit()">
+						<span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+						Save Employee
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

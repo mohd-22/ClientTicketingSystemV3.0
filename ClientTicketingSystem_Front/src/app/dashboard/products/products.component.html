@@ -1,0 +1,222 @@
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+    <div>
+      <h1 class="h3 fw-bold text-dark mb-2">Products Management</h1>
+      <p class="text-muted mb-0">Configure and manage your organization's product catalog.</p>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <i class="bi bi-plus-lg me-2"></i>Add Product
+    </button>
+  </div>
+
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3 align-items-center">
+        <div class="col-12">
+          <div class="input-group">
+            <span class="input-group-text bg-transparent border-end-0 text-secondary">
+              <i class="bi bi-search"></i>
+            </span>
+            <input
+              type="text"
+              class="form-control border-start-0"
+              placeholder="Search by product name or description..."
+              [(ngModel)]="searchQuery"
+              (change)="onSearchChange()"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="fw-semibold text-uppercase small text-muted">
+              <button type="button" class="btn btn-link p-0 text-decoration-none text-muted fw-semibold small text-uppercase" (click)="sortBy('name')">
+                Product Info
+                <i class="bi ms-1" [ngClass]="sortColumn === 'name' ? (sortDirection === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down-up'"></i>
+              </button>
+            </th>
+            <th class="fw-semibold text-uppercase small text-muted">
+              <button type="button" class="btn btn-link p-0 text-decoration-none text-muted fw-semibold small text-uppercase" (click)="sortBy('description')">
+                Description
+                <i class="bi ms-1" [ngClass]="sortColumn === 'description' ? (sortDirection === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down-up'"></i>
+              </button>
+            </th>
+            <th class="fw-semibold text-uppercase small text-muted">
+              <button type="button" class="btn btn-link p-0 text-decoration-none text-muted fw-semibold small text-uppercase" (click)="sortBy('modulesCount')">
+                Modules
+                <i class="bi ms-1" [ngClass]="sortColumn === 'modulesCount' ? (sortDirection === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down-up'"></i>
+              </button>
+            </th>
+            <th class="fw-semibold text-uppercase small text-muted text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="isLoading">
+            <td colspan="4" class="text-center text-muted py-4">Loading products...</td>
+          </tr>
+          <tr *ngFor="let product of paginatedProducts">
+            <td>
+              <div class="fw-semibold text-dark">{{ product.name }}</div>
+            </td>
+            <td>
+              {{ product.description }}
+            </td>
+            <td class="text-muted">{{ product.modulesCount }}</td>
+            <td class="text-end">
+              <div class="d-inline-flex gap-1">
+                <button type="button" class="btn btn-sm btn-light" title="View" [routerLink]="['/dashboard/products', product.id]">
+                  <i class="bi bi-eye text-secondary"></i>
+                </button>
+                <button type="button" (click)="openEdit(product)" class="btn btn-sm btn-light" title="Edit">
+                  <i class="bi bi-pencil text-secondary" ></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-light" title="Delete" (click)="openDelete(product)">
+                  <i class="bi bi-trash text-secondary"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="!isLoading && !errorMessage && paginatedProducts.length === 0">
+            <td colspan="4" class="text-center text-muted py-4">No products match your search.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Create Product Modal -->
+    <div class="modal-backdrop fade show" *ngIf="showCreateModal" style="position: fixed; inset:0; background: rgba(0,0,0,0.4); z-index: 1050;"></div>
+    <div *ngIf="showCreateModal" class="modal d-block" tabindex="-1" role="dialog" style="z-index:1060;">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Product</h5>
+            <button type="button" class="btn-close" aria-label="Close" (click)="closeCreate()"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Product Name</label>
+              <input class="form-control" [(ngModel)]="createName" placeholder="Enter product name" />
+              <div *ngIf="createSubmitted && !createName.trim()" class="text-danger small mt-1">Product name is required.</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" rows="4" [(ngModel)]="createDescription" placeholder="Enter product description"></textarea>
+              <div *ngIf="createSubmitted && !createDescription.trim()" class="text-danger small mt-1">Description is required.</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" (click)="closeCreate()" [disabled]="isCreating">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="saveCreate()" [disabled]="isCreating">
+              <span *ngIf="isCreating" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Save Product
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal-backdrop fade show" *ngIf="showEditModal" style="position: fixed; inset:0; background: rgba(0,0,0,0.4); z-index: 1050;"></div>
+    <div *ngIf="showEditModal" class="modal d-block" tabindex="-1" role="dialog" style="z-index:1060;">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Product</h5>
+            <button type="button" class="btn-close" aria-label="Close" (click)="closeEdit()"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Product Name</label>
+              <input class="form-control" [(ngModel)]="editName" />
+              <div *ngIf="editSubmitted && !editName.trim()" class="text-danger small mt-1">Product name is required.</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" rows="4" [(ngModel)]="editDescription"></textarea>
+              <div *ngIf="editSubmitted && !editDescription.trim()" class="text-danger small mt-1">Description is required.</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" (click)="closeEdit()" [disabled]="isSaving">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="saveEdit()" [disabled]="isSaving">
+              <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Product Modal -->
+    <div class="modal-backdrop fade show" *ngIf="showDeleteModal" style="position: fixed; inset:0; background: rgba(0,0,0,0.4); z-index: 1050;"></div>
+    <div *ngIf="showDeleteModal" class="modal d-block" tabindex="-1" role="dialog" style="z-index:1060;">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title text-danger">Delete Product</h5>
+            <button type="button" class="btn-close" aria-label="Close" (click)="closeDelete()"></button>
+          </div>
+          <div class="modal-body">
+            <p class="mb-2">Are you sure you want to delete this product?</p>
+            <div class="p-3 rounded-3 bg-light border">
+              <div class="fw-semibold">{{ deletingProduct?.name }}</div>
+              <div class="text-muted small">{{ deletingProduct?.description }}</div>
+            </div>
+            <p class="text-muted small mt-3 mb-0">This action cannot be undone.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" (click)="closeDelete()" [disabled]="isDeleting">Cancel</button>
+            <button type="button" class="btn btn-danger" (click)="confirmDelete()" [disabled]="isDeleting">
+              <span *ngIf="isDeleting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Delete Product
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer bg-light border-top">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <small class="text-muted">
+          Showing {{ products.length }} of {{ totalCount }} products
+        </small>
+        <nav aria-label="Products pagination">
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" [ngClass]="{ disabled: currentPage === 1 }">
+              <button
+                type="button"
+                class="page-link"
+                (click)="previousPage()"
+                [disabled]="currentPage === 1"
+                aria-label="Previous page"
+              >
+                <i class="bi bi-chevron-left"></i>
+              </button>
+            </li>
+            <li class="page-item disabled">
+              <span class="page-link border-0 bg-transparent text-muted">
+                Page {{ currentPage }} of {{ totalPages || 1 }}
+              </span>
+            </li>
+            <li class="page-item" [ngClass]="{ disabled: currentPage >= totalPages }">
+              <button
+                type="button"
+                class="page-link"
+                (click)="nextPage()"
+                [disabled]="currentPage >= totalPages"
+                aria-label="Next page"
+              >
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

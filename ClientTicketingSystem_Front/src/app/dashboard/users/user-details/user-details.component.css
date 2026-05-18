@@ -1,0 +1,164 @@
+.user-details-page {
+  background: linear-gradient(180deg, #f7f9fc 0%, #f3f6fb 100%);
+  min-height: calc(100vh - 90px);
+}
+
+.profile-card,
+.info-card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.profile-avatar {
+  width: 92px;
+  height: 92px;
+}
+
+.profile-avatar-image,
+.profile-avatar-fallback {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 8px 18px rgba(13, 110, 253, 0.14);
+  border: 3px solid #fff;
+}
+
+.profile-avatar-image {
+  object-fit: cover;
+  background: #fff;
+}
+
+.profile-avatar-fallback {
+  background: linear-gradient(90deg, #dbe9ff 0%, #c5dbff 50%, #dbe9ff 100%);
+  font-size: 1.6rem;
+  letter-spacing: 0.02em;
+}
+
+.status-dot {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 2px solid #fff;
+}
+
+.role-badge {
+  background: #0d6efd;
+  color: #fff;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.78rem;
+}
+
+.status-badge {
+  font-weight: 700;
+}
+
+.profile-meta {
+  max-width: 230px;
+  margin: 0 auto;
+}
+
+.label-small {
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: #6c757d;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.detail-value {
+  color: #101828;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.text-primary.fw-semibold.small {
+  font-size: 0.82rem;
+}
+
+.detail-block {
+  padding-bottom: 0.1rem;
+}
+
+.access-chip {
+  border: 1px solid #dce3ee;
+  border-radius: 9px;
+  padding: 0.65rem 0.8rem;
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+  background: #fff;
+}
+
+.action-btn {
+  min-width: 118px;
+  font-weight: 700;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  padding: 0.45rem 0.75rem;
+}
+
+.card-header {
+  border-bottom: 1px solid #e8edf5;
+}
+
+@media (max-width: 991.98px) {
+  .action-btn {
+    min-width: 0;
+  }
+}
+
+.modal-dialog {
+  max-width: 680px;
+}
+
+/* Ensure modal and backdrop stack above other app elements */
+.modal {
+  z-index: 2000 !important;
+}
+
+.modal-backdrop {
+  z-index: 1999 !important;
+  background-color: rgba(0,0,0,0.6) !important;
+  pointer-events: none;
+}
+
+.modal .modal-dialog {
+  z-index: 2001 !important;
+  position: relative;
+}
+
+.modal .modal-content {
+  z-index: 2002 !important;
+  position: relative;
+}
+
+/* Make modal content fully opaque and higher contrast */
+.modal .modal-content {
+  background-color: #ffffff !important;
+  color: #0b1220 !important;
+  box-shadow: 0 20px 50px rgba(2,6,23,0.45) !important;
+  border-radius: 10px;
+  border: 1px solid rgba(2,6,23,0.06);
+}
+
+.modal .modal-header {
+  background: transparent;
+  border-bottom: 1px solid rgba(2,6,23,0.06);
+}
+
+.modal .form-control,
+.modal .form-select,
+.modal textarea.form-control {
+  background-color: #fff !important;
+  color: #0b1220 !important;
+  border: 1px solid #e6e9f0;
+}
+
+.modal .invalid-feedback.d-block {
+  color: #b91c1c;
+}

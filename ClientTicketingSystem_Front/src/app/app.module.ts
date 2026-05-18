@@ -1,0 +1,54 @@
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ToastrModule } from 'ngx-toastr';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { UserComponent } from './user/user.component';
+import { RegistrationComponent } from './user/registration/registration.component';
+import { LoginComponent } from './user/login/login.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { TicketsComponent } from './dashboard/tickets/tickets.component';
+import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
+import { ProductsComponent } from './dashboard/products/products.component';
+import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
+import { UnauthorizedInterceptor } from './shared/interceptors/unauthorized.interceptor';
+import { ProductDetailsComponent } from './dashboard/product-details/product-details.component';
+import { UsersComponent } from './dashboard/users/users.component';
+import { CreateEmployeeComponent } from './dashboard/users/create-employee/create-employee.component';
+import { UserDetailsComponent } from './dashboard/users/user-details/user-details.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    UserComponent,
+    RegistrationComponent,
+    LoginComponent,
+    DashboardComponent,
+    TicketsComponent,
+    DashboardHomeComponent,
+    ProductsComponent,
+    ProductDetailsComponent,
+    UsersComponent,
+    CreateEmployeeComponent,
+    UserDetailsComponent
+  ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
+    ToastrModule.forRoot()
+  ],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true }
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
