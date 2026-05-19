@@ -13,14 +13,14 @@ public class TicketService : ITicketService
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<Ticket> _logger;
 
-
-
     public TicketService(IUnitOfWork unitOfWork, ILogger<Ticket> logger)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
+
     public async Task<ApiResponse<CreateTicketDto>> CreateTicket(CreateTicketDto TicketDto,Guid clientId)
+
     {
         var ticket = new Ticket
         {

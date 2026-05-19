@@ -29,6 +29,7 @@ public class TicketsWithFiltersSpecification : BaseSpecification<Ticket>
     {
         AddInclude(t => t.Client!);
         AddInclude(t => t.AssignedUser!);
+
         AddInclude(t => t.Product!);
 
         var normalizedSort = sort?.Trim().ToLowerInvariant();
