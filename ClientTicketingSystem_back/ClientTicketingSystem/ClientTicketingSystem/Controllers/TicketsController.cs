@@ -20,8 +20,8 @@ public class TicketsController : ControllerBase
     }
 
     [Authorize(Roles = $"{nameof(UserRole.Client)}")]
-    [HttpPost("CreateTicket")]
-    public async Task<ActionResult> CreateTicket(CreateTicketDto dto)
+    [HttpPost("CreateRequest")]
+    public async Task<ActionResult> CreateRequest(CreateTicketDto dto)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!Guid.TryParse(userId, out Guid userGuid))
@@ -31,27 +31,6 @@ public class TicketsController : ControllerBase
         }
         _logger.LogInformation("CreateTicket requested by {UserId} for product {ProductId}", userGuid, dto.ProductId);
         var result = await _ticketService.CreateTicket(dto, userGuid);
-        return StatusCode(result.StatusCode, result);
-    }
-
-    //[Authorize(Roles = $"{nameof(UserRole.Client)}")]
-    [HttpGet("GetAllTickets")]
-    public async Task<ActionResult> GetAllTickets(
-        [FromQuery] string? search,
-        [FromQuery] string? sort,
-        [FromQuery] TicketStatus? status,
-        [FromQuery] int pageIndex = 1,
-        [FromQuery] int pageSize = 10
-        )
-    {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        if (!Guid.TryParse(userId, out Guid userGuid))
-        {
-            return Unauthorized();
-        }
-        var currentUserRole = Enum.Parse<UserRole>(User.FindFirst(ClaimTypes.Role)!.Value);
-        var result = await _ticketService.GetAllTickets(search, sort, status, pageIndex, pageSize, currentUserRole, userGuid);
         return StatusCode(result.StatusCode, result);
     }
 }
