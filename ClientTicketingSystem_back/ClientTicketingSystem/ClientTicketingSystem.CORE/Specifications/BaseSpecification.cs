@@ -10,16 +10,14 @@ public class BaseSpecification<T> : ISpecification<T>
     public int Skip { get; private set; }
     public bool IsPagingEnabled { get; private set; }
 
-    // الكونستركتور الأساسي لو مروقين بدون شروط
     public BaseSpecification() { }
 
-    // كونستركتور يستقبل شرط الفلترة والبحث
     public BaseSpecification(Expression<Func<T, bool>> criteria)
     {
         Criteria = criteria;
     }
+    public List<Expression<Func<T, object>>> Includes { get; } = new List<Expression<Func<T, object>>>();
 
-    // ميثودس لتسهيل بناء الاستعلام (Fluent API Style)
     protected void AddOrderBy(Expression<Func<T, object>> orderByExpression)
         => OrderBy = orderByExpression;
 
@@ -31,5 +29,9 @@ public class BaseSpecification<T> : ISpecification<T>
         Skip = skip;
         Take = take;
         IsPagingEnabled = true;
+    }
+    protected void AddInclude(Expression<Func<T, object>> includeExpression)
+    {
+        Includes.Add(includeExpression);
     }
 }
