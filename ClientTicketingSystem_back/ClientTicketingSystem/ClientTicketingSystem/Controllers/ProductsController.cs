@@ -93,9 +93,7 @@ public class ProductsController : ControllerBase
 
 
     [Authorize(Roles = nameof(UserRole.Manager))]
-
     [HttpPost("CreateProduct")]
-
     public async Task<ActionResult> CreateProduct(CreateProductDto dto)
 
     {
@@ -135,9 +133,7 @@ public class ProductsController : ControllerBase
 
 
     [Authorize(Roles = nameof(UserRole.Manager))]
-
     [HttpPost("UpdateProduct")]
-
     public async Task<ActionResult> UpdateProduct(UpdateProductDto dto)
 
     {
@@ -177,9 +173,7 @@ public class ProductsController : ControllerBase
 
 
     [Authorize(Roles = nameof(UserRole.Manager))]
-
     [HttpDelete("{Id}")]
-
     public async Task<ActionResult> DeleteItem(Guid Id)
 
     {
