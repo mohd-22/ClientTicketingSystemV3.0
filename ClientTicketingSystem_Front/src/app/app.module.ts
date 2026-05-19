@@ -16,10 +16,10 @@ import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-hom
 import { ProductsComponent } from './dashboard/products/products.component';
 import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
 import { UnauthorizedInterceptor } from './shared/interceptors/unauthorized.interceptor';
-import { ProductDetailsComponent } from './dashboard/product-details/product-details.component';
 import { UsersComponent } from './dashboard/users/users.component';
 import { CreateEmployeeComponent } from './dashboard/users/create-employee/create-employee.component';
 import { UserDetailsComponent } from './dashboard/users/user-details/user-details.component';
+import { ClientsComponent } from './dashboard/clients/clients.component';
 
 @NgModule({
   declarations: [
@@ -31,10 +31,10 @@ import { UserDetailsComponent } from './dashboard/users/user-details/user-detail
     TicketsComponent,
     DashboardHomeComponent,
     ProductsComponent,
-    ProductDetailsComponent,
     UsersComponent,
     CreateEmployeeComponent,
-    UserDetailsComponent
+    UserDetailsComponent,
+    ClientsComponent
   ],
   imports: [
     BrowserModule,

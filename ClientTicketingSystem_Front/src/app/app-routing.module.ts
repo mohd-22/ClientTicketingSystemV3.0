@@ -9,10 +9,10 @@ import { GuestGuardGuard } from './guards/guest-guard.guard';
 import { TicketsComponent } from './dashboard/tickets/tickets.component';
 import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
 import { ProductsComponent } from './dashboard/products/products.component';
-import { ProductDetailsComponent } from './dashboard/product-details/product-details.component';
 import { UsersComponent } from './dashboard/users/users.component';
 import { CreateEmployeeComponent } from './dashboard/users/create-employee/create-employee.component';
 import { UserDetailsComponent } from './dashboard/users/user-details/user-details.component';
+import { ClientsComponent } from './dashboard/clients/clients.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'user/login' },
@@ -29,9 +29,9 @@ const routes: Routes = [
     { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
     { path: 'users/create', component: CreateEmployeeComponent, canActivate: [AuthGuard] },
     { path: 'users/:id', component: UserDetailsComponent, canActivate: [AuthGuard] },
+     { path: 'clients', component: ClientsComponent, canActivate: [AuthGuard] },
     { path: 'tickets', component: TicketsComponent, canActivate: [AuthGuard] },
     { path: 'products', component: ProductsComponent, canActivate: [AuthGuard] },
-    { path: 'products/:id', component: ProductDetailsComponent, canActivate: [AuthGuard] }
   ] },
   { path: '**', redirectTo: 'user/login' }
 ];

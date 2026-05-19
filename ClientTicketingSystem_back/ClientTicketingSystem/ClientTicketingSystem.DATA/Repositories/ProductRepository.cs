@@ -13,7 +13,6 @@ public class ProductRepository : GenericRepository<Product>,IProductRepository
     public async Task<Product> GetProductWithItemsAsync(Guid id)
     {
         return (await _context.Set<Product>()
-        .Include(c => c.ProductModules)
         .FirstOrDefaultAsync(c => c.Id == id))!;
     }
     public async Task<List<ProductWithCountDto>> GetProductsWithModulesCountAsync(ISpecification<Product> spec)
@@ -25,8 +24,7 @@ public class ProductRepository : GenericRepository<Product>,IProductRepository
             {
                 Id = p.Id,
                 Name = p.Name,
-                Description = p.Description,
-                ModulesCount = p.ProductModules!.Count()
+                Description = p.Description
             })
             .ToListAsync();
     }

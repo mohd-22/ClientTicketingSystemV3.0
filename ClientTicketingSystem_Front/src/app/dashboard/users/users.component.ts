@@ -80,7 +80,7 @@ export class UsersComponent implements OnInit {
       roleFilter,
       isActiveFilter,
       this.currentPage,
-      this.itemsPerPage
+      this.itemsPerPage  
     ).pipe(
       finalize(() => this.isLoading = false)
     ).subscribe({

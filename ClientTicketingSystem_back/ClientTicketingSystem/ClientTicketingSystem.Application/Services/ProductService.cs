@@ -37,16 +37,10 @@ public class ProductService : IProductService
             {
                 Id = product.Id,
                 Name = product.Name,
-                Description = product.Description,
-                Modules = product.ProductModules!.Select(i => new ModuleDto
-                {
-                    Id = i.Id,
-                    Name = i.Name,
-                    Description = i.Description
-                }).ToList()
+                Description = product.Description
             };
 
-            _logger.LogInformation("Retrieved product {ProductId} with {ModuleCount} modules", productId, productDto.Modules.Count);
+            _logger.LogInformation("Retrieved product {ProductId}", productId);
             return new ApiResponse<ProductDto> { Success = true, Message = "Product Retrieved Succesfully", Data = productDto, StatusCode = 200 };
         }
         catch (Exception ex)
@@ -166,7 +160,7 @@ public class ProductService : IProductService
             }
 
             var hasLinkedRequests = await _unitOfWork.Tickets.AnyAsync(r =>
-                r.ProductModule!.ProductId == id &&
+                r.ProductId == id &&
                 r.Status != TicketStatus.Closed);
 
             if (hasLinkedRequests)

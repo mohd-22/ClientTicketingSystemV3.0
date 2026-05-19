@@ -13,7 +13,6 @@ public class UnitOfWork : IUnitOfWork
     public IUserRepository Users { get; }
     public IGenericRepository<Attachment> Attachments { get; }
     public ICommentRepository Comments { get; }
-    public IGenericRepository<ProductModule> ProdectModules { get; }
     public IProductRepository Products { get; }
     public ITicketRepository Tickets { get; }
 
@@ -24,7 +23,6 @@ public class UnitOfWork : IUnitOfWork
         Users = new UserRepository(_context);
         Attachments = new GenericRepository<Attachment>(_context);
         Comments = new CommentRepository(_context);
-        ProdectModules = new GenericRepository<ProductModule>(_context);
         Products = new ProductRepository(_context);
         Tickets = new TicketsRepository(_context);
     }

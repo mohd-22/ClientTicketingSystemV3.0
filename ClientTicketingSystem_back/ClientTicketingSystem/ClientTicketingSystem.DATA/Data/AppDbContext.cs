@@ -11,7 +11,6 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Product> Products { get; set; } = null!;
-    public DbSet<ProductModule> ProductModules { get; set; } = null!;
     public DbSet<Ticket> Tickets { get; set; } = null!;
     public DbSet<Comment> Comments { get; set; } = null!;
     public DbSet<Attachment> Attachments { get; set; } = null!;

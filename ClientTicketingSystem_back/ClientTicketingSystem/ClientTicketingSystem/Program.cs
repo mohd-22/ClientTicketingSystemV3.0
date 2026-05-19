@@ -57,7 +57,7 @@ try
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
     builder.Services.AddScoped<IAuthService, AuthService>();
     builder.Services.AddScoped<IProductService, ProductService>();
-    builder.Services.AddScoped<IProductModuleService, ProductModuleService>();
+    builder.Services.AddScoped<ITicketService, TicketService>();
     builder.Services.AddScoped<IUserService, UserService>();
 
     builder.Services.AddCors(options =>

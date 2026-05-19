@@ -10,7 +10,7 @@ public class ProductsWithFiltersSpecification : BaseSpecification<Product>
     {
         var normalizedSort = sort?.Trim().ToLowerInvariant();
 
-        // تطبيق الـ Sorting
+        
         switch (normalizedSort)
         {
             case "description-asc":
@@ -24,14 +24,6 @@ public class ProductsWithFiltersSpecification : BaseSpecification<Product>
             case "name-desc":
             case "namedesc":
                 AddOrderByDescending(p => p.Name);
-                break;
-            case "modules-asc":
-            case "modulesasc":
-                AddOrderBy(p => p.ProductModules!.Count());
-                break;
-            case "modules-desc":
-            case "modulesdesc":
-                AddOrderByDescending(p => p.ProductModules!.Count());
                 break;
             case "name-asc":
             case "nameasc":
