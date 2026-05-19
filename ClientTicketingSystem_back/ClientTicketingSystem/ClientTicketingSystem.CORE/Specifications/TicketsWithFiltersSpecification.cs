@@ -5,7 +5,6 @@ namespace ClientTicketingSystem.CORE.Specifications;
 
 public class TicketsWithFiltersSpecification : BaseSpecification<Ticket>
 {
-    // أضفنا باراميترز الـ role والـ userId للـ Constructor
     public TicketsWithFiltersSpecification(
         string? search,
         string? sort,
