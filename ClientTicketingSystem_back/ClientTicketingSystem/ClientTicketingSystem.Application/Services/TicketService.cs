@@ -20,7 +20,7 @@ public class TicketService : ITicketService
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
-    public async Task<ApiResponse<CreateTicketDto>> CreateRequest(CreateTicketDto TicketDto)
+    public async Task<ApiResponse<CreateTicketDto>> CreateTicket(CreateTicketDto TicketDto)
     {
         var ticket = new Ticket
         {
@@ -34,7 +34,7 @@ public class TicketService : ITicketService
         _logger.LogInformation("Ticket with title: {Title} created successfully with ID: {Id}", TicketDto.Title, ticket.Id);
         return new ApiResponse<CreateTicketDto> { Data = TicketDto, Message = "Ticket Created Successfully", Success = true, StatusCode = 200 };
     }
-    public async Task<ApiResponse<bool>> DeleteRequest(Guid Id)
+    public async Task<ApiResponse<bool>> DeleteTicket(Guid Id)
     {
         var request = await _unitOfWork.Tickets.GetByIdAsync(Id);
         if (request == null) { return new ApiResponse<bool> { Data = false, Message = "Request Not found", Success = false, StatusCode = 404 }; }
@@ -49,7 +49,7 @@ public class TicketService : ITicketService
         await _unitOfWork.CompleteAsync();
         return new ApiResponse<bool> { Data = true, Message = "Request Deleted Successfully", Success = true, StatusCode = 200 };
     }
-    public async Task<ApiResponse<bool>> UpdateRequest(CreateTicketDto dto, Guid TicketId)
+    public async Task<ApiResponse<bool>> UpdateTicket(CreateTicketDto dto, Guid TicketId)
     {
         var request = await _unitOfWork.Tickets.GetByIdAsync(TicketId);
 
