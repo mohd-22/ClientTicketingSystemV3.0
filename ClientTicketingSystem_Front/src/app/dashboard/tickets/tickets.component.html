@@ -1,15 +1,18 @@
 <div class="container-fluid">
-  <div class="d-flex justify-content-between align-items-start mb-4">
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
     <div>
       <h1 class="h3 fw-bold text-dark mb-2">Ticket Management</h1>
       <p class="text-muted mb-0">Review and manage incoming support requests across all categories.</p>
     </div>
+    <button *ngIf="isClientUser" type="button" class="btn btn-primary" (click)="openCreateModal()">
+      <i class="bi bi-plus-lg me-2"></i>Create Ticket
+    </button>
   </div>
 
   <div class="card border-0 shadow-sm mb-4">
     <div class="card-body">
-      <div class="row g-3 align-items-center w-50">
-        <div class="col-12 col-md-8">
+      <div class="row g-3 align-items-center">
+            <div class="col-12 col-lg-6">
           <div class="input-group">
             <span class="input-group-text bg-transparent border-end-0 text-secondary">
               <i class="bi bi-search"></i>
@@ -17,81 +20,200 @@
             <input
               type="text"
               class="form-control border-start-0"
-              placeholder="Filter by title, client, employee or product..."
+                  placeholder="Filter by title, client or employee..."
               [(ngModel)]="searchQuery"
               (change)="onSearchChange()"
             />
           </div>
         </div>
+        <div class="col-6 col-md-3 col-lg-2">
+          <select class="form-select" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
+            <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+          </select>
+        </div>
+        <div class="col-6 col-md-3 col-lg-3">
+          <select class="form-select" [(ngModel)]="selectedProduct" (change)="onProductChange()">
+            <option value="">All Products</option>
+            <option *ngFor="let p of products" [value]="p.id">{{ p.name }}</option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
 
+  <div *ngIf="showCreateModal" class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true" style="z-index: 2000;">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="z-index: 2001;">
+      <div class="modal-content" style="z-index: 2002;">
+        <div class="modal-header">
+          <div>
+            <h5 class="modal-title mb-1">Create Ticket</h5>
+            <small class="text-muted">Available only for client accounts.</small>
+          </div>
+          <button type="button" class="btn-close" aria-label="Close" (click)="closeCreateModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="createErrorMessage" class="alert alert-danger mb-3">
+            {{ createErrorMessage }}
+          </div>
+
+          <form [formGroup]="createForm" class="row g-3" novalidate>
+            <div class="col-12">
+              <label class="form-label">Title</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="title"
+                [class.is-invalid]="hasCreateFieldError('title')"
+                placeholder="Enter ticket title"
+              />
+              <div *ngIf="hasCreateFieldError('title')" class="invalid-feedback d-block">
+                {{ getCreateFieldErrorMessage('title') }}
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Description</label>
+              <textarea
+                class="form-control"
+                rows="4"
+                formControlName="description"
+                [class.is-invalid]="hasCreateFieldError('description')"
+                placeholder="Describe the issue in detail"
+              ></textarea>
+              <div *ngIf="hasCreateFieldError('description')" class="invalid-feedback d-block">
+                {{ getCreateFieldErrorMessage('description') }}
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Product</label>
+              <select
+                class="form-select"
+                formControlName="productId"
+                [class.is-invalid]="hasCreateFieldError('productId')"
+              >
+                <option value="" disabled>Select a product</option>
+                <option *ngFor="let product of products" [value]="product.id">{{ product.name }}</option>
+              </select>
+              <div *ngIf="hasCreateFieldError('productId')" class="invalid-feedback d-block">
+                {{ getCreateFieldErrorMessage('productId') }}
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeCreateModal()">Cancel</button>
+          <button type="button" class="btn btn-primary" [disabled]="createLoading || createForm.invalid" (click)="submitCreateTicket()">
+            <span *ngIf="createLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Create Ticket
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop fade show" style="z-index: 1999;"></div>
+  </div>
+
   <div class="card border-0 shadow-sm mb-4">
     <div class="table-responsive">
-      <table class="table table-hover mb-0">
+      <table class="table table-hover align-middle mb-0">
         <thead class="table-light">
           <tr>
-            <th class="fw-semibold text-uppercase small text-muted">Title</th>
-            <th class="fw-semibold text-uppercase small text-muted">Client Name</th>
-            <th class="fw-semibold text-uppercase small text-muted">Assigned Employee</th>
+            <th class="fw-semibold text-uppercase small text-muted">
+              <button type="button" class="btn btn-link p-0 text-decoration-none text-muted fw-semibold small text-uppercase" (click)="sortBy('title')">
+                Title
+                <i class="bi ms-1" [ngClass]="sortColumn === 'title' ? (sortDirection === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down-up'"></i>
+              </button>
+            </th>
+            <th class="fw-semibold text-uppercase small text-muted">
+              <button type="button" class="btn btn-link p-0 text-decoration-none text-muted fw-semibold small text-uppercase" (click)="sortBy('clientName')">
+                Client Name
+                <i class="bi ms-1" [ngClass]="sortColumn === 'clientName' ? (sortDirection === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down-up'"></i>
+              </button>
+            </th>
+            <th class="fw-semibold text-uppercase small text-muted" *ngIf="!isEmployeeUser">
+              <button type="button" class="btn btn-link p-0 text-decoration-none text-muted fw-semibold small text-uppercase" (click)="sortBy('assignedEmpName')">
+                Assigned Employee
+                <i class="bi ms-1" [ngClass]="sortColumn === 'assignedEmpName' ? (sortDirection === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down-up'"></i>
+              </button>
+            </th>
             <th class="fw-semibold text-uppercase small text-muted">Product Name</th>
             <th class="fw-semibold text-uppercase small text-muted">Status</th>
-            <th class="fw-semibold text-uppercase small text-muted">Is Fixed</th>
-            <th class="fw-semibold text-uppercase small text-muted text-center">Details</th>
+            
+            <th class="fw-semibold text-uppercase small text-muted text-end">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngIf="isLoading">
-            <td colspan="7" class="text-center text-muted py-4">Loading tickets...</td>
+            <td colspan="6" class="text-center text-muted py-4">Loading tickets...</td>
           </tr>
           <tr *ngFor="let ticket of tickets">
-            <td class="fw-semibold text-dark">{{ ticket.title }}</td>
-            <td>{{ ticket.clientName }}</td>
-            <td>{{ ticket.assignedEmpName }}</td>
-            <td>{{ ticket.productName }}</td>
+            <td>
+              <div class="fw-semibold text-dark">{{ ticket.title }}</div>
+              
+            </td>
+            <td>{{ ticket.clientName || 'N/A' }}</td>
+            <td>{{ ticket.assignedEmpName || 'Not assigned' }}</td>
+            <td>{{ ticket.productName || 'N/A' }}</td>
             <td>
               <span class="badge" [ngClass]="getStatusBadge(ticket.status)">
-                {{ ticket.status }}
+                {{ ticket.status || 'Unknown' }}
               </span>
             </td>
-            <td>
-              <span class="badge" [ngClass]="ticket.isFixed ? 'bg-success' : 'bg-secondary'">
-                {{ ticket.isFixed ? 'Yes' : 'No' }}
-              </span>
-            </td>
-            <td class="text-center">
-              <a class="btn btn-sm btn-outline-primary" [routerLink]="['/dashboard','tickets', ticket.Id || ticket.id]">View</a>
+            <td class="text-end">
+              <div class="d-inline-flex gap-1">
+                <a class="btn btn-sm btn-light" title="View" [routerLink]="['/dashboard','tickets', ticket.Id || ticket.id]">
+                  <i class="bi bi-eye text-secondary"></i>
+                </a>
+              </div>
             </td>
           </tr>
           <tr *ngIf="!isLoading && errorMessage">
-            <td colspan="7" class="text-center text-danger py-4">{{ errorMessage }}</td>
+            <td colspan="6" class="text-center text-danger py-4">{{ errorMessage }}</td>
           </tr>
           <tr *ngIf="!isLoading && !errorMessage && tickets.length === 0">
-            <td colspan="7" class="text-center text-muted py-4">No tickets match your search.</td>
+            <td colspan="6" class="text-center text-muted py-4">No tickets match your search.</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div class="card-footer bg-light border-top">
-      <div class="d-flex justify-content-between align-items-center">
-        <small class="text-muted">Showing {{ tickets.length }} of {{ totalItems }} tickets</small>
-        <nav aria-label="Page navigation">
-          <ul class="pagination mb-0 justify-content-end">
-            <li class="page-item" [ngClass]="{ disabled: currentPage === 1 }">
-              <button type="button" class="page-link" (click)="previousPage()" [disabled]="currentPage === 1">
-                Previous
-              </button>
-            </li>
-            <li class="page-item disabled"><span class="page-link">Page {{ currentPage }} of {{ totalPages || 1 }}</span></li>
-            <li class="page-item" [ngClass]="{ disabled: currentPage === totalPages }">
-              <button type="button" class="page-link" (click)="nextPage()" [disabled]="currentPage === totalPages">
-                Next
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </div>
+  </div>
+
+  <div class="card-footer bg-light border-top">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <small class="text-muted">
+        Showing {{ tickets.length }} of {{ totalItems }} tickets
+      </small>
+      <nav aria-label="Tickets pagination">
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item" [ngClass]="{ disabled: currentPage === 1 }">
+            <button
+              type="button"
+              class="page-link"
+              (click)="goToPage(currentPage - 1)"
+              [disabled]="currentPage === 1"
+              aria-label="Previous page"
+            >
+              <i class="bi bi-chevron-left"></i>
+            </button>
+          </li>
+          <li class="page-item disabled">
+            <span class="page-link border-0 bg-transparent text-muted">
+              Page {{ currentPage }} of {{ totalPages || 1 }}
+            </span>
+          </li>
+          <li class="page-item" [ngClass]="{ disabled: currentPage >= totalPages }">
+            <button
+              type="button"
+              class="page-link"
+              (click)="goToPage(currentPage + 1)"
+              [disabled]="currentPage >= totalPages"
+              aria-label="Next page"
+            >
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
 </div>

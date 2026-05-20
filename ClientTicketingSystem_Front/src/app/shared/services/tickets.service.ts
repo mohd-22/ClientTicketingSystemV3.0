@@ -4,6 +4,12 @@ import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from './auth.service';
 
+export interface CreateTicketRequest {
+  title: string;
+  description: string;
+  productId: string;
+}
+
 export interface TicketDto {
   id: string;
   Id?: string;
@@ -33,6 +39,8 @@ export class TicketsService {
 
   private readonly ticketByIdUrlBase = `${environment.apiUrl}/api/Tickets/GetTicketById`;
 
+  private readonly createTicketUrl = `${environment.apiUrl}/api/Tickets/CreateTicket`;
+
   constructor(private http: HttpClient) { }
 
   getAllTickets(
@@ -40,7 +48,8 @@ export class TicketsService {
     sort?: string,
     status?: string,
     pageIndex: number = 1,
-    pageSize: number = 10
+    pageSize: number = 10,
+    productId?: string
   ): Observable<PaginationDto<TicketDto>> {
     let params = new HttpParams()
       .set('pageIndex', pageIndex.toString())
@@ -56,6 +65,10 @@ export class TicketsService {
 
     if (status && status.trim()) {
       params = params.set('status', status.trim());
+    }
+
+    if (productId && productId.trim()) {
+      params = params.set('productId', productId.trim());
     }
 
     return this.http.get<ApiResponse<PaginationDto<any>>>(this.ticketsUrl, { params }).pipe(
@@ -98,5 +111,9 @@ export class TicketsService {
         return dto;
       })
     );
+  }
+
+  createTicket(body: CreateTicketRequest): Observable<ApiResponse<CreateTicketRequest>> {
+    return this.http.post<ApiResponse<CreateTicketRequest>>(this.createTicketUrl, body);
   }
 }

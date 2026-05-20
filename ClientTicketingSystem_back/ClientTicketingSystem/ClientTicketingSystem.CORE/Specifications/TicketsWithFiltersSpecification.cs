@@ -11,6 +11,7 @@ public class TicketsWithFiltersSpecification : BaseSpecification<Ticket>
         TicketStatus? status,
         int pageIndex,
         int pageSize,
+        Guid? productId,
         string role,      
         Guid userId       
     )
@@ -20,9 +21,12 @@ public class TicketsWithFiltersSpecification : BaseSpecification<Ticket>
          (role == "Client" && ticket.ClientId == userId)) &&
 
         (!status.HasValue || ticket.Status == status.Value) &&
+        (!productId.HasValue || ticket.ProductId == productId.Value) &&
         (string.IsNullOrWhiteSpace(search) ||
          ticket.Title.ToLower().Contains(search.Trim().ToLower()) ||
-         ticket.Description.ToLower().Contains(search.Trim().ToLower()) 
+         ticket.Description.ToLower().Contains(search.Trim().ToLower()) ||
+         (ticket.Client != null && ticket.Client.FullName.ToLower().Contains(search.Trim().ToLower())) ||
+         (ticket.AssignedUser != null && ticket.AssignedUser.FullName.ToLower().Contains(search.Trim().ToLower()))
          ))
     {
         AddInclude(t => t.Client!);
@@ -45,21 +49,21 @@ public class TicketsWithFiltersSpecification : BaseSpecification<Ticket>
             case "descriptiondesc":
                 AddOrderByDescending(ticket => ticket.Description);
                 break;
-            case "status-asc":
-            case "statusasc":
-                AddOrderBy(ticket => ticket.Status);
+            case "client-asc":
+            case "clientasc":
+                AddOrderBy(ticket => ticket.Client != null ? ticket.Client.FullName : string.Empty);
                 break;
-            case "status-desc":
-            case "statusdesc":
-                AddOrderByDescending(ticket => ticket.Status);
+            case "client-desc":
+            case "clientdesc":
+                AddOrderByDescending(ticket => ticket.Client != null ? ticket.Client.FullName : string.Empty);
                 break;
-            case "fixed-asc":
-            case "fixedasc":
-                AddOrderBy(ticket => ticket.IsFixed);
+            case "assigned-asc":
+            case "assignedasc":
+                AddOrderBy(ticket => ticket.AssignedUser != null ? ticket.AssignedUser.FullName : string.Empty);
                 break;
-            case "fixed-desc":
-            case "fixeddesc":
-                AddOrderByDescending(ticket => ticket.IsFixed);
+            case "assigned-desc":
+            case "assigneddesc":
+                AddOrderByDescending(ticket => ticket.AssignedUser != null ? ticket.AssignedUser.FullName : string.Empty);
                 break;
             case "created-desc":
             case "createddesc":
