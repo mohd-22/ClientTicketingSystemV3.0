@@ -1,22 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
-export interface Ticket {
-  id: string;
-  subject: string;
-  category: string;
-  customer: string;
-  priority: 'High' | 'Medium' | 'Low';
-  status: 'In Progress' | 'Open' | 'Resolved' | 'Closed';
-  lastUpdated: string;
-  customerAvatar: string;
-}
-
-export interface TicketStats {
-  openNow: number;
-  urgentPriority: number;
-  slaBreachRisk: number;
-  avgResolution: string;
-}
+import { finalize } from 'rxjs';
+import { PaginationDto, TicketDto, TicketsService } from 'src/app/shared/services/tickets.service';
 
 @Component({
   selector: 'app-tickets',
@@ -24,84 +8,26 @@ export interface TicketStats {
   styles: []
 })
 export class TicketsComponent implements OnInit {
-  stats: TicketStats = {
-    openNow: 42,
-    urgentPriority: 12,
-    slaBreachRisk: 8,
-    avgResolution: '3.4h'
-  };
-
-  tickets: Ticket[] = [
-    {
-      id: 'TKT-8291',
-      subject: 'Payment Processing Error',
-      category: 'Billing • API Integration',
-      customer: 'John Doe Enterprises',
-      priority: 'High',
-      status: 'In Progress',
-      lastUpdated: '12 mins ago',
-      customerAvatar: 'JD'
-    },
-    {
-      id: 'TKT-8285',
-      subject: 'User Invitation Not Sent',
-      category: 'Platform • Users',
-      customer: 'Modern Web Co',
-      priority: 'Medium',
-      status: 'Open',
-      lastUpdated: '45 mins ago',
-      customerAvatar: 'MW'
-    },
-    {
-      id: 'TKT-8270',
-      subject: 'Feature Request: Dark Mode',
-      category: 'Product • Feedback',
-      customer: 'Sarah Smith',
-      priority: 'Low',
-      status: 'Resolved',
-      lastUpdated: '2 hours ago',
-      customerAvatar: 'SS'
-    },
-    {
-      id: 'TKT-8266',
-      subject: 'Password Reset Loop',
-      category: 'Security • Access',
-      customer: 'Tech Alliance',
-      priority: 'High',
-      status: 'In Progress',
-      lastUpdated: '3 hours ago',
-      customerAvatar: 'TA'
-    },
-    {
-      id: 'TKT-8250',
-      subject: 'Database Connection Timeout',
-      category: 'Infrastructure • Backend',
-      customer: 'Cloud Corp',
-      priority: 'High',
-      status: 'Closed',
-      lastUpdated: 'Yesterday',
-      customerAvatar: 'CC'
-    }
-  ];
+  tickets: TicketDto[] = [];
 
   searchQuery = '';
   currentPage = 1;
   itemsPerPage = 10;
-  totalItems = 42;
+  totalItems = 0;
+  isLoading = false;
+  errorMessage = '';
+  sortQuery = 'title-asc';
+  statusFilter: string = 'all';
 
-  constructor() { }
+  constructor(private ticketsService: TicketsService) { }
 
   ngOnInit(): void {
+    this.loadTickets();
   }
 
-  get filteredTickets(): Ticket[] {
-    if (!this.searchQuery) return this.tickets;
-    const query = this.searchQuery.toLowerCase();
-    return this.tickets.filter(t =>
-      t.id.toLowerCase().includes(query) ||
-      t.subject.toLowerCase().includes(query) ||
-      t.customer.toLowerCase().includes(query)
-    );
+  onSearchChange(): void {
+    this.currentPage = 1;
+    this.loadTickets();
   }
 
   get totalPages(): number {
@@ -109,33 +35,67 @@ export class TicketsComponent implements OnInit {
   }
 
   previousPage(): void {
-    if (this.currentPage > 1) this.currentPage--;
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadTickets();
+    }
   }
 
   nextPage(): void {
-    if (this.currentPage < this.totalPages) this.currentPage++;
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadTickets();
+    }
   }
 
   goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) this.currentPage = page;
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadTickets();
+    }
   }
 
-  getPriorityColor(priority: string): string {
-    return priority === 'High' ? 'danger' : priority === 'Medium' ? 'warning' : 'success';
+  private loadTickets(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    const status = this.statusFilter === 'all' ? undefined : this.statusFilter;
+
+    this.ticketsService.getAllTickets(
+      this.searchQuery,
+      this.sortQuery,
+      status,
+      this.currentPage,
+      this.itemsPerPage
+    ).pipe(
+      finalize(() => this.isLoading = false)
+    ).subscribe({
+      next: (response: PaginationDto<TicketDto>) => {
+        this.tickets = response.data ?? [];
+        this.totalItems = response.count ?? 0;
+      },
+      error: () => {
+        this.tickets = [];
+        this.totalItems = 0;
+        this.errorMessage = 'Unable to load tickets from the API.';
+      }
+    });
   }
 
-  getStatusColor(status: string): string {
-    switch (status) {
-      case 'In Progress':
-        return '#FFA500';
-      case 'Open':
-        return '#00A8E8';
-      case 'Resolved':
-        return '#06A77D';
-      case 'Closed':
-        return '#999999';
+  getStatusBadge(status: string): string {
+    switch ((status || '').toLowerCase()) {
+      case 'new':
+        return 'bg-primary';
+      case 'inprogress':
+      case 'in progress':
+        return 'bg-warning text-dark';
+      case 'resolved':
+      case 'fixed':
+        return 'bg-success';
+      case 'closed':
+        return 'bg-secondary';
       default:
-        return '#000000';
+        return 'bg-light text-dark border';
     }
   }
 }

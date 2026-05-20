@@ -83,6 +83,7 @@ public class TicketService : ITicketService
 
             var ticketDtos = tickets.Select(ticket => new TicketDto
             {
+                Id = ticket.Id,
                 Title = ticket.Title,
                 ClientName = ticket.Client?.FullName ?? string.Empty,
                 AssignedEmpName = ticket.AssignedUser?.FullName ?? string.Empty,
@@ -114,5 +115,24 @@ public class TicketService : ITicketService
 
     }
 
+    public async Task<ApiResponse<TicketDto>> GetTicketById(Guid TicketId)
+    {
+        var ticket = await _unitOfWork.Tickets.GetTicketWithDetailsByIdAsync(TicketId);
+        if (ticket == null) return new ApiResponse<TicketDto> { Data = null, Message = "Ticket Not found", Success = false, StatusCode = 404 };
+
+        var ticketDto = new TicketDto
+        {   
+            Id = ticket.Id,
+            Title = ticket.Title,
+            Description = ticket.Description,
+            ClientName = ticket.Client?.FullName ?? string.Empty,
+            AssignedEmpName = ticket.AssignedUser?.FullName ?? string.Empty,
+            ProductName = ticket.Product?.Name ?? string.Empty,
+            Status = ticket.Status.ToString(),
+            IsFixed = ticket.IsFixed
+        };
+        return new ApiResponse<TicketDto> { Data = ticketDto, Message = "Ticket Retrieved Successfully", Success = true, StatusCode = 200 };
+
+    }
 
 }

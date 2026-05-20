@@ -54,4 +54,10 @@ public class TicketsController : ControllerBase
         var result = await _ticketService.GetAllTickets(search, sort, status, pageIndex, pageSize, currentUserRole, userGuid);
         return StatusCode(result.StatusCode, result);
     }
+    [HttpGet("GetTicketById/{id}")]
+    public async Task<ActionResult> GetTicketById(Guid id)
+    {
+        var result = await _ticketService.GetTicketById(id);
+        return StatusCode(result.StatusCode, result);
+    }
 }

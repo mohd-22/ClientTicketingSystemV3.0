@@ -76,7 +76,7 @@
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
-							<button type="button" class="btn btn-primary" [disabled]="isSaving || editForm?.invalid" (click)="saveEdit()">
+							<button type="button" class="btn btn-primary" [disabled]="isSaving || editForm.invalid" (click)="saveEdit()">
 								<span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
 								Save Changes
 							</button>

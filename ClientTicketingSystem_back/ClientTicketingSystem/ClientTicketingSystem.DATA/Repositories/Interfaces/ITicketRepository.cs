@@ -2,4 +2,5 @@
 namespace SupportHub.DATA.Repositories.Interfaces;
 public interface ITicketRepository : IGenericRepository<Ticket>
 {
+    Task<Ticket> GetTicketWithDetailsByIdAsync(Guid id);
 }

@@ -10,4 +10,5 @@ public interface ITicketService
     Task<ApiResponse<PaginationDto<TicketDto>>> GetAllTickets(string? search, string? sort, TicketStatus? status, int pageIndex, int pageSize,UserRole role, Guid userId);
     Task<ApiResponse<bool>> DeleteTicket(Guid Id);
     Task<ApiResponse<bool>> UpdateTicket(CreateTicketDto dto,Guid TicketId);
+    Task<ApiResponse<ClientTicketingSystem.CORE.Dtos.TicketDto>> GetTicketById(Guid TicketId);
 }
