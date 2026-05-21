@@ -49,7 +49,8 @@ export class TicketsService {
     status?: string,
     pageIndex: number = 1,
     pageSize: number = 10,
-    productId?: string
+    clientId?: string,
+    employeeId?: string
   ): Observable<PaginationDto<TicketDto>> {
     let params = new HttpParams()
       .set('pageIndex', pageIndex.toString())
@@ -67,8 +68,12 @@ export class TicketsService {
       params = params.set('status', status.trim());
     }
 
-    if (productId && productId.trim()) {
-      params = params.set('productId', productId.trim());
+    if (clientId && clientId.trim()) {
+      params = params.set('clientId', clientId.trim());
+    }
+
+    if (employeeId && employeeId.trim()) {
+      params = params.set('employeeId', employeeId.trim());
     }
 
     return this.http.get<ApiResponse<PaginationDto<any>>>(this.ticketsUrl, { params }).pipe(

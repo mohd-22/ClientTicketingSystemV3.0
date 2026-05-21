@@ -21,6 +21,7 @@ import { CreateEmployeeComponent } from './dashboard/users/create-employee/creat
 import { UserDetailsComponent } from './dashboard/users/user-details/user-details.component';
 import { ClientsComponent } from './dashboard/clients/clients.component';
 import { TicketDetailsComponent } from './dashboard/tickets/ticket-details/ticket-details.component';
+import { ClientDetailsComponent } from './dashboard/clients/client-details/client-details.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { TicketDetailsComponent } from './dashboard/tickets/ticket-details/ticke
     CreateEmployeeComponent,
     UserDetailsComponent,
     ClientsComponent,
-    TicketDetailsComponent
+    TicketDetailsComponent,
+    ClientDetailsComponent
   ],
   imports: [
     BrowserModule,
