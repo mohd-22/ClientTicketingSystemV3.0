@@ -204,14 +204,12 @@ export class TicketsComponent implements OnInit {
   }
 
     private loadUsersForFilters(): void {
-      // Load employees
       this.usersService.getAllUsers('', 'name-asc', 'Employee', undefined, 1, 1000)
         .subscribe({
           next: (resp) => this.employees = resp.data ?? [],
           error: () => this.employees = []
         });
 
-      // Load clients
       this.usersService.getAllUsers('', 'name-asc', 'Client', undefined, 1, 1000)
         .subscribe({
           next: (resp) => this.clients = resp.data ?? [],

@@ -24,7 +24,6 @@ export class DashboardComponent implements OnInit {
     this.authService.logout();
     void this.router.navigateByUrl('/user/login', { replaceUrl: true });
   }
-
   toggleDesktopSidebar(): void {
     this.sidebarCollapsed = !this.sidebarCollapsed;
   }

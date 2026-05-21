@@ -59,7 +59,6 @@ export class CreateEmployeeComponent implements OnInit {
   get f(): any { return this.createForm.controls; }
 
   onFileSelected(event: Event): void {
-    // image upload removed
   }
 
   onSubmit(): void {
