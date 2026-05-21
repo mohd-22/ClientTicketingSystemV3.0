@@ -68,21 +68,22 @@ public class TicketService : ITicketService
         await _unitOfWork.CompleteAsync();
         return new ApiResponse<bool> { Data = true, Message = "Ticket Updated Successfully", Success = true, StatusCode = 200 };
     }
-    public async Task<ApiResponse<PaginationDto<TicketDto>>> GetAllTickets(string? search, string? sort, TicketStatus? status, int pageIndex, int pageSize,UserRole role, Guid userId)
+    public async Task<ApiResponse<PaginationDto<TicketDto>>> GetAllTickets(string? search, string? sort, TicketStatus? status, int pageIndex, int pageSize, Guid? clientId, Guid? employeeId, UserRole role, Guid userId)
     {
         try
         {
             pageIndex = Math.Max(1, pageIndex);
             pageSize = pageSize <= 0 ? 10 : pageSize;
 
-            var spec = new TicketsWithFiltersSpecification(search, sort, status, pageIndex, pageSize, role.ToString(), userId);
-            var countSpec = new TicketsWithFiltersForCountSpecification(search, status);
+            var spec = new TicketsWithFiltersSpecification(search, sort, status, pageIndex, pageSize, clientId, employeeId, role.ToString(), userId);
+            var countSpec = new TicketsWithFiltersForCountSpecification(search, status, clientId, employeeId);
 
             var tickets = await _unitOfWork.Tickets.ListWithSpecAsync(spec);
             var totalCount = await _unitOfWork.Tickets.CountAsync(countSpec);
 
             var ticketDtos = tickets.Select(ticket => new TicketDto
             {
+                Id = ticket.Id,
                 Title = ticket.Title,
                 ClientName = ticket.Client?.FullName ?? string.Empty,
                 AssignedEmpName = ticket.AssignedUser?.FullName ?? string.Empty,
@@ -114,5 +115,24 @@ public class TicketService : ITicketService
 
     }
 
+    public async Task<ApiResponse<TicketDto>> GetTicketById(Guid TicketId)
+    {
+        var ticket = await _unitOfWork.Tickets.GetTicketWithDetailsByIdAsync(TicketId);
+        if (ticket == null) return new ApiResponse<TicketDto> { Data = null, Message = "Ticket Not found", Success = false, StatusCode = 404 };
+
+        var ticketDto = new TicketDto
+        {   
+            Id = ticket.Id,
+            Title = ticket.Title,
+            Description = ticket.Description,
+            ClientName = ticket.Client?.FullName ?? string.Empty,
+            AssignedEmpName = ticket.AssignedUser?.FullName ?? string.Empty,
+            ProductName = ticket.Product?.Name ?? string.Empty,
+            Status = ticket.Status.ToString(),
+            IsFixed = ticket.IsFixed
+        };
+        return new ApiResponse<TicketDto> { Data = ticketDto, Message = "Ticket Retrieved Successfully", Success = true, StatusCode = 200 };
+
+    }
 
 }

@@ -1,43 +1,42 @@
-<div class="container-fluid py-3 user-details-page">
+<div class="container-fluid py-3 min-vh-100 bg-light">
 	<div *ngIf="isLoading" class="d-flex align-items-center justify-content-center" style="min-height: 60vh;">
 		<div class="text-center">
 			<div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
 				<span class="visually-hidden">Loading...</span>
 			</div>
-			<div class="text-muted fw-semibold">Loading user details...</div>
+			<div class="text-muted fw-semibold">Loading client details...</div>
 		</div>
 	</div>
 
 	<div *ngIf="!isLoading && errorMessage" class="alert alert-danger d-flex justify-content-between align-items-center">
 		<span>{{ errorMessage }}</span>
-		<button type="button" class="btn btn-outline-danger btn-sm" (click)="goBack()">Back to Users</button>
+		<button type="button" class="btn btn-outline-danger btn-sm" (click)="goBack()">Back to Clients</button>
 	</div>
 
-	<ng-container *ngIf="!isLoading && !errorMessage && user">
+	<ng-container *ngIf="!isLoading && !errorMessage && client">
 		<div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
 			<div>
 				<button type="button" class="btn btn-link text-decoration-none px-0 mb-2" (click)="goBack()">
-					<i class="bi bi-arrow-left me-1"></i>Back to Users
+					<i class="bi bi-arrow-left me-1"></i>Back to Clients
 				</button>
-				<h1 class="h4 fw-bold text-dark mb-1">User Details</h1>
-				<p class="text-muted mb-0">Review account information and manage access.</p>
+				<h1 class="h4 fw-bold text-dark mb-1">Client Details</h1>
+				<p class="text-muted mb-0">Review client information and manage access.</p>
 			</div>
 			<div class="d-flex gap-2 flex-wrap">
-				<button type="button" class="btn action-btn" [ngClass]="getStatusActionClass()" (click)="toggleStatus()" [disabled]="isUpdatingStatus">
+				<button type="button" class="btn" [ngClass]="getStatusActionClass()" (click)="toggleStatus()" [disabled]="isUpdatingStatus">
 					<span *ngIf="isUpdatingStatus" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
 					{{ getStatusActionText() }}
 				</button>
-				<button type="button" class="btn btn-info text-white action-btn" (click)="editUser()" [disabled]="isEditing">
-					<i class="bi bi-pencil me-2"></i>Edit User
+				<button type="button" class="btn btn-info text-white" (click)="editClient()" [disabled]="isEditing">
+					<i class="bi bi-pencil me-2"></i>Edit Client
 				</button>
 			</div>
 
-			<!-- Edit User Modal -->
 			<div *ngIf="showEditModal" class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
 				<div class="modal-dialog modal-dialog-centered modal-md" role="document">
-					<div class="modal-content">
+					<div class="modal-content shadow">
 						<div class="modal-header">
-							<h5 class="modal-title">Edit User</h5>
+							<h5 class="modal-title">Edit Client</h5>
 							<button type="button" class="btn-close" aria-label="Close" (click)="cancelEdit()"></button>
 						</div>
 						<div class="modal-body">
@@ -86,20 +85,19 @@
 				<div class="modal-backdrop fade show"></div>
 			</div>
 
-			<!-- Confirm Status Change Modal -->
 			<div *ngIf="showConfirmStatusModal" class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
 				<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-					<div class="modal-content">
+					<div class="modal-content shadow">
 						<div class="modal-header">
 							<h5 class="modal-title">Confirm Action</h5>
 							<button type="button" class="btn-close" aria-label="Close" (click)="cancelConfirmStatus()"></button>
 						</div>
 						<div class="modal-body">
 							<p class="mb-0" *ngIf="confirmStatusAction === 'deactivate'">
-								Are you sure you want to <strong>deactivate</strong> this user? They will no longer be able to access the system.
+								Are you sure you want to <strong>deactivate</strong> this client? They will no longer be able to access the system.
 							</p>
 							<p class="mb-0" *ngIf="confirmStatusAction === 'activate'">
-								Are you sure you want to <strong>activate</strong> this user? They will regain access to the system.
+								Are you sure you want to <strong>activate</strong> this client? They will regain access to the system.
 							</p>
 						</div>
 						<div class="modal-footer">
@@ -117,37 +115,32 @@
 
 		<div class="row g-4">
 			<div class="col-12 col-lg-4">
-				<div class="card border-0 shadow-sm h-100 profile-card">
-					<div class="card-body text-center py-3 px-3">
-						<div class="profile-avatar mx-auto mb-2 position-relative">
-							<img
-								*ngIf="user.imageUrl; else avatarFallback"
-								[src]="user.imageUrl"
-								[alt]="user.fullName"
-								class="profile-avatar-image"
-							/>
+				<div class="card shadow-sm border-0 h-100">
+					<div class="card-body text-center py-4">
+						<div class="position-relative d-inline-block mb-3">
+							<img *ngIf="client.imageUrl; else avatarFallback" [src]="client.imageUrl" [alt]="client.fullName" width="96" height="96" class="rounded-circle border border-3 border-white shadow-sm object-fit-cover" />
 							<ng-template #avatarFallback>
-								<div class="profile-avatar-fallback d-flex align-items-center justify-content-center text-primary fw-bold">
+								<div class="rounded-circle bg-primary-subtle text-primary fw-bold shadow-sm border border-3 border-white d-flex align-items-center justify-content-center" style="width: 96px; height: 96px; font-size: 1.6rem;">
 									{{ getInitials() }}
 								</div>
 							</ng-template>
-							<span class="status-dot" [ngClass]="user.isActive ? 'bg-success' : 'bg-danger'"></span>
+							<span class="position-absolute bottom-0 end-0 translate-middle p-1 rounded-circle border border-white" [ngClass]="client.isActive ? 'bg-success' : 'bg-danger'"></span>
 						</div>
-						<h2 class="h5 fw-bold mb-1">{{ user.fullName }}</h2>
-						<p class="text-muted small mb-2">{{ user.email }}</p>
+						<h2 class="h5 fw-bold mb-1">{{ client.fullName }}</h2>
+						<p class="text-muted small mb-2">{{ client.email }}</p>
 						<div class="d-flex justify-content-center flex-wrap gap-2 mb-3">
-							<span class="badge role-badge">{{ getRoleLabel(user.role) }}</span>
-							<span class="badge status-badge" [ngClass]="user.isActive ? 'text-bg-success' : 'text-bg-danger'">{{ getStatusText() }}</span>
+							<span class="badge text-bg-primary">{{ getRoleLabel(client.role) }}</span>
+							<span class="badge" [ngClass]="client.isActive ? 'text-bg-success' : 'text-bg-danger'">{{ getStatusText() }}</span>
 						</div>
-						<hr class="my-3">
-						<div class="text-start small profile-meta">
+						<hr>
+						<div class="text-start small mx-auto" style="max-width: 240px;">
 							<div class="d-flex justify-content-between mb-3">
-								<span class="text-muted">Last Login</span>
-								<span class="fw-semibold text-dark">{{ formatTimeAgo(user.lastLoginDate) }}</span>
+								<span class="text-muted text-uppercase small fw-semibold">Last Login</span>
+								<span class="fw-semibold text-dark">{{ formatTimeAgo(client.lastLoginDate) }}</span>
 							</div>
 							<div class="d-flex justify-content-between">
-								<span class="text-muted">Member Since</span>
-								<span class="fw-semibold text-dark">{{ user.createdAt ? (toLocalDate(user.createdAt) | date:'mediumDate') : 'N/A' }}</span>
+								<span class="text-muted text-uppercase small fw-semibold">Member Since</span>
+								<span class="fw-semibold text-dark">{{ client.createdAt ? (toLocalDate(client.createdAt) | date:'mediumDate') : 'N/A' }}</span>
 							</div>
 						</div>
 					</div>
@@ -155,40 +148,40 @@
 			</div>
 
 			<div class="col-12 col-lg-8">
-				<div class="card border-0 shadow-sm mb-4 info-card">
-					<div class="card-header bg-white py-2 px-3">
+				<div class="card shadow-sm border-0 mb-4">
+					<div class="card-header bg-white py-3">
 						<h2 class="h6 fw-bold mb-0"><i class="bi bi-person me-2 text-primary"></i>Personal Information</h2>
 					</div>
-					<div class="card-body py-3 px-3">
+					<div class="card-body py-3">
 						<div class="row g-3">
-							<div class="col-md-6 detail-block">
-								<div class="label-small">Role</div>
-								<div class="detail-value">{{ getRoleLabel(user.role) }}</div>
+							<div class="col-md-6">
+								<div class="text-uppercase small text-muted fw-semibold mb-1">Role</div>
+								<div class="fw-semibold text-dark">{{ getRoleLabel(client.role) }}</div>
 							</div>
-							<div class="col-md-6 detail-block">
-								<div class="label-small">Username</div>
-								<div class="detail-value">{{ user.userName }}</div>
+							<div class="col-md-6">
+								<div class="text-uppercase small text-muted fw-semibold mb-1">Username</div>
+								<div class="fw-semibold text-dark">{{ client.userName }}</div>
 							</div>
-							<div class="col-md-6 detail-block">
-								<div class="label-small">Phone Number</div>
-								<div class="detail-value">{{ user.phoneNumber || 'N/A' }}</div>
+							<div class="col-md-6">
+								<div class="text-uppercase small text-muted fw-semibold mb-1">Phone Number</div>
+								<div class="fw-semibold text-dark">{{ client.phoneNumber || 'N/A' }}</div>
 							</div>
-							<div class="col-md-6 detail-block">
-								<div class="label-small">Gender</div>
-								<div class="detail-value">{{ getGenderLabel(user.gender) }}</div>
+							<div class="col-md-6">
+								<div class="text-uppercase small text-muted fw-semibold mb-1">Gender</div>
+								<div class="fw-semibold text-dark">{{ getGenderLabel(client.gender) }}</div>
 							</div>
-							<div class="col-md-6 detail-block">
-								<div class="label-small">Date of Birth</div>
-								<div class="detail-value">{{ user.dateOfBirth ? (user.dateOfBirth | date:'longDate') : 'N/A' }}</div>
+							<div class="col-md-6">
+								<div class="text-uppercase small text-muted fw-semibold mb-1">Date of Birth</div>
+								<div class="fw-semibold text-dark">{{ client.dateOfBirth ? (client.dateOfBirth | date:'longDate') : 'N/A' }}</div>
 							</div>
-							<div class="col-12 detail-block">
-								<div class="label-small">Address</div>
-								<div class="detail-value">{{ user.address || 'N/A' }}</div>
+							<div class="col-12">
+								<div class="text-uppercase small text-muted fw-semibold mb-1">Address</div>
+								<div class="fw-semibold text-dark">{{ client.address || 'N/A' }}</div>
 							</div>
 						</div>
 					</div>
 				</div>
-            </div>
+			</div>
 		</div>
 	</ng-container>
 </div>

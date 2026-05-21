@@ -24,7 +24,7 @@ interface Client {
     selectedRole: string = 'Client';
     selectedStatus: string = 'All Status';
     currentPage: number = 1;
-    itemsPerPage: number = 10;
+    itemsPerPage: number = 4;
     totalCount: number = 0;
     isLoading: boolean = false;
     errorMessage: string = '';

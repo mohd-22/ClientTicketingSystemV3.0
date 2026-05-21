@@ -47,11 +47,40 @@ export class AuthService {
   login(body: LoginRequest): Observable<string> {
     return this.http.post(this.loginUrl, body, { responseType: 'text' });
   }
+
+  getUserRole(): string {
+    const token = localStorage.getItem('access_token');
+    if (!token) return '';
+
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.role || decoded.Role || decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || '';
+    } catch {
+      return '';
+    }
+  }
+
+  isClient(): boolean {
+    return this.getUserRole().toLowerCase() === 'client';
+  }
+  isEmployee(): boolean {
+    return this.getUserRole().toLowerCase() === 'employee';
+  }
+  isManager(): boolean {
+    return this.getUserRole().toLowerCase() === 'manager';
+  }
+
+
   getFullName(): string {
     const token = localStorage.getItem('access_token');
     if (!token) return '';
-    const decoded: any = jwtDecode(token);
-    return decoded.FullName || '';
+
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.FullName || decoded.fullName || '';
+    } catch {
+      return '';
+    }
   }
 
   logout(): void {

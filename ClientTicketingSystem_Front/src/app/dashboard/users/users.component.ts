@@ -7,7 +7,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role: string;
+  role: string ;
   status: string;
   lastActivity: string;
   avatar: string;
@@ -21,7 +21,7 @@ interface User {
 export class UsersComponent implements OnInit {
   users: User[] = [];
   searchTerm: string = '';
-  selectedRole: string = 'All Roles';
+  selectedRole: string = 'Employee';
   selectedStatus: string = 'All Status';
   currentPage: number = 1;
   itemsPerPage: number = 10;
@@ -38,7 +38,6 @@ export class UsersComponent implements OnInit {
     recentlyAdded: 0
   };
 
-  roles = ['All Roles', 'Manager', 'Employee', 'Client'];
   statuses = ['All Status', 'Active', 'Inactive'];
 
   constructor(private usersService: UsersService) { }

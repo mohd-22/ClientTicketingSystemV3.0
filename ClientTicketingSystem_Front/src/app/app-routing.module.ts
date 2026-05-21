@@ -13,6 +13,9 @@ import { UsersComponent } from './dashboard/users/users.component';
 import { CreateEmployeeComponent } from './dashboard/users/create-employee/create-employee.component';
 import { UserDetailsComponent } from './dashboard/users/user-details/user-details.component';
 import { ClientsComponent } from './dashboard/clients/clients.component';
+import { ClientDetailsComponent } from './dashboard/clients/client-details/client-details.component';
+import { TicketDetailsComponent } from './dashboard/tickets/ticket-details/ticket-details.component';
+import { ManagerGuard } from './guards/manager.guard';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'user/login' },
@@ -26,11 +29,13 @@ const routes: Routes = [
   },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], children: [
     { path: '', component: DashboardHomeComponent },
-    { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
-    { path: 'users/create', component: CreateEmployeeComponent, canActivate: [AuthGuard] },
-    { path: 'users/:id', component: UserDetailsComponent, canActivate: [AuthGuard] },
+    { path: 'users', component: UsersComponent, canActivate: [ManagerGuard] },
+    { path: 'users/create', component: CreateEmployeeComponent, canActivate: [ManagerGuard] },
+    { path: 'users/:id', component: UserDetailsComponent, canActivate: [ManagerGuard] },
      { path: 'clients', component: ClientsComponent, canActivate: [AuthGuard] },
+    { path: 'clients/:id', component: ClientDetailsComponent, canActivate: [ManagerGuard] },
     { path: 'tickets', component: TicketsComponent, canActivate: [AuthGuard] },
+    { path: 'tickets/:id', component: TicketDetailsComponent, canActivate: [AuthGuard] },
     { path: 'products', component: ProductsComponent, canActivate: [AuthGuard] },
   ] },
   { path: '**', redirectTo: 'user/login' }
