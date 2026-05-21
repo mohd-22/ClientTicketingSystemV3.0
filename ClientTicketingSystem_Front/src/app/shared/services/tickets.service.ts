@@ -118,6 +118,12 @@ export class TicketsService {
     );
   }
 
+  assignTicketToEmployee(ticketId: string, employeeId: string): Observable<ApiResponse<unknown>> {
+    const url = `${environment.apiUrl}/api/Employees/assign/${ticketId}`;
+    const params = new HttpParams().set('employeeId', employeeId);
+    return this.http.put<ApiResponse<unknown>>(url, {}, { params });
+  }
+
   createTicket(body: CreateTicketRequest): Observable<ApiResponse<CreateTicketRequest>> {
     return this.http.post<ApiResponse<CreateTicketRequest>>(this.createTicketUrl, body);
   }
