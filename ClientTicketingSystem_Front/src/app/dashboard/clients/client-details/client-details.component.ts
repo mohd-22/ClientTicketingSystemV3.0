@@ -4,6 +4,7 @@ import { finalize } from 'rxjs';
 import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import { ToastrService } from 'ngx-toastr';
 import { UserDto, UsersService, UpdateUserRequest } from '../../../shared/services/users.service';
+import { TicketDto, TicketsService } from '../../../shared/services/tickets.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -13,10 +14,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class ClientDetailsComponent implements OnInit {
   client: UserDto | null = null;
+  tickets: TicketDto[] = [];
   isLoading = false;
+  isTicketsLoading = false;
   isUpdatingStatus = false;
   isEditing = false;
   errorMessage = '';
+  ticketsErrorMessage = '';
   showEditModal = false;
   editModel: Partial<UpdateUserRequest> = {};
   editForm!: FormGroup;
@@ -28,6 +32,7 @@ export class ClientDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private usersService: UsersService,
+    private ticketsService: TicketsService,
     private toastr: ToastrService,
     private fb: FormBuilder
   ) { }
@@ -246,7 +251,10 @@ export class ClientDetailsComponent implements OnInit {
             if (showToastOnError) {
               this.toastr.error('Client not found.', 'Error');
             }
+            return;
           }
+
+          this.loadClientTickets(client.id);
         },
         error: (err) => {
           this.client = null;
@@ -256,6 +264,23 @@ export class ClientDetailsComponent implements OnInit {
             const detailedMsg = err?.error?.message || err?.message || errorMsg;
             this.toastr.error(detailedMsg, 'Error');
           }
+        }
+      });
+  }
+
+  private loadClientTickets(clientId: string): void {
+    this.isTicketsLoading = true;
+    this.ticketsErrorMessage = '';
+
+    this.ticketsService.getAllTickets('', 'created-desc', undefined, 1, 20, clientId, undefined)
+      .pipe(finalize(() => this.isTicketsLoading = false))
+      .subscribe({
+        next: (response) => {
+          this.tickets = response.data ?? [];
+        },
+        error: () => {
+          this.tickets = [];
+          this.ticketsErrorMessage = 'Failed to load client tickets.';
         }
       });
   }

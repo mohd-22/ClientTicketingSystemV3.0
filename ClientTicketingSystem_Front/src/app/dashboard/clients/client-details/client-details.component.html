@@ -181,6 +181,55 @@
 						</div>
 					</div>
 				</div>
+
+				<div class="card shadow-sm border-0">
+					<div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+						<h2 class="h6 fw-bold mb-0"><i class="bi bi-ticket-perforated me-2 text-primary"></i>Client Tickets</h2>
+						<span class="badge text-bg-primary">{{ tickets.length }} Tickets</span>
+					</div>
+					<div class="card-body p-0">
+						<div *ngIf="isTicketsLoading" class="text-center text-muted py-4">
+							<div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+							Loading tickets...
+						</div>
+						<div *ngIf="!isTicketsLoading && ticketsErrorMessage" class="alert alert-danger m-3 mb-0">
+							{{ ticketsErrorMessage }}
+						</div>
+						<div *ngIf="!isTicketsLoading && !ticketsErrorMessage && tickets.length === 0" class="text-center text-muted py-4">
+							No tickets found for this client.
+						</div>
+						<div *ngIf="!isTicketsLoading && tickets.length > 0" class="table-responsive">
+							<table class="table table-hover align-middle mb-0">
+								<thead class="table-light">
+									<tr>
+										<th class="small text-uppercase text-muted fw-semibold">Title</th>
+										<th class="small text-uppercase text-muted fw-semibold">Assigned Employee</th>
+										<th class="small text-uppercase text-muted fw-semibold">Product</th>
+										<th class="small text-uppercase text-muted fw-semibold">Status</th>
+										<th class="small text-uppercase text-muted fw-semibold text-end">View</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let ticket of tickets">
+										<td class="fw-semibold text-dark">{{ ticket.title }}</td>
+										<td>{{ ticket.assignedEmpName || 'Not assigned' }}</td>
+										<td>{{ ticket.productName || 'N/A' }}</td>
+										<td>
+											<span class="badge" [ngClass]="ticket.status === 'Closed' ? 'text-bg-secondary' : ticket.status === 'InProgress' ? 'text-bg-warning text-dark' : 'text-bg-primary'">
+												{{ ticket.status || 'Unknown' }}
+											</span>
+										</td>
+										<td class="text-end">
+											<a class="btn btn-sm btn-light" [routerLink]="['/dashboard/tickets', ticket.Id || ticket.id]">
+												<i class="bi bi-eye text-secondary"></i>
+											</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</ng-container>

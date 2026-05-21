@@ -17,7 +17,7 @@ public class TicketsWithFiltersSpecification : BaseSpecification<Ticket>
         Guid userId       
     )
     : base(ticket =>
-        (role == "Manager" ||
+        ((role == "Manager") ||
          (role == "Employee" && ticket.AssignedEmpId == userId) ||
          (role == "Client" && ticket.ClientId == userId)) &&
 
