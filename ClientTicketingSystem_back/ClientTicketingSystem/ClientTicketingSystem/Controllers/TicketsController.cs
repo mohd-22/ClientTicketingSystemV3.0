@@ -26,15 +26,12 @@ public class TicketsController : ControllerBase
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (!Guid.TryParse(userId, out Guid userGuid))
         {
-            _logger.LogWarning("Invalid user ID format: {UserId}", userId);
             return BadRequest("Invalid user ID.");
         }
-        _logger.LogInformation("CreateTicket requested by {UserId} for product {ProductId}", userGuid, dto.ProductId);
         var result = await _ticketService.CreateTicket(dto, userGuid);
         return StatusCode(result.StatusCode, result);
     }
 
-    //[Authorize(Roles = $"{nameof(UserRole.Client)}")]
     [HttpGet("GetAllTickets")]
     public async Task<ActionResult> GetAllTickets(
         [FromQuery] string? search,
