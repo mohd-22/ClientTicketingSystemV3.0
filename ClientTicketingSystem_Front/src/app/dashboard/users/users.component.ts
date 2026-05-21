@@ -66,10 +66,8 @@ export class UsersComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    // Build sort query based on specification pattern
     const sortQuery = this.buildSortQuery();
 
-    // Determine role and isActive filters
     const roleFilter = this.selectedRole === 'All Roles' ? undefined : this.selectedRole;
     const isActiveFilter = this.selectedStatus === 'All Status' ? undefined : (this.selectedStatus === 'Active');
 
@@ -133,8 +131,7 @@ export class UsersComponent implements OnInit {
       return new Date(NaN);
     }
 
-    // If the string includes timezone info (Z or offset), Date will parse correctly.
-    // If not, append 'Z' to treat it as UTC (backend uses UTC timestamps).
+    
     const s = String(dateStr);
     if (s.includes('Z') || /[+-]\d{2}:?\d{2}$/.test(s)) {
       return new Date(s);

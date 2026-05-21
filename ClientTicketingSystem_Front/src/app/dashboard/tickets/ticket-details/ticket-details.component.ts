@@ -14,7 +14,6 @@ export class TicketDetailsComponent implements OnInit {
   priority: string = 'High';
   relatedAssets: Array<{ name: string; url?: string }> = [];
   estimatedResolution: string | null = null;
-  // Local ticket type extends backend DTO with optional fields used only by the UI
   ticket: (TicketDto & { description?: string; createdDate?: string }) | null = null;
 
   constructor(private activatedRoute: ActivatedRoute, private ticketsService: TicketsService) { }

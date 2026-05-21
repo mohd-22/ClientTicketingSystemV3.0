@@ -49,7 +49,7 @@ export class UserDetailsComponent implements OnInit {
 
   editUser(): void {
     if (!this.user) return;
-    // populate edit model
+
     this.editModel = {
       fullName: this.user.fullName,
       phoneNumber: this.user.phoneNumber,
@@ -57,7 +57,6 @@ export class UserDetailsComponent implements OnInit {
       dateOfBirth: this.user.dateOfBirth ? new Date(this.user.dateOfBirth).toISOString().slice(0,10) : '',
       gender: this.user.gender
     };
-    // initialize reactive form with validation
     this.editForm = this.fb.group({
       fullName: [this.editModel.fullName || '', [Validators.required, Validators.minLength(2)]],
       phoneNumber: [this.editModel.phoneNumber || '', [Validators.pattern(/^\+?[0-9\s-]{7,15}$/)]],

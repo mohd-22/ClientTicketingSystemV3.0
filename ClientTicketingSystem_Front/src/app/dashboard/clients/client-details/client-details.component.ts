@@ -12,6 +12,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   templateUrl: './client-details.component.html',
   styles: []
 })
+
 export class ClientDetailsComponent implements OnInit {
   client: UserDto | null = null;
   tickets: TicketDto[] = [];
