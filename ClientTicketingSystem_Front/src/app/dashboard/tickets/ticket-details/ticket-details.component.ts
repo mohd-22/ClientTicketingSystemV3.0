@@ -27,6 +27,8 @@ export class TicketDetailsComponent implements OnInit {
   isSaving = false;
   editSubmitted = false;
   editErrorMessage = '';
+  statusChangeLoading = false;
+  statusChangeErrorMessage = '';
   selectedEmployeeId = '';
   assignLoading = false;
   assignErrorMessage = '';
@@ -253,6 +255,35 @@ export class TicketDetailsComponent implements OnInit {
           console.error('Failed to assign ticket', err);
           this.assignErrorMessage = err?.error?.message || 'Failed to assign ticket.';
           this.toastr.error(this.assignErrorMessage, 'Error');
+        }
+      });
+  }
+
+  changeTicketStatus(): void {
+    if (!this.ticket || this.statusChangeLoading) {
+      return;
+    }
+
+    this.statusChangeLoading = true;
+    this.statusChangeErrorMessage = '';
+
+    this.ticketsService.changeTicketStatus(this.ticketId)
+      .pipe(finalize(() => this.statusChangeLoading = false))
+      .subscribe({
+        next: response => {
+          if (response?.success === false) {
+            this.statusChangeErrorMessage = response?.message || 'Failed to update ticket status.';
+            this.toastr.error(this.statusChangeErrorMessage, 'Error');
+            return;
+          }
+
+          this.toastr.success(response?.message || 'Ticket status updated successfully.', 'Success');
+          this.loadTicketDetails();
+        },
+        error: err => {
+          console.error('Failed to change ticket status', err);
+          this.statusChangeErrorMessage = err?.error?.message || 'Failed to update ticket status.';
+          this.toastr.error(this.statusChangeErrorMessage, 'Error');
         }
       });
   }

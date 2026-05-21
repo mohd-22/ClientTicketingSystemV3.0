@@ -20,4 +20,10 @@ public class EmployeesController : ControllerBase
         var result = await _employeeService.AssignTicketToEmployee(ticketId, employeeId);
         return StatusCode(result.StatusCode, result);
     }
+    [HttpPut("ChangeStatus/{ticketId}")] 
+    public async Task<IActionResult> ChangeStatus(Guid ticketId)
+    {
+        var result = await _employeeService.TicketChangeStatus(ticketId);
+        return StatusCode(result.StatusCode, result);
+    }
 }

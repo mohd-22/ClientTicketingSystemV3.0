@@ -49,6 +49,7 @@ public class EmployeeService : IEmployeeService
         }
         else if(ticket.Status == TicketStatus.InProgress)
         {
+            if(ticket.IsFixed == false) return new ApiResponse<bool> { Data = false, Message = "Ticket is not fixed yet", Success = false, StatusCode = 400 };
             ticket.Status = TicketStatus.Closed;
             _unitOfWork.Tickets.Update(ticket);
             await _unitOfWork.CompleteAsync();

@@ -84,12 +84,18 @@
         <button type="button" class="btn btn-primary w-50" *ngIf="(ticket.status === 'New' || ticket.status === 'Paused') && isManager" (click)="openAssignModal()">
           <i class="bi bi-person me-2"></i>Assign
         </button>
-        <button type="button" class="btn btn-primary w-50" *ngIf="(ticket.status === 'Assigned') && isEmployee" (click)="openAssignModal()">
+        <button type="button" class="btn btn-primary w-50" *ngIf="(ticket.status === 'Assigned') && isEmployee" (click)="changeTicketStatus()" [disabled]="statusChangeLoading">
+          <span *ngIf="statusChangeLoading && ticket.status === 'Assigned'" class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
           <i class="bi bi-arrow-right-circle me-2"></i>Start Progress
         </button>
-        <button type="button" class="btn btn-primary w-50" *ngIf="(ticket.status === 'In Progress') && isEmployee" (click)="openAssignModal()">
+        <button type="button" class="btn btn-primary w-50" *ngIf="(ticket.status === 'InProgress') && isEmployee" (click)="changeTicketStatus()" [disabled]="statusChangeLoading">
+          <span *ngIf="statusChangeLoading && ticket.status === 'InProgress'" class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
           <i class="bi bi-x-circle me-2"></i>Close Ticket
         </button>
+      </div>
+
+      <div *ngIf="statusChangeErrorMessage" class="alert alert-danger py-2 mb-4">
+        {{ statusChangeErrorMessage }}
       </div>
 
       <div *ngIf="showEditModal">
