@@ -10,6 +10,10 @@ export interface CreateTicketRequest {
   productId: string;
 }
 
+export interface UpdateTicketRequest extends CreateTicketRequest {
+  id?: string;
+}
+
 export interface TicketDto {
   id: string;
   Id?: string;
@@ -122,6 +126,11 @@ export class TicketsService {
     const url = `${environment.apiUrl}/api/Employees/assign/${ticketId}`;
     const params = new HttpParams().set('employeeId', employeeId);
     return this.http.put<ApiResponse<unknown>>(url, {}, { params });
+  }
+
+  updateTicket(ticketId: string, body: UpdateTicketRequest): Observable<ApiResponse<unknown>> {
+    const url = `${environment.apiUrl}/api/Tickets/UpdateTicket/${ticketId}`;
+    return this.http.put<ApiResponse<unknown>>(url, body);
   }
 
   createTicket(body: CreateTicketRequest): Observable<ApiResponse<CreateTicketRequest>> {

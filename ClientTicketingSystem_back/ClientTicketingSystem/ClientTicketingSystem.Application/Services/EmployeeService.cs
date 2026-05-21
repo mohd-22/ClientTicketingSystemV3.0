@@ -36,5 +36,25 @@ public class EmployeeService : IEmployeeService
         }
         return new ApiResponse<bool> { Data = false, Message = "you cant assign staff to a request unless it 'New' or 'Paused' ", Success = false, StatusCode = 400 };
     }
+    public async Task<ApiResponse<bool>> TicketChangeStatus(Guid TicketId)
+    {
+        var ticket = await _unitOfWork.Tickets.GetByIdAsync(TicketId);
+        if (ticket == null) return new ApiResponse<bool> { Data = false, Message = "Ticket Not found", Success = false, StatusCode = 404 };
+        if(ticket.Status == TicketStatus.Assigned)
+        {
+            ticket.Status = TicketStatus.InProgress;
+            _unitOfWork.Tickets.Update(ticket);
+            await _unitOfWork.CompleteAsync();
+            return new ApiResponse<bool> { Data = true, Message = "Ticket Updated Successfully", Success = true, StatusCode = 200 };
+        }
+        else if(ticket.Status == TicketStatus.InProgress)
+        {
+            ticket.Status = TicketStatus.Closed;
+            _unitOfWork.Tickets.Update(ticket);
+            await _unitOfWork.CompleteAsync();
+            return new ApiResponse<bool> { Data = true, Message = "Ticket Updated Successfully", Success = true, StatusCode = 200 };
+        }
+        return new ApiResponse<bool> { Data = false, Message = "you cant change the status of a request unless it 'Assigned' or 'InProgress' ", Success = false, StatusCode = 400 };
+    }
 
 }

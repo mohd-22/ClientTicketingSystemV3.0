@@ -50,16 +50,27 @@ public class TicketService : ITicketService
         await _unitOfWork.CompleteAsync();
         return new ApiResponse<bool> { Data = true, Message = "Request Deleted Successfully", Success = true, StatusCode = 200 };
     }
-    public async Task<ApiResponse<bool>> UpdateTicket(CreateTicketDto dto, Guid TicketId)
+    public async Task<ApiResponse<bool>> UpdateTicket(CreateTicketDto dto, Guid TicketId, Guid clientId)
     {
         var request = await _unitOfWork.Tickets.GetByIdAsync(TicketId);
 
         if (request == null) return new ApiResponse<bool> { Data = false, Message = "Ticket Not found", Success = false, StatusCode = 404 };
+        if (request.ClientId != clientId)
+        {
+            return new ApiResponse<bool>
+            {
+                Data = false,
+                Message = "You are not authorized to access or modify this ticket.",
+                Success = false,
+                StatusCode = 403
+            };
+        }
 
         if (request.Status != TicketStatus.New)
         {
             return new ApiResponse<bool> { Data = false, Message = "Cannot update ticket once it's processed.", Success = false, StatusCode = 404 };
         }
+
         request.Title = dto.Title;
         request.Description = dto.Description;
         request.ProductId = dto.ProductId;

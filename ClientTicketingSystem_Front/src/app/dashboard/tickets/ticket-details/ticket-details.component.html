@@ -23,7 +23,7 @@
               <h1 class="h4 fw-bold text-dark mb-0">{{ ticket.title }}</h1>
             </div>
             <div class="d-flex align-items-start gap-2">
-              <button *ngIf="!ticket.isFixed" type="button" class="btn btn-sm btn-outline-success"
+              <button *ngIf="!ticket.isFixed && isClient" type="button" class="btn btn-sm btn-outline-success"
                 (click)="markAsFixed()">Mark as Fixed</button>
               <span *ngIf="ticket.isFixed" class="text-success small fw-semibold">Marked Fixed</span>
             </div>
@@ -77,13 +77,80 @@
 
     <div class="col-lg-4">
       <div class="d-flex align-items-center gap-2 m-3 ">
-        <button type="button" class="btn btn-primary w-50">
+        <button type="button" class="btn btn-primary w-50" (click)="openEditModal()" *ngIf="isClient">
           <i class="bi bi-pencil me-2"></i>Edit
         </button>
 
-        <button type="button" class="btn btn-primary w-50" *ngIf="ticket.status === 'New' || ticket.status === 'Paused'" (click)="openAssignModal()">
+        <button type="button" class="btn btn-primary w-50" *ngIf="(ticket.status === 'New' || ticket.status === 'Paused') && isManager" (click)="openAssignModal()">
           <i class="bi bi-person me-2"></i>Assign
         </button>
+        <button type="button" class="btn btn-primary w-50" *ngIf="(ticket.status === 'Assigned') && isEmployee" (click)="openAssignModal()">
+          <i class="bi bi-arrow-right-circle me-2"></i>Start Progress
+        </button>
+        <button type="button" class="btn btn-primary w-50" *ngIf="(ticket.status === 'In Progress') && isEmployee" (click)="openAssignModal()">
+          <i class="bi bi-x-circle me-2"></i>Close Ticket
+        </button>
+      </div>
+
+      <div *ngIf="showEditModal">
+        <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true" style="z-index: 2000;">
+          <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow">
+              <div class="modal-header">
+                <h5 class="modal-title fw-semibold">Edit Ticket</h5>
+                <button type="button" class="btn-close" aria-label="Close" (click)="closeEditModal()" [disabled]="isSaving"></button>
+              </div>
+
+              <div class="modal-body">
+                <form [formGroup]="editForm" novalidate>
+                  <div class="row g-3">
+                    <div class="col-12">
+                      <label class="form-label small text-uppercase text-muted fw-semibold mb-2">Title</label>
+                      <input type="text" class="form-control" formControlName="title" [class.is-invalid]="editForm.get('title')?.invalid && (editForm.get('title')?.touched || editSubmitted)">
+                      <div *ngIf="editForm.get('title')?.invalid && (editForm.get('title')?.touched || editSubmitted)" class="invalid-feedback d-block">
+                        <div *ngIf="editForm.get('title')?.errors?.['required']">Title is required.</div>
+                        <div *ngIf="editForm.get('title')?.errors?.['minlength']">Title must be at least 3 characters.</div>
+                      </div>
+                    </div>
+
+                    <div class="col-12">
+                      <label class="form-label small text-uppercase text-muted fw-semibold mb-2">Description</label>
+                      <textarea class="form-control" rows="4" formControlName="description" [class.is-invalid]="editForm.get('description')?.invalid && (editForm.get('description')?.touched || editSubmitted)"></textarea>
+                      <div *ngIf="editForm.get('description')?.invalid && (editForm.get('description')?.touched || editSubmitted)" class="invalid-feedback d-block">
+                        <div *ngIf="editForm.get('description')?.errors?.['required']">Description is required.</div>
+                        <div *ngIf="editForm.get('description')?.errors?.['minlength']">Description must be at least 10 characters.</div>
+                      </div>
+                    </div>
+
+                    <div class="col-12">
+                      <label class="form-label small text-uppercase text-muted fw-semibold mb-2">Product</label>
+                      <select class="form-select" formControlName="productId" [class.is-invalid]="editForm.get('productId')?.invalid && (editForm.get('productId')?.touched || editSubmitted)">
+                        <option value="">Select product</option>
+                        <option *ngFor="let product of products" [value]="product.id">{{ product.name }}</option>
+                      </select>
+                      <div *ngIf="editForm.get('productId')?.invalid && (editForm.get('productId')?.touched || editSubmitted)" class="invalid-feedback d-block">
+                        Product is required.
+                      </div>
+                    </div>
+
+                    <div *ngIf="editErrorMessage" class="col-12">
+                      <div class="alert alert-danger py-2 mb-0">{{ editErrorMessage }}</div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" [disabled]="isSaving" (click)="closeEditModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" [disabled]="isSaving" (click)="saveEdit()">
+                  <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-backdrop fade show" style="z-index: 1990;" (click)="onEditModalBackdropClick()"></div>
       </div>
 
       <div *ngIf="showAssignModal">
