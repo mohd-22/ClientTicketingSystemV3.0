@@ -16,7 +16,7 @@ public interface ITicketService
                                                               Guid? employeeId,
                                                               UserRole role,
                                                               Guid userId);
-    Task<ApiResponse<bool>> UpdateTicket(CreateTicketDto dto,Guid TicketId);
+    Task<ApiResponse<bool>> UpdateTicket(CreateTicketDto dto,Guid TicketId,Guid userId);
     Task<ApiResponse<TicketDto>> GetTicketById(Guid TicketId);
     Task<ApiResponse<bool>> DeleteTicket(Guid Id);
 }

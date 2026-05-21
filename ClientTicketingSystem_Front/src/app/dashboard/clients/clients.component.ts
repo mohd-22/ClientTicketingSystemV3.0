@@ -67,7 +67,7 @@ interface Client {
       this.errorMessage = '';
 
       const sortQuery = this.buildSortQuery();
-      const roleFilter = this.selectedRole === 'All Roles' ? undefined : this.selectedRole;
+      const roleFilter = this.selectedRole;
       const isActiveFilter = this.selectedStatus === 'All Status' ? undefined : (this.selectedStatus === 'Active');
 
       this.usersService.getAllUsers(

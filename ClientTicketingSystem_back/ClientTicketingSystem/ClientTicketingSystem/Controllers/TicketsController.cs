@@ -59,4 +59,16 @@ public class TicketsController : ControllerBase
         var result = await _ticketService.GetTicketById(id);
         return StatusCode(result.StatusCode, result);
     }
+
+    [HttpPut("UpdateTicket/{id}")] 
+    public async Task<ActionResult> UpdateTicket([FromBody] CreateTicketDto dto, Guid id)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!Guid.TryParse(userId, out Guid userGuid))
+        {
+            return Unauthorized("Invalid user ID.");
+        }
+        var result = await _ticketService.UpdateTicket(dto,id, userGuid);
+        return StatusCode(result.StatusCode, result);
+    }
 }
