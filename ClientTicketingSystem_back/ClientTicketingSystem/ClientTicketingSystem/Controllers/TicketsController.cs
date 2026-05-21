@@ -40,8 +40,7 @@ public class TicketsController : ControllerBase
         [FromQuery] string? search,
         [FromQuery] string? sort,
         [FromQuery] TicketStatus? status,
-        [FromQuery] Guid? clientId,
-        [FromQuery] Guid? employeeId,
+        [FromQuery] Guid? productId,
         [FromQuery] int pageIndex = 1,
         [FromQuery] int pageSize = 10
         )
@@ -53,7 +52,7 @@ public class TicketsController : ControllerBase
             return Unauthorized();
         }
         var currentUserRole = Enum.Parse<UserRole>(User.FindFirst(ClaimTypes.Role)!.Value);
-        var result = await _ticketService.GetAllTickets(search, sort, status, pageIndex, pageSize, clientId, employeeId, currentUserRole, userGuid);
+        var result = await _ticketService.GetAllTickets(search, sort, status, pageIndex, pageSize, productId, currentUserRole, userGuid);
         return StatusCode(result.StatusCode, result);
     }
     [HttpGet("GetTicketById/{id}")]

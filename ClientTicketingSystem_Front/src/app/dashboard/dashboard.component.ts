@@ -12,12 +12,10 @@ export class DashboardComponent implements OnInit {
   sidebarCollapsed = false;
   mobileMenuOpen = false;
   FullName : string = '';
-  isManager = false;
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.FullName = this.authService.getFullName();
-    this.isManager = this.authService.isManager();
   }
 
   logout(): void {

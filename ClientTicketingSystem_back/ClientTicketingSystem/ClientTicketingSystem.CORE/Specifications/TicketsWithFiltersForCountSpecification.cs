@@ -8,13 +8,11 @@ public class TicketsWithFiltersForCountSpecification : BaseSpecification<Ticket>
     public TicketsWithFiltersForCountSpecification(
         string? search,
         TicketStatus? status,
-        Guid? clientId,
-        Guid? employeeId
+        Guid? productId
     )
     : base(ticket =>
         (!status.HasValue || ticket.Status == status.Value) &&
-        (!clientId.HasValue || ticket.ClientId == clientId.Value) &&
-        (!employeeId.HasValue || ticket.AssignedEmpId == employeeId.Value) &&
+        (!productId.HasValue || ticket.ProductId == productId.Value) &&
         (string.IsNullOrWhiteSpace(search) ||
          ticket.Title.ToLower().Contains(search.Trim().ToLower()) ||
          ticket.Description.ToLower().Contains(search.Trim().ToLower()) ||

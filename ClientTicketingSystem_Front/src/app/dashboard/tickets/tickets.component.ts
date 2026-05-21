@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { CreateTicketRequest, PaginationDto, TicketDto, TicketsService } from 'src/app/shared/services/tickets.service';
-import { UsersService, UserDto } from 'src/app/shared/services/users.service';
 import { PaginationDto as ProductsPaginationDto, ProductDto, ProductsService } from 'src/app/shared/services/products.service';
 
 @Component({
@@ -15,10 +14,7 @@ import { PaginationDto as ProductsPaginationDto, ProductDto, ProductsService } f
 export class TicketsComponent implements OnInit {
   tickets: TicketDto[] = [];
   products: ProductDto[] = [];
-  clients: UserDto[] = [];
-  employees: UserDto[] = [];
-  selectedClient: string = '';
-  selectedEmployee: string = '';
+  selectedProduct: string = '';
 
   searchQuery = '';
   selectedStatus = 'All Status';
@@ -44,7 +40,6 @@ export class TicketsComponent implements OnInit {
     private ticketsService: TicketsService,
     private productsService: ProductsService,
     private authService: AuthService,
-    private usersService: UsersService,
     private fb: FormBuilder,
     private toastr: ToastrService
   ) { }
@@ -59,11 +54,8 @@ export class TicketsComponent implements OnInit {
       productId: ['', Validators.required]
     });
 
+    // Load products for the product filter regardless of role
     this.loadProducts();
-
-    if (this.isManagerUser) {
-      this.loadUsersForFilters();
-    }
 
     this.loadTickets();
   }
@@ -99,12 +91,7 @@ export class TicketsComponent implements OnInit {
     this.loadTickets();
   }
 
-  onClientChange(): void {
-    this.currentPage = 1;
-    this.loadTickets();
-  }
-
-  onEmployeeChange(): void {
+  onProductChange(): void {
     this.currentPage = 1;
     this.loadTickets();
   }
@@ -170,8 +157,7 @@ export class TicketsComponent implements OnInit {
       status,
       this.currentPage,
       this.itemsPerPage,
-      this.selectedClient,
-      this.selectedEmployee
+      this.selectedProduct
     ).pipe(
       finalize(() => this.isLoading = false)
     ).subscribe({
@@ -202,22 +188,6 @@ export class TicketsComponent implements OnInit {
         }
       });
   }
-
-    private loadUsersForFilters(): void {
-      // Load employees
-      this.usersService.getAllUsers('', 'name-asc', 'Employee', undefined, 1, 1000)
-        .subscribe({
-          next: (resp) => this.employees = resp.data ?? [],
-          error: () => this.employees = []
-        });
-
-      // Load clients
-      this.usersService.getAllUsers('', 'name-asc', 'Client', undefined, 1, 1000)
-        .subscribe({
-          next: (resp) => this.clients = resp.data ?? [],
-          error: () => this.clients = []
-        });
-    }
 
   submitCreateTicket(): void {
     this.createSubmitted = true;
