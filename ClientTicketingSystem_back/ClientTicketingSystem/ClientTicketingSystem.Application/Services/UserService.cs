@@ -79,7 +79,12 @@ public class UserService : IUserService
         return !hasActiveRequests;
     }
     public async Task<ApiResponse<PaginationDto<UserDto>>> GetAllUsersAsync(
-        string? search, string? sort, UserRole? role, bool? isActive, int pageIndex, int pageSize)
+        string? search,
+        string? sort,
+        UserRole? role,
+        bool? isActive,
+        int pageIndex,
+        int pageSize)
     {
         try
         {

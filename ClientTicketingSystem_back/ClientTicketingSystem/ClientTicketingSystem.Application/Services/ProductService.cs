@@ -50,7 +50,10 @@ public class ProductService : IProductService
         }
     }
 
-    public async Task<ApiResponse<PaginationDto<ProductWithCountDto>>> GetAllProducts(string? search, string? sort, int pageIndex, int pageSize)
+    public async Task<ApiResponse<PaginationDto<ProductWithCountDto>>> GetAllProducts(string? search,
+                                                                                      string? sort,
+                                                                                      int pageIndex,
+                                                                                      int pageSize)
     {
         try
         {

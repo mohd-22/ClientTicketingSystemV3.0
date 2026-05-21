@@ -33,13 +33,7 @@ public class UsersController : ControllerBase
         [FromQuery] int pageIndex = 1,
         [FromQuery] int pageSize = 4)
     {
-        _logger.LogInformation(
-            "GetAllUsers requested with search={Search}, sort={Sort}, role={Role}, isActive={IsActive}, pageIndex={PageIndex}, pageSize={PageSize}",
-            search, sort, role, isActive, pageIndex, pageSize);
-
         var result = await _userService.GetAllUsersAsync(search, sort, role, isActive, pageIndex, pageSize);
-
-        _logger.LogDebug("GetAllUsers returned status {StatusCode}", result.StatusCode);
         return StatusCode(result.StatusCode, result);
     }
 
@@ -47,7 +41,6 @@ public class UsersController : ControllerBase
     [HttpGet("GetUserById/{id}")]
     public async Task<ActionResult> GetUserById(Guid id)
     {
-        _logger.LogInformation("GetUserById requested for {UserId}", id);
         var result = await _userService.GetUserByIdAsync(id);
         return StatusCode(result.StatusCode, result);
     }
@@ -56,7 +49,6 @@ public class UsersController : ControllerBase
     [HttpPost("Activate/{id}")]
     public async Task<ActionResult> ActivateUser(Guid id)
     {
-        _logger.LogInformation("ActivateUser requested for {UserId}", id);
         var result = await _userService.ActivateUserAsync(id);
         return StatusCode(result.StatusCode, result);
     }
@@ -65,7 +57,6 @@ public class UsersController : ControllerBase
     [HttpPost("Deactivate/{id}")]
     public async Task<ActionResult> DeactivateUser(Guid id)
     {
-        _logger.LogInformation("DeactivateUser requested for {UserId}", id);
         var result = await _userService.DeactivateUserAsync(id);
         return StatusCode(result.StatusCode, result);
     }
@@ -74,17 +65,10 @@ public class UsersController : ControllerBase
     public async Task<ActionResult> AddEmployee(UserRegistraionDto userRegistraionDto)
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
         if (!Guid.TryParse(userId, out Guid userGuid))
-
         {
-
-            _logger.LogWarning("CreateProduct rejected: invalid or missing user id claim");
-
             return Unauthorized();
-
         }
-        _logger.LogInformation("Add Employee requested for {UserId}", userGuid);
         var result = await _userService.CreateUserAsync(userRegistraionDto, userGuid);
         return StatusCode(result.StatusCode, result);
     }
@@ -92,8 +76,6 @@ public class UsersController : ControllerBase
     [HttpPut("{id}")] 
     public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserDto dto)
     {
-       
-        _logger.LogInformation("UpdateUser requested for {UserId}", id);
         var result = await _userService.UpdtaeUserAsync(dto,id);
         return StatusCode(result.StatusCode, result);
     }

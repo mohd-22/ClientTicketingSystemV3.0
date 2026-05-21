@@ -68,7 +68,15 @@ public class TicketService : ITicketService
         await _unitOfWork.CompleteAsync();
         return new ApiResponse<bool> { Data = true, Message = "Ticket Updated Successfully", Success = true, StatusCode = 200 };
     }
-    public async Task<ApiResponse<PaginationDto<TicketDto>>> GetAllTickets(string? search, string? sort, TicketStatus? status, int pageIndex, int pageSize, Guid? clientId, Guid? employeeId, UserRole role, Guid userId)
+    public async Task<ApiResponse<PaginationDto<TicketDto>>> GetAllTickets(string? search,
+                                                                           string? sort,
+                                                                           TicketStatus? status,
+                                                                           int pageIndex,
+                                                                           int pageSize,
+                                                                           Guid? clientId,
+                                                                           Guid? employeeId,
+                                                                           UserRole role,
+                                                                           Guid userId)
     {
         try
         {
