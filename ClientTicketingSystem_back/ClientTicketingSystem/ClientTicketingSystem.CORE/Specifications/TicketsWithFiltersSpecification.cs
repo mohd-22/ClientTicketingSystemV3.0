@@ -11,7 +11,8 @@ public class TicketsWithFiltersSpecification : BaseSpecification<Ticket>
         TicketStatus? status,
         int pageIndex,
         int pageSize,
-        Guid? productId,
+        Guid? clientId,
+        Guid? employeeId,
         string role,      
         Guid userId       
     )
@@ -21,7 +22,8 @@ public class TicketsWithFiltersSpecification : BaseSpecification<Ticket>
          (role == "Client" && ticket.ClientId == userId)) &&
 
         (!status.HasValue || ticket.Status == status.Value) &&
-        (!productId.HasValue || ticket.ProductId == productId.Value) &&
+        (!clientId.HasValue || ticket.ClientId == clientId.Value) &&
+        (!employeeId.HasValue || ticket.AssignedEmpId == employeeId.Value) &&
         (string.IsNullOrWhiteSpace(search) ||
          ticket.Title.ToLower().Contains(search.Trim().ToLower()) ||
          ticket.Description.ToLower().Contains(search.Trim().ToLower()) ||

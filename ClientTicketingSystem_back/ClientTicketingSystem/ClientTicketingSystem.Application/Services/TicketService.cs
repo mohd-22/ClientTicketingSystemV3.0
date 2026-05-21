@@ -68,15 +68,15 @@ public class TicketService : ITicketService
         await _unitOfWork.CompleteAsync();
         return new ApiResponse<bool> { Data = true, Message = "Ticket Updated Successfully", Success = true, StatusCode = 200 };
     }
-    public async Task<ApiResponse<PaginationDto<TicketDto>>> GetAllTickets(string? search, string? sort, TicketStatus? status, int pageIndex, int pageSize, Guid? productId, UserRole role, Guid userId)
+    public async Task<ApiResponse<PaginationDto<TicketDto>>> GetAllTickets(string? search, string? sort, TicketStatus? status, int pageIndex, int pageSize, Guid? clientId, Guid? employeeId, UserRole role, Guid userId)
     {
         try
         {
             pageIndex = Math.Max(1, pageIndex);
             pageSize = pageSize <= 0 ? 10 : pageSize;
 
-            var spec = new TicketsWithFiltersSpecification(search, sort, status, pageIndex, pageSize, productId, role.ToString(), userId);
-            var countSpec = new TicketsWithFiltersForCountSpecification(search, status, productId);
+            var spec = new TicketsWithFiltersSpecification(search, sort, status, pageIndex, pageSize, clientId, employeeId, role.ToString(), userId);
+            var countSpec = new TicketsWithFiltersForCountSpecification(search, status, clientId, employeeId);
 
             var tickets = await _unitOfWork.Tickets.ListWithSpecAsync(spec);
             var totalCount = await _unitOfWork.Tickets.CountAsync(countSpec);

@@ -7,7 +7,7 @@ namespace ClientTicketingSystem.Application.Services.Interfaces;
 public interface ITicketService
 {
     Task<ApiResponse<CreateTicketDto>> CreateTicket(CreateTicketDto TicketDto,Guid clientId);
-    Task<ApiResponse<PaginationDto<TicketDto>>> GetAllTickets(string? search, string? sort, TicketStatus? status, int pageIndex, int pageSize, Guid? productId, UserRole role, Guid userId);
+    Task<ApiResponse<PaginationDto<TicketDto>>> GetAllTickets(string? search, string? sort, TicketStatus? status, int pageIndex, int pageSize, Guid? clientId, Guid? employeeId, UserRole role, Guid userId);
     Task<ApiResponse<bool>> DeleteTicket(Guid Id);
     Task<ApiResponse<bool>> UpdateTicket(CreateTicketDto dto,Guid TicketId);
     Task<ApiResponse<TicketDto>> GetTicketById(Guid TicketId);
