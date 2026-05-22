@@ -128,6 +128,16 @@ export class TicketsService {
     return this.http.put<ApiResponse<unknown>>(url, {}, { params });
   }
 
+  changeTicketStatus(ticketId: string): Observable<ApiResponse<unknown>> {
+    const url = `${environment.apiUrl}/api/Employees/ChangeStatus/${ticketId}`;
+    return this.http.put<ApiResponse<unknown>>(url, {});
+  }
+
+  fixTicket(ticketId: string): Observable<ApiResponse<unknown>> {
+    const url = `${environment.apiUrl}/api/Tickets/TicketFix/${ticketId}`;
+    return this.http.put<ApiResponse<unknown>>(url, {});
+  }
+
   updateTicket(ticketId: string, body: UpdateTicketRequest): Observable<ApiResponse<unknown>> {
     const url = `${environment.apiUrl}/api/Tickets/UpdateTicket/${ticketId}`;
     return this.http.put<ApiResponse<unknown>>(url, body);

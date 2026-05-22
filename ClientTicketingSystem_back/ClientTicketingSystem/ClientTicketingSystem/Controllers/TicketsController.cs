@@ -56,7 +56,12 @@ public class TicketsController : ControllerBase
     [HttpGet("GetTicketById/{id}")]
     public async Task<ActionResult> GetTicketById(Guid id)
     {
-        var result = await _ticketService.GetTicketById(id);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if(!Guid.TryParse(userId, out Guid userGuid))
+        {
+            return Unauthorized("Invalid user ID.");
+        }
+        var result = await _ticketService.GetTicketById(id, userGuid);
         return StatusCode(result.StatusCode, result);
     }
 
@@ -69,6 +74,13 @@ public class TicketsController : ControllerBase
             return Unauthorized("Invalid user ID.");
         }
         var result = await _ticketService.UpdateTicket(dto,id, userGuid);
+        return StatusCode(result.StatusCode, result);
+    }
+    [HttpPut("TicketFix/{id}")]
+    public async Task<ActionResult> TicketFix(Guid id)
+    {
+       
+        var result = await _ticketService.TicketFixed(id);
         return StatusCode(result.StatusCode, result);
     }
 }

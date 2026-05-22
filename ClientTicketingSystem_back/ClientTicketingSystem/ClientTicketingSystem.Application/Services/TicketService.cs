@@ -134,11 +134,12 @@ public class TicketService : ITicketService
 
     }
 
-    public async Task<ApiResponse<TicketDto>> GetTicketById(Guid TicketId)
+    public async Task<ApiResponse<TicketDto>> GetTicketById(Guid TicketId, Guid userId)
     {
         var ticket = await _unitOfWork.Tickets.GetTicketWithDetailsByIdAsync(TicketId);
+        var user = await _unitOfWork.Users.GetByIdAsync(userId);
         if (ticket == null) return new ApiResponse<TicketDto> { Data = null, Message = "Ticket Not found", Success = false, StatusCode = 404 };
-
+        if(ticket.ClientId != userId && user.Role == UserRole.Client) return new ApiResponse<TicketDto> { Data = null, Message = "You are not authorized to access or modify this ticket.", Success = false, StatusCode = 403 };
         var ticketDto = new TicketDto
         {   
             Id = ticket.Id,
@@ -152,6 +153,17 @@ public class TicketService : ITicketService
         };
         return new ApiResponse<TicketDto> { Data = ticketDto, Message = "Ticket Retrieved Successfully", Success = true, StatusCode = 200 };
 
+    }
+    public async Task<ApiResponse<bool>> TicketFixed(Guid TicketId)
+    {
+        var ticket = await _unitOfWork.Tickets.GetByIdAsync(TicketId);
+        if (ticket == null) return new ApiResponse<bool> { Data = false, Message = "Ticket Not found", Success = false, StatusCode = 404 };
+        if (ticket.IsFixed == true) return new ApiResponse<bool> { Data = false, Message = "Ticket Already Fixed", Success = false, StatusCode = 400 };
+        if (ticket.Status != TicketStatus.InProgress) return new ApiResponse<bool> { Data = false, Message = "Ticket Must Be InProgress To Be Fixed", Success = false, StatusCode = 400 };
+        ticket.IsFixed = true;
+        _unitOfWork.Tickets.Update(ticket);
+        await _unitOfWork.CompleteAsync();
+        return new ApiResponse<bool> { Data = true, Message = "Ticket Fixed Successfully", Success = true, StatusCode = 200 };
     }
 
 }

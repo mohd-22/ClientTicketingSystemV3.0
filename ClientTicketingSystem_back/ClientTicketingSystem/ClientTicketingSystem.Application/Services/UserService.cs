@@ -42,14 +42,14 @@ public class UserService : IUserService
 
         if (user.Role == UserRole.Client)
         {
-            canDeactivate = await HandleStaffDeactivation(id);
+            canDeactivate = await HandleEmployeeDeactivation(id);
         }
         else if (user.Role == UserRole.Employee)
         {
-            canDeactivate = await HandleEmployeeDeactivation(id);
+            canDeactivate = await HandleStaffDeactivation(id);
         }
 
-        if (!canDeactivate) new ApiResponse<bool> { Data = false, Message = "The employee has incomplete requests yet.", Success = false, StatusCode = 400 };
+        if (!canDeactivate) new ApiResponse<bool> { Data = false, Message = "The Client has incomplete requests yet.", Success = false, StatusCode = 400 };
 
         user.IsActive = false;
         _unitOfWork.Users.Update(user);
@@ -75,7 +75,8 @@ public class UserService : IUserService
     private async Task<bool> HandleEmployeeDeactivation(Guid employeeId)
     {
 
-        bool hasActiveRequests = await _unitOfWork.Tickets.AnyAsync(r => r.CreatedBy == employeeId);
+        bool hasActiveRequests = await _unitOfWork.Tickets.AnyAsync(r => r.CreatedBy == employeeId );
+        
         return !hasActiveRequests;
     }
     public async Task<ApiResponse<PaginationDto<UserDto>>> GetAllUsersAsync(

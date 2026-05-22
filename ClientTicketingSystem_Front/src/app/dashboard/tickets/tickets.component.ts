@@ -30,7 +30,7 @@ export class TicketsComponent implements OnInit {
   statusFilter: string = 'all';
   sortColumn: 'title' | 'clientName' | 'assignedEmpName' = 'title';
   sortDirection: 'asc' | 'desc' = 'asc';
-  statuses = ['All Status', 'New', 'InProgress', 'Paused', 'Closed'];
+  statuses = ['All Status', 'New','Assigned' ,'InProgress', 'Paused', 'Closed'];
   isClientUser = false;
   isEmployeeUser = false;
   isManagerUser = false;
