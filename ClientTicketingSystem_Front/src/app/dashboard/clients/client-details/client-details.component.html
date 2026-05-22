@@ -23,18 +23,18 @@
 				<p class="text-muted mb-0">Review client information and manage access.</p>
 			</div>
 			<div class="d-flex gap-2 flex-wrap">
-				<button type="button" class="btn" [ngClass]="getStatusActionClass()" (click)="toggleStatus()" [disabled]="isUpdatingStatus">
+				<button type="button" class="btn action-btn" [ngClass]="getStatusActionClass()" (click)="toggleStatus()" [disabled]="isUpdatingStatus">
 					<span *ngIf="isUpdatingStatus" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
 					{{ getStatusActionText() }}
 				</button>
-				<button type="button" class="btn btn-info text-white" (click)="editClient()" [disabled]="isEditing">
+				<button type="button" class="btn btn-info text-white action-btn" (click)="editClient()" [disabled]="isEditing">
 					<i class="bi bi-pencil me-2"></i>Edit Client
 				</button>
 			</div>
 
-			<div *ngIf="showEditModal" class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+			<div *ngIf="showEditModal" class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true" style="z-index: 3000 !important;">
 				<div class="modal-dialog modal-dialog-centered modal-md" role="document">
-					<div class="modal-content shadow">
+					<div class="modal-content" style="position: relative; z-index: 3050; pointer-events: auto; background-color: #fff;">
 						<div class="modal-header">
 							<h5 class="modal-title">Edit Client</h5>
 							<button type="button" class="btn-close" aria-label="Close" (click)="cancelEdit()"></button>
@@ -82,12 +82,12 @@
 						</div>
 					</div>
 				</div>
-				<div class="modal-backdrop fade show"></div>
+				<div class="modal-backdrop fade show" style="z-index: 1990" (click)="cancelEdit()"></div>
 			</div>
 
-			<div *ngIf="showConfirmStatusModal" class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
-				<div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-					<div class="modal-content shadow">
+			<div *ngIf="showConfirmStatusModal" class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true" style="z-index: 2000;">
+				<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+					<div class="modal-content" style="position: relative; z-index: 3050; pointer-events: auto; background-color: #fff;">
 						<div class="modal-header">
 							<h5 class="modal-title">Confirm Action</h5>
 							<button type="button" class="btn-close" aria-label="Close" (click)="cancelConfirmStatus()"></button>
@@ -109,7 +109,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="modal-backdrop fade show"></div>
+				<div class="modal-backdrop fade show" style="z-index: 1990" (click)="cancelConfirmStatus()"></div>
 			</div>
 		</div>
 
@@ -233,4 +233,6 @@
 			</div>
 		</div>
 	</ng-container>
+
+	
 </div>

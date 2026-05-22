@@ -5,6 +5,7 @@ import { finalize } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { ProductDto, ProductsService } from 'src/app/shared/services/products.service';
 import { TicketsService, TicketDto, UpdateTicketRequest } from 'src/app/shared/services/tickets.service';
+import { CommentsService, CommentReadDto } from 'src/app/shared/services/comments.service';
 import { UsersService, UserDto } from 'src/app/shared/services/users.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 @Component({
@@ -36,11 +37,17 @@ export class TicketDetailsComponent implements OnInit {
   relatedAssets: Array<{ name: string; url?: string }> = [];
   estimatedResolution: string | null = null;
   ticket: (TicketDto & { description?: string; createdDate?: string; productId?: string; ProductId?: string }) | null = null;
+  comments: CommentReadDto[] = [];
+  newCommentText = '';
+  commentsLoading = false;
+  commentSubmitting = false;
+  commentError = '';
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private ticketsService: TicketsService,
     private productsService: ProductsService,
+    private commentsService: CommentsService,
     private usersService: UsersService,
     private toastr: ToastrService,
     private authService: AuthService,
@@ -59,6 +66,24 @@ export class TicketDetailsComponent implements OnInit {
     this.isEmployee = this.authService.isEmployee();
   }
 
+  getInitials(name?: string): string {
+    if (!name) return 'U';
+    try {
+      return name.split(' ').map(n => n.charAt(0)).join('').slice(0, 2).toUpperCase();
+    } catch {
+      return name.charAt(0).toUpperCase();
+    }
+  }
+
+  getRoleBadgeClass(role?: string): string {
+    if (!role) return 'badge bg-light text-dark border';
+    const r = role.toLowerCase();
+    if (r.includes('manager')) return 'badge bg-warning text-dark';
+    if (r.includes('employee')) return 'badge bg-info text-dark';
+    if (r.includes('client')) return 'badge bg-secondary text-white';
+    return 'badge bg-light text-dark border';
+  }
+
   private loadTicketDetails(): void {
     this.isLoading = true;
     this.errorMessage = '';
@@ -74,7 +99,7 @@ export class TicketDetailsComponent implements OnInit {
        
         error: err => {
           console.error('Failed to load ticket', err);
-          this.errorMessage = 'Failed to load ticket details.';
+          this.errorMessage = err?.error?.message ||'Failed to load ticket details.';
         }
       });
   }
@@ -85,12 +110,57 @@ export class TicketDetailsComponent implements OnInit {
         next: response => {
           this.products = response.data ?? [];
           this.syncEditFormWithTicket();
+          this.loadComments();
         },
         error: err => {
           console.error('Failed to load products', err);
           this.products = [];
         }
       });
+  }
+
+  private loadComments(): void {
+    if (!this.ticketId) return;
+    this.commentsLoading = true;
+    this.comments = [];
+    this.commentsService.getComments(this.ticketId).pipe(finalize(() => this.commentsLoading = false)).subscribe({
+      next: res => {
+        this.comments = (res.data ?? []).map(c => ({
+          id: c.id,
+          text: c.text,
+          createdAt: c.createdAt,
+          userName: c.userName,
+          userRole: c.userRole,
+          userId: c.userId
+        }));
+      },
+      error: err => {
+        console.error('Failed to load comments', err);
+      }
+    });
+  }
+
+  sendComment(): void {
+    if (!this.ticketId) return;
+    const text = (this.newCommentText || '').trim();
+    if (!text) return;
+    this.commentSubmitting = true;
+    this.commentError = '';
+    const payload = { text, ticketId: this.ticketId };
+    this.commentsService.createComment(payload).pipe(finalize(() => this.commentSubmitting = false)).subscribe({
+      next: res => {
+        if (res?.success === false) {
+          this.commentError = res?.message || 'Failed to post comment.';
+          return;
+        }
+        this.newCommentText = '';
+        this.loadComments();
+      },
+      error: err => {
+        console.error('Failed to create comment', err);
+        this.commentError = err?.error?.message || 'Failed to post comment.';
+      }
+    });
   }
 
   private loadEmployees(): void {
@@ -289,9 +359,29 @@ export class TicketDetailsComponent implements OnInit {
   }
 
   markAsFixed(): void {
-    if (!this.ticket) return;
-    this.ticket.isFixed = true;
-    this.ticket.status = 'Resolved';
+    if (!this.ticket || this.isSaving) return;
+
+    this.isSaving = true;
+
+    this.ticketsService.fixTicket(this.ticketId)
+      .pipe(finalize(() => this.isSaving = false))
+      .subscribe({
+        next: response => {
+          if (response?.success === false) {
+            const msg = response?.message || 'Failed to mark ticket as fixed.';
+            this.toastr.error(msg, 'Error');
+            return;
+          }
+
+          this.toastr.success(response?.message || 'Ticket marked as fixed.', 'Success');
+          this.loadTicketDetails();
+        },
+        error: err => {
+          console.error('Failed to mark ticket as fixed', err);
+          const msg = err?.error?.message || 'Failed to mark ticket as fixed.';
+          this.toastr.error(msg, 'Error');
+        }
+      });
   }
 
   getStatusBadgeClass(): string {

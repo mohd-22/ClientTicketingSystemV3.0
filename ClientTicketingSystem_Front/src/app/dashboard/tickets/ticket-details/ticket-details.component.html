@@ -23,7 +23,7 @@
               <h1 class="h4 fw-bold text-dark mb-0">{{ ticket.title }}</h1>
             </div>
             <div class="d-flex align-items-start gap-2">
-              <button *ngIf="!ticket.isFixed && isClient" type="button" class="btn btn-sm btn-outline-success"
+              <button *ngIf="!ticket.isFixed && isClient && ticket.status == 'InProgress'" type="button" class="btn btn-sm btn-outline-success " 
                 (click)="markAsFixed()">Mark as Fixed</button>
               <span *ngIf="ticket.isFixed" class="text-success small fw-semibold">Marked Fixed</span>
             </div>
@@ -47,29 +47,31 @@
             </button>
           </div>
 
-          <div class="mb-4 pb-4 border-bottom">
-            <div class="d-flex gap-3">
+          <div *ngIf="comments && comments.length" class="mb-4 pb-4 border-bottom">
+            <div *ngFor="let c of comments" class="d-flex gap-3 mb-3">
               <div
                 class="avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold"
                 style="width: 40px; height: 40px; font-size: 0.75rem;">
-                AR
+                {{ getInitials(c.userName) }}
               </div>
               <div class="flex-grow-1">
-                <div class="fw-semibold text-dark">{{ ticket.assignedEmpName }}</div>
-                <small class="text-muted">4 hours ago</small>
-                <p class="mt-2 mb-0 text-muted">I've verified the logs. The signature validation is failing because the
-                  secret rotation wasn't pushed to the mobile gateway cluster.</p>
+                <div class="fw-semibold text-dark">{{ c.userName }}</div>
+                <div><span [ngClass]="getRoleBadgeClass(c.userRole)">{{ c.userRole }}</span></div>
+                <small class="text-muted">{{ c.createdAt | date:'short' }}</small>
+                <p class="mt-2 mb-0 text-muted">{{ c.text }}</p>
               </div>
             </div>
           </div>
 
           <div>
-            <textarea class="form-control" rows="3" placeholder="Add a comment or internal note..."></textarea>
+            <textarea class="form-control" rows="3" placeholder="Add a comment or internal note..." [(ngModel)]="newCommentText"></textarea>
             <div class="mt-2 text-end">
-              <button type="button" class="btn btn-primary btn-sm">
+              <button type="button" class="btn btn-primary btn-sm" (click)="sendComment()" [disabled]="commentSubmitting">
+                <span *ngIf="commentSubmitting" class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
                 Send Response
               </button>
             </div>
+            <div *ngIf="commentError" class="text-danger small mt-2">{{ commentError }}</div>
           </div>
         </div>
       </div>

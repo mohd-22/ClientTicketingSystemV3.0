@@ -158,7 +158,7 @@
               
             </td>
             <td>{{ ticket.clientName || 'N/A' }}</td>
-            <td>{{ ticket.assignedEmpName || 'Not assigned' }}</td>
+            <td *ngIf="!isEmployeeUser">{{ ticket.assignedEmpName || 'Not assigned' }}</td>
             <td>{{ ticket.productName || 'N/A' }}</td>
             <td>
               <span class="badge" [ngClass]="getStatusBadge(ticket.status)">

@@ -32,7 +32,7 @@ const routes: Routes = [
     { path: 'users', component: UsersComponent, canActivate: [ManagerGuard] },
     { path: 'users/create', component: CreateEmployeeComponent, canActivate: [ManagerGuard] },
     { path: 'users/:id', component: UserDetailsComponent, canActivate: [ManagerGuard] },
-     { path: 'clients', component: ClientsComponent, canActivate: [AuthGuard] },
+     { path: 'clients', component: ClientsComponent, canActivate: [ManagerGuard] },
     { path: 'clients/:id', component: ClientDetailsComponent, canActivate: [ManagerGuard] },
     { path: 'tickets', component: TicketsComponent, canActivate: [AuthGuard] },
     { path: 'tickets/:id', component: TicketDetailsComponent, canActivate: [AuthGuard] },
