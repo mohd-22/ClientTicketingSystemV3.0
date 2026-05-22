@@ -14,16 +14,14 @@ namespace ClientTicketingSystem.API.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
-    private readonly ILogger<UsersController> _logger;
 
-    public UsersController(IUserService userService, ILogger<UsersController> logger)
+    public UsersController(IUserService userService)
     {
         _userService = userService;
-        _logger = logger;
     }
 
 
-    [Authorize(Roles = $"{nameof(UserRole.Manager)},{nameof(UserRole.Employee)}")]
+    [Authorize(Roles = $"{nameof(UserRole.Manager)}")]
     [HttpGet("GetAllUsers")]
     public async Task<ActionResult> GetAllUsers(
         [FromQuery] string? search,
@@ -73,7 +71,8 @@ public class UsersController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
-    [HttpPut("{id}")] 
+    [HttpPut("{id}")]
+    [Authorize(Roles = nameof(UserRole.Manager))]
     public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserDto dto)
     {
         var result = await _userService.UpdtaeUserAsync(dto,id);

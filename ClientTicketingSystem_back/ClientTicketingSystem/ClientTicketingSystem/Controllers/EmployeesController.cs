@@ -1,5 +1,7 @@
 ﻿using ClientTicketingSystem.Application.Services;
 using ClientTicketingSystem.Application.Services.Interfaces;
+using ClientTicketingSystem.CORE.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClientTicketingSystem.API.Controllers;
@@ -14,12 +16,14 @@ public class EmployeesController : ControllerBase
         _employeeService = employeeService;
     }
 
+    [Authorize(Roles = nameof(UserRole.Manager))]
     [HttpPut("assign/{ticketId}")]
     public async Task<IActionResult> AssignTicket(Guid ticketId, [FromQuery] Guid employeeId)
     {
         var result = await _employeeService.AssignTicketToEmployee(ticketId, employeeId);
         return StatusCode(result.StatusCode, result);
     }
+    [Authorize(Roles = nameof(UserRole.Employee))]
     [HttpPut("ChangeStatus/{ticketId}")] 
     public async Task<IActionResult> ChangeStatus(Guid ticketId)
     {

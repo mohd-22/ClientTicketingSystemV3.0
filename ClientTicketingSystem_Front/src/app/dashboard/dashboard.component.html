@@ -5,6 +5,7 @@
 				class="rounded-circle flex-shrink-0" />
 			<div class="lh-sm">
 				<div class="fw-semibold small">{{FullName}}</div>
+				<div class="small text-white-50">{{UserRole}}</div>
 			</div>
 		</div>
 	</div>
@@ -16,7 +17,7 @@
 		</a>
 		<a routerLink="/dashboard/users" routerLinkActive="active " *ngIf="isManager"
 			class="nav-link text-white-50 d-flex align-items-center gap-2">
-			<i class="bi bi-people"></i><span>Users</span>
+			<i class="bi bi-people"></i><span>Employees</span>
 		</a>
 		<a routerLink="/dashboard/clients" routerLinkActive="active " *ngIf="isManager"
 			class="nav-link text-white-50 d-flex align-items-center gap-2">
