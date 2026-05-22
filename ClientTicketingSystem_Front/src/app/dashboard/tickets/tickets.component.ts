@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { CreateTicketRequest, PaginationDto, TicketDto, TicketsService } from 'src/app/shared/services/tickets.service';
+import { AttachmentsService } from 'src/app/shared/services/attachments.service';
 import { UsersService, UserDto } from 'src/app/shared/services/users.service';
 import { PaginationDto as ProductsPaginationDto, ProductDto, ProductsService } from 'src/app/shared/services/products.service';
 
@@ -39,10 +41,13 @@ export class TicketsComponent implements OnInit {
   createErrorMessage = '';
   createSubmitted = false;
   createForm!: FormGroup;
+  selectedAttachmentFile: File | null = null;
+  selectedAttachmentName = '';
 
   constructor(
     private ticketsService: TicketsService,
     private productsService: ProductsService,
+    private attachmentsService: AttachmentsService,
     private authService: AuthService,
     private usersService: UsersService,
     private fb: FormBuilder,
@@ -76,6 +81,8 @@ export class TicketsComponent implements OnInit {
     this.createSubmitted = false;
     this.createErrorMessage = '';
     this.createForm.reset();
+    this.selectedAttachmentFile = null;
+    this.selectedAttachmentName = '';
     if (this.products.length > 0) {
       this.createForm.patchValue({ productId: this.products[0].id });
     }
@@ -87,6 +94,14 @@ export class TicketsComponent implements OnInit {
     this.createSubmitted = false;
     this.createErrorMessage = '';
     this.createForm.reset();
+    this.selectedAttachmentFile = null;
+    this.selectedAttachmentName = '';
+  }
+
+  onCreateAttachmentSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.selectedAttachmentFile = input.files && input.files.length > 0 ? input.files[0] : null;
+    this.selectedAttachmentName = this.selectedAttachmentFile?.name ?? '';
   }
 
   onSearchChange(): void {
@@ -238,6 +253,54 @@ export class TicketsComponent implements OnInit {
       .subscribe({
         next: (response) => {
           if (response?.success) {
+            if (this.selectedAttachmentFile) {
+              this.resolveCreatedTicketId(payload)
+                .subscribe({
+                  next: ticketId => {
+                    if (!ticketId) {
+                      this.toastr.success(response.message || 'Ticket created successfully.', 'Success');
+                      this.toastr.warning('Ticket was created, but the attachment could not be linked to the new ticket.', 'Upload');
+                      this.closeCreateModal();
+                      this.currentPage = 1;
+                      this.loadTickets();
+                      return;
+                    }
+
+                    this.attachmentsService.uploadAttachment(ticketId, this.selectedAttachmentFile!)
+                      .subscribe({
+                        next: uploadResponse => {
+                          if (uploadResponse?.success) {
+                            this.toastr.success('Ticket created and attachment uploaded successfully.', 'Success');
+                          } else {
+                            this.toastr.success(response.message || 'Ticket created successfully.', 'Success');
+                            this.toastr.warning(uploadResponse?.message || 'Ticket was created, but the attachment upload failed.', 'Upload');
+                          }
+                          this.closeCreateModal();
+                          this.currentPage = 1;
+                          this.loadTickets();
+                        },
+                        error: uploadErr => {
+                          console.error('Attachment upload failed', uploadErr);
+                          this.toastr.success(response.message || 'Ticket created successfully.', 'Success');
+                          this.toastr.warning('Ticket was created, but the attachment upload failed.', 'Upload');
+                          this.closeCreateModal();
+                          this.currentPage = 1;
+                          this.loadTickets();
+                        }
+                      });
+                  },
+                  error: err => {
+                    console.error('Failed to resolve created ticket id', err);
+                    this.toastr.success(response.message || 'Ticket created successfully.', 'Success');
+                    this.toastr.warning('Ticket was created, but the attachment could not be linked to the new ticket.', 'Upload');
+                    this.closeCreateModal();
+                    this.currentPage = 1;
+                    this.loadTickets();
+                  }
+                });
+              return;
+            }
+
             this.toastr.success(response.message || 'Ticket created successfully.', 'Success');
             this.closeCreateModal();
             this.currentPage = 1;
@@ -290,6 +353,17 @@ export class TicketsComponent implements OnInit {
       default:
         return 'Field';
     }
+  }
+
+  private resolveCreatedTicketId(payload: CreateTicketRequest) {
+    const normalizedTitle = (payload.title || '').trim().toLowerCase();
+
+    return this.ticketsService.getAllTickets('', 'title-desc', undefined, 1, 1000).pipe(
+      map(response => {
+        const matchingTicket = (response.data ?? []).find(ticket => (ticket.title || '').trim().toLowerCase() === normalizedTitle);
+        return matchingTicket?.id || matchingTicket?.Id || null;
+      })
+    );
   }
 
   getStatusBadge(status: string): string {

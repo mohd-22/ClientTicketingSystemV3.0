@@ -105,6 +105,21 @@
                 {{ getCreateFieldErrorMessage('productId') }}
               </div>
             </div>
+
+            <div class="col-12">
+              <label class="form-label">Attachment</label>
+              <input
+                type="file"
+                class="form-control"
+                (change)="onCreateAttachmentSelected($event)"
+              />
+              <small class="text-muted d-block mt-2">
+                Optional. Choose a file to attach to the ticket.
+              </small>
+              <div *ngIf="selectedAttachmentName" class="small text-dark mt-1">
+                Selected file: {{ selectedAttachmentName }}
+              </div>
+            </div>
           </form>
         </div>
         <div class="modal-footer">
