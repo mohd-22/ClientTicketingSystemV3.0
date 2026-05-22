@@ -6,8 +6,10 @@ import { ToastrService } from 'ngx-toastr';
 import { ProductDto, ProductsService } from 'src/app/shared/services/products.service';
 import { TicketsService, TicketDto, UpdateTicketRequest } from 'src/app/shared/services/tickets.service';
 import { CommentsService, CommentReadDto } from 'src/app/shared/services/comments.service';
+import { AttachmentsService, AttachmentDto } from 'src/app/shared/services/attachments.service';
 import { UsersService, UserDto } from 'src/app/shared/services/users.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-ticket-details',
   templateUrl: './ticket-details.component.html',
@@ -48,6 +50,7 @@ export class TicketDetailsComponent implements OnInit {
     private ticketsService: TicketsService,
     private productsService: ProductsService,
     private commentsService: CommentsService,
+    private attachmentsService: AttachmentsService,
     private usersService: UsersService,
     private toastr: ToastrService,
     private authService: AuthService,
@@ -93,6 +96,7 @@ export class TicketDetailsComponent implements OnInit {
         next: t => {
           this.ticket = t;
           console.log('Ticket Status:', this.ticket?.status);
+          this.loadAttachments();
           this.loadProducts();
           this.loadEmployees();
         },
@@ -138,6 +142,28 @@ export class TicketDetailsComponent implements OnInit {
         console.error('Failed to load comments', err);
       }
     });
+  }
+
+  private loadAttachments(): void {
+    if (!this.ticketId) return;
+
+    this.attachmentsService.getAttachmentsByTicket(this.ticketId).subscribe({
+      next: response => {
+        const attachments = response.data ?? [];
+        this.relatedAssets = attachments.map((attachment: AttachmentDto) => ({
+          name: attachment.fileName,
+          url: `${this.getAttachmentDownloadUrl(attachment.id)}`
+        }));
+      },
+      error: err => {
+        console.error('Failed to load attachments', err);
+        this.relatedAssets = [];
+      }
+    });
+  }
+
+  private getAttachmentDownloadUrl(id: string): string {
+    return `${environment.apiUrl}/api/Attachment/download/${id}`;
   }
 
   sendComment(): void {

@@ -2,6 +2,7 @@
 using ClientTicketingSystem.Application.Services.Interfaces;
 using ClientTicketingSystem.CORE.Dtos;
 using ClientTicketingSystem.CORE.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using SupportHub.DATA.Repositories.Interfaces;
@@ -15,6 +16,7 @@ public class AttachmentService : IAttachmentService
         _env = env;
         _unitOfWork = unitOfWork;
     }
+    
     public async Task<ApiResponse<bool>> UploadAttachment(Guid userId, Guid ticketId, IFormFile file)
     {
         if (file == null)
@@ -51,7 +53,7 @@ public class AttachmentService : IAttachmentService
             throw new Exception("Failed to upload attachment", ex);
         }
     }
-    public async Task<ApiResponse<IEnumerable<AttachmentDto>>> GetAttachmentsByRequest(Guid ticketId)
+    public async Task<ApiResponse<IEnumerable<AttachmentDto>>> GetAttachmentsByTicket(Guid ticketId)
     {
         var attachments = await _unitOfWork.Attachments.FindAsNoTrackingAsync(a => a.TicketId == ticketId);
         if (attachments == null)

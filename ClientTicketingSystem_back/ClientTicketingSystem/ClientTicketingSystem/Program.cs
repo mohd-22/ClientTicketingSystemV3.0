@@ -59,6 +59,7 @@ try
     builder.Services.AddScoped<IProductService, ProductService>();
     builder.Services.AddScoped<ITicketService, TicketService>();
     builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+    builder.Services.AddScoped<IAttachmentService, AttachmentService>();
     builder.Services.AddScoped<ICommentService, CommentService>();
     builder.Services.AddScoped<IUserService, UserService>();
 
@@ -90,6 +91,7 @@ try
         };
     });
 
+    app.UseStaticFiles();
     app.UseHttpsRedirection();
 
     app.UseCors("Frontend");

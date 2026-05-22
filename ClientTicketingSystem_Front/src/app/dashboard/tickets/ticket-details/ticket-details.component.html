@@ -248,7 +248,7 @@
               <li *ngFor="let a of relatedAssets" class="d-flex justify-content-between align-items-center py-1">
                 <div class="text-truncate">{{ a.name }}</div>
                 <div>
-                  <a class="btn btn-sm btn-light" [href]="a.url || '#'">
+                  <a class="btn btn-sm btn-light" [href]="a.url || '#'" [attr.download]="a.name">
                     <i class="bi bi-download"></i>
                   </a>
                 </div>
