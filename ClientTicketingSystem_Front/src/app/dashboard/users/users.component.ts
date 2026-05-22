@@ -10,7 +10,7 @@ interface User {
   role: string ;
   status: string;
   lastActivity: string;
-  avatar: string;
+  ImageUrl: string;
 }
 
 @Component({
@@ -28,6 +28,8 @@ export class UsersComponent implements OnInit {
   totalCount: number = 0;
   isLoading: boolean = false;
   errorMessage: string = '';
+  readonly backendUrl = 'https://localhost:7100/';
+
   
   sortColumn: 'name' | 'email' | 'role' | 'isActive' = 'name';
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -60,6 +62,15 @@ export class UsersComponent implements OnInit {
 
     this.currentPage = 1;
     this.loadUsers();
+  }
+
+  getAttachmentUrl(path: string | undefined): string {
+    if (!path) return 'assets/images/default-avatar.png'; 
+    
+    
+    const cleanPath = path.replace(/\\/g, '/');
+    
+    return `${this.backendUrl}${cleanPath}`;
   }
 
   loadUsers(): void {
@@ -122,7 +133,7 @@ export class UsersComponent implements OnInit {
       role: this.getRoleNameFromEnum(userDto.role),
       status: userDto.isActive ? 'Active' : 'Inactive',
       lastActivity: userDto.lastLoginDate ? this.getTimeAgo(this.parseDateToLocal(userDto.lastLoginDate)) : 'Never',
-      avatar: userDto.imageUrl || `https://dummyimage.com/40x40/007bff/ffffff&text=${initials}`
+      ImageUrl: userDto.imageUrl || `https://dummyimage.com/40x40/007bff/ffffff&text=${initials}`
     };
   }
 

@@ -23,6 +23,8 @@ export class UserDetailsComponent implements OnInit {
   isSaving = false;
   showConfirmStatusModal = false;
   confirmStatusAction: 'activate' | 'deactivate' | null = null;
+  readonly backendUrl = 'https://localhost:7100/';
+
 
   constructor(
     private route: ActivatedRoute,
@@ -47,6 +49,14 @@ export class UserDetailsComponent implements OnInit {
     this.router.navigate(['/dashboard/users']);
   }
 
+  getAttachmentUrl(path: string | undefined): string {
+    if (!path) return 'assets/images/default-avatar.png'; 
+    
+    
+    const cleanPath = path.replace(/\\/g, '/');
+    
+    return `${this.backendUrl}${cleanPath}`;
+  }
   editUser(): void {
     if (!this.user) return;
 
