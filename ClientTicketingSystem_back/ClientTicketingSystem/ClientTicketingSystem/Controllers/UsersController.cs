@@ -1,3 +1,4 @@
+using ClientTicketingSystem.Application.Services;
 using ClientTicketingSystem.Application.Services.Interfaces;
 using ClientTicketingSystem.Core.Dtos;
 using ClientTicketingSystem.CORE.Dtos;
@@ -79,4 +80,16 @@ public class UsersController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
+    [HttpPost("ChangeAvatar")]
+    public async Task<IActionResult> ChangeAvatar(IFormFile file)
+    {
+
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!Guid.TryParse(userId, out Guid userGuid))
+        {
+            return Unauthorized("User ID is not valid.");
+        }
+        var result = await _userService.ChangeAvatar(userGuid, file);
+        return StatusCode(result.StatusCode, result);
+    }
 }

@@ -44,6 +44,7 @@ export interface CreateEmployeeRequest {
 })
 export class UsersService {
   private readonly usersUrl = `${environment.apiUrl}/api/Users/GetAllUsers`;
+  private readonly changeAvatarUrl = `${environment.apiUrl}/api/Users/ChangeAvatar`;
   private readonly addEmployeeUrl = `${environment.apiUrl}/api/Users/AddEmployee`;
   private readonly activateUserUrl = `${environment.apiUrl}/api/Users/Activate`;
   private readonly deactivateUserUrl = `${environment.apiUrl}/api/Users/Deactivate`;
@@ -110,6 +111,13 @@ export class UsersService {
         return normalized;
       })
     );
+  }
+
+  changeAvatar(file: File): Observable<ApiResponse<boolean>> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<ApiResponse<boolean>>(this.changeAvatarUrl, formData);
   }
 
   activateUser(id: string): Observable<ApiResponse<unknown>> {

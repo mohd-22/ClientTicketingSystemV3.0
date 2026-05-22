@@ -30,6 +30,11 @@
               </ng-template>
               <span class="position-absolute" style="right:6px; bottom:6px; width:18px; height:18px; border-radius:999px; border:3px solid #fff;" [ngClass]="user.isActive ? 'bg-success' : 'bg-danger'"></span>
             </div>
+            <input #avatarInput type="file" accept="image/*" class="d-none" (change)="onAvatarSelected($event)" />
+            <button type="button" class="btn btn-outline-primary btn-sm mb-3" (click)="avatarInput.click()" [disabled]="uploadingAvatar">
+              <span *ngIf="uploadingAvatar" class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+              Change Avatar
+            </button>
             <h2 class="h5 fw-bold mb-1">{{ user.fullName }}</h2>
             <p class="text-muted small mb-2">{{ user.email }}</p>
             <div class="d-flex justify-content-center flex-wrap gap-2 mb-3">

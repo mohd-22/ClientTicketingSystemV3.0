@@ -3,6 +3,7 @@ using ClientTicketingSystem.Application.Helpers;
 using ClientTicketingSystem.Core.Dtos;
 using ClientTicketingSystem.CORE.Dtos;
 using ClientTicketingSystem.CORE.Models.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace ClientTicketingSystem.Application.Services.Interfaces;
 public interface IUserService
@@ -18,4 +19,6 @@ public interface IUserService
     Task<ApiResponse<UserDto>> GetUserByIdAsync(Guid id);
     Task<ApiResponse<bool>> DeactivateUserAsync(Guid id);
     Task<ApiResponse<bool>> ActivateUserAsync(Guid id);
+    Task<ApiResponse<bool>> ChangeAvatar(Guid userId, IFormFile file);
+
 }

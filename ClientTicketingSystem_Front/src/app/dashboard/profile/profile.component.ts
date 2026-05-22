@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { finalize } from 'rxjs';
 import { AuthService } from '../../shared/services/auth.service';
 import { UsersService, UserDto } from '../../shared/services/users.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-profile',
@@ -12,9 +14,14 @@ export class ProfileComponent implements OnInit {
   loading = false;
   error = '';
   initials = 'U';
+  uploadingAvatar = false;
   readonly backendUrl = 'https://localhost:7100/';
 
-  constructor(private authService: AuthService, private usersService: UsersService) { }
+  constructor(
+    private authService: AuthService,
+    private usersService: UsersService,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
     const id = this.authService.getUserId();
@@ -72,6 +79,59 @@ export class ProfileComponent implements OnInit {
     const cleanPath = path.replace(/\\/g, '/');
     
     return `${this.backendUrl}${cleanPath}`;
+  }
+
+  onAvatarSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      this.toastr.error('Please choose a valid image file.', 'Invalid File');
+      input.value = '';
+      return;
+    }
+
+    this.uploadingAvatar = true;
+    this.usersService.changeAvatar(file)
+      .pipe(finalize(() => {
+        this.uploadingAvatar = false;
+        input.value = '';
+      }))
+      .subscribe({
+        next: response => {
+          if (response?.success) {
+            this.toastr.success(response.message || 'Avatar updated successfully', 'Success');
+            this.reloadProfile();
+            return;
+          }
+
+          this.toastr.error(response?.message || 'Failed to update avatar', 'Error');
+        },
+        error: err => {
+          const message = err?.error?.message || err?.message || 'Failed to update avatar';
+          this.toastr.error(message, 'Error');
+        }
+      });
+  }
+
+  private reloadProfile(): void {
+    const id = this.authService.getUserId();
+    if (!id) return;
+
+    this.loading = true;
+    this.usersService.getUserById(id).pipe(finalize(() => this.loading = false)).subscribe({
+      next: u => {
+        this.user = u;
+        this.initials = this.computeInitials(this.user?.fullName ?? '');
+      },
+      error: err => {
+        console.error('Failed to reload profile', err);
+      }
+    });
   }
 
 

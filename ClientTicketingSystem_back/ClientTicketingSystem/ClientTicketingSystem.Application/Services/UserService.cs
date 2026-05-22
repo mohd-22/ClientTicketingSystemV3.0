@@ -5,6 +5,8 @@ using ClientTicketingSystem.CORE.Dtos;
 using ClientTicketingSystem.CORE.Models;
 using ClientTicketingSystem.CORE.Models.Enums;
 using ClientTicketingSystem.CORE.Specifications;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using SupportHub.DATA.Repositories.Interfaces;
@@ -15,11 +17,14 @@ public class UserService : IUserService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UserService> _logger;
+    private readonly IWebHostEnvironment _env;
 
-    public UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger)
+
+    public UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger, IWebHostEnvironment env)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _env = env;
     }
     public async Task<ApiResponse<bool>> ActivateUserAsync(Guid id)
     {
@@ -234,5 +239,35 @@ public class UserService : IUserService
         }
     }
 
+    public async Task<ApiResponse<bool>> ChangeAvatar(Guid userId, IFormFile file)
+    {
+        if (file == null)
+        {
+            return new ApiResponse<bool> { Data = false, Message = "File is Required", Success = false, StatusCode = 400 };
+        }
+        try
+        {
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
+            string uploadFolder = Path.Combine(_env.WebRootPath, "Attachments");
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string filePath = Path.Combine(uploadFolder, fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+            user.ImageUrl = Path.Combine("Attachments", fileName);
+             _unitOfWork.Users.Update(user);
+            await _unitOfWork.CompleteAsync();
+            return new ApiResponse<bool> { Data = true, Message = "Avater changed successfully", Success = true, StatusCode = 200 };
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to change avatar", ex);
+        }
+    }
 }
 
