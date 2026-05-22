@@ -79,7 +79,7 @@
 
     <div class="col-lg-4">
       <div class="d-flex align-items-center gap-2 m-3 ">
-        <button type="button" class="btn btn-primary w-50" (click)="openEditModal()" *ngIf="isClient">
+        <button type="button" class="btn btn-primary w-50" (click)="openEditModal()" *ngIf="isClient && (ticket.status === 'New')">
           <i class="bi bi-pencil me-2"></i>Edit
         </button>
 

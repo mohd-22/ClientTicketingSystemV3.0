@@ -28,7 +28,7 @@ const routes: Routes = [
     ]
   },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], children: [
-    { path: '', component: DashboardHomeComponent },
+    { path: '', component: DashboardHomeComponent, canActivate: [AuthGuard] },
     { path: 'users', component: UsersComponent, canActivate: [ManagerGuard] },
     { path: 'users/create', component: CreateEmployeeComponent, canActivate: [ManagerGuard] },
     { path: 'users/:id', component: UserDetailsComponent, canActivate: [ManagerGuard] },

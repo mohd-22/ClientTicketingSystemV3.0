@@ -1,19 +1,156 @@
-<section class="card border-0 shadow-sm">
-    	<div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
-				<h2 class="h4 fw-semibold text-dark mb-0">Dashboard Overview</h2>
-			</div>
-  <div class="card-body d-flex align-items-center justify-content-center text-center py-5" style="min-height: calc(100vh - 170px);">
-    <div style="max-width: 360px;">
-      <div class="d-inline-flex align-items-center justify-content-center rounded-3 bg-light text-secondary mb-3" style="width: 56px; height: 56px; font-size: 1.4rem;">
-        <i class="bi bi-grid-3x3-gap"></i>
+<section *ngIf="isManager; else managerOnlyMessage" class="card border-0 shadow-sm p-3">
+  <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
+    <h2 class="h4 fw-semibold text-dark mb-0">Dashboard Overview</h2>
+  </div>
+
+  <div class="card-body py-3">
+    <div *ngIf="isLoading" class="text-center py-4">
+      <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+    </div>
+
+    <div *ngIf="!isLoading" class="row g-3">
+      <div class="col-12 col-md-4 col-lg-6">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body d-flex align-items-center gap-3">
+            <div class="rounded-3 bg-light text-secondary d-inline-flex align-items-center justify-content-center"
+              style="width:56px;height:56px;font-size:1.4rem;">
+              <i class="bi bi-ticket-perforated"></i>
+            </div>
+            <div>
+              <div class="small text-muted">TOTAL</div>
+              <div class="h5 fw-bold mb-0">{{ stats.lifetimeTickets }}</div>
+              <div class="text-muted small">Lifetime tickets</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <h3 class="h5 fw-bold text-dark mb-2">Your dashboard is ready.</h3>
-      <p class="text-muted mb-4 mx-auto" style="max-width: 280px; line-height: 1.4;">
-        Add widgets to get started and customize your organizational overview.
-      </p>
-      <button type="button" class="btn btn-outline-primary px-4">
-        <i class="bi bi-plus me-1"></i>Add Widget
-      </button>
+
+      <div class="col-12 col-md-4 col-lg-6">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body d-flex align-items-center gap-3">
+            <div class="rounded-3 bg-light text-danger d-inline-flex align-items-center justify-content-center"
+              style="width:56px;height:56px;font-size:1.4rem;">
+              <i class="bi bi-record-circle"></i>
+            </div>
+            <div>
+              <div class="small text-muted">OPEN</div>
+              <div class="h5 fw-bold mb-0">{{ stats.openTickets }}</div>
+              <div class="text-muted small">Open</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-4 col-lg-6">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body d-flex align-items-center gap-3">
+            <div class="rounded-3 bg-light text-success d-inline-flex align-items-center justify-content-center"
+              style="width:56px;height:56px;font-size:1.4rem;">
+              <i class="bi bi-check-circle"></i>
+            </div>
+            <div>
+              <div class="small text-muted">CLOSED</div>
+              <div class="h5 fw-bold mb-0">{{ stats.closedTickets }}</div>
+              <div class="text-muted small">Closed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-lg-6">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body d-flex align-items-center gap-3">
+            <div class="rounded-3 bg-light text-info d-inline-flex align-items-center justify-content-center"
+              style="width:56px;height:56px;font-size:1.4rem;">
+              <i class="bi bi-people"></i>
+            </div>
+            <div>
+              <div class="small text-muted">EMPLOYEES</div>
+              <div class="h5 fw-bold mb-0">{{ stats.employees }}</div>
+              <div class="text-muted small">Employees</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-lg-6">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body d-flex align-items-center gap-3">
+            <div class="rounded-3 bg-light text-secondary d-inline-flex align-items-center justify-content-center"
+              style="width:56px;height:56px;font-size:1.4rem;">
+              <i class="bi bi-building"></i>
+            </div>
+            <div>
+              <div class="small text-muted">CLIENTS</div>
+              <div class="h5 fw-bold mb-0">{{ stats.clients }}</div>
+              <div class="text-muted small">Clients</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #managerOnlyMessage>
+  <section class="card border-0 shadow-sm p-4">
+    <div class="card-body text-center py-5">
+      <i class="bi bi-shield-lock text-muted" style="font-size: 2rem;"></i>
+      <h3 class="h5 fw-semibold mt-3 mb-2">Manager access only</h3>
+      <p class="text-muted mb-0">Statistics and charts are visible to managers only.</p>
+    </div>
+  </section>
+</ng-template>
+
+<section *ngIf="isManager" class="card border-0 shadow-sm p-3 mt-3">
+  <div class="card-body">
+    <h5 class="mb-3">Status Distribution</h5>
+    <div class="row align-items-center">
+      <div class="col-12 col-md-4" style="height:180px;">
+        <canvas baseChart [data]="statusData" [type]="statusChartType" [options]="statusChartOptions">
+        </canvas>
+      </div>
+      <div class="col-12 col-md-8">
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let lbl of statusLabels; let i = index" class="mb-1 d-flex align-items-center text-sm">
+
+            <span [style.background]="statusColors[i]"
+              style="width:10px;height:10px;display:inline-block;border-radius:50%;margin-right:6px;"></span>
+
+            <div>
+              <div class="fw-normal text-muted" style="font-size: 0.75rem; line-height: 1.2;">{{ lbl }}</div>
+              <div class="fw-bold" style="font-size: 0.85rem;">
+                {{ getDatasetValue(i) }} ({{ (getDatasetValue(i) * 100) / (stats.lifetimeTickets || 1) | number:'1.0-0'
+                }}%)
+              </div>
+            </div>
+
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section *ngIf="isManager" class="card border-0 shadow-sm p-3 mt-3">
+  <div class="card-body">
+    <h5 class="mb-3">Tickets per Product</h5>
+    <div class="row">
+      <div class="col-12 col-md-8" style="height:200px;">
+        <canvas baseChart
+                [data]="productData"
+                [type]="'bar'"
+                [options]="productOptions">
+        </canvas>
+      </div>
+      <div class="col-12 col-md-4">
+        <ul class="list-unstyled mb-0">
+          <li *ngFor="let lbl of productLabels; let i = index" class="d-flex justify-content-between align-items-center mb-2">
+            <div class="small text-muted">{{ lbl }}</div>
+            <div class="fw-bold">{{ getProductValue(i) }}</div>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>

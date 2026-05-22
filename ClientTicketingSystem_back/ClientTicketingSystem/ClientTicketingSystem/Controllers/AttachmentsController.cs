@@ -8,7 +8,7 @@ namespace ClientTicketingSystem.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = nameof(UserRole.Manager))]
+    [Authorize(Roles = nameof(UserRole.Client))]
     public class AttachmentController : ControllerBase
     {
         private readonly IAttachmentService _attachmentService;

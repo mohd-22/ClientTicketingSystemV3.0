@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
+import { NgChartsModule } from 'ng2-charts';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -44,6 +45,7 @@ import { ClientDetailsComponent } from './dashboard/clients/client-details/clien
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    NgChartsModule,
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
