@@ -1,0 +1,87 @@
+<div class="container-fluid py-3 user-details-page">
+  <div *ngIf="loading" class="d-flex align-items-center justify-content-center" style="min-height: 60vh;">
+    <div class="text-center">
+      <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="text-muted fw-semibold">Loading profile...</div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && error" class="alert alert-danger">{{ error }}</div>
+
+  <ng-container *ngIf="!loading && !error && user">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+      <div>
+        <h1 class="h4 fw-bold text-dark mb-1">Profile</h1>
+        <p class="text-muted mb-0">Your account information.</p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-12 col-lg-4">
+        <div class="card border-0 shadow-sm h-100 profile-card">
+          <div class="card-body text-center py-3 px-3">
+            <div class="d-flex align-items-center justify-content-center mx-auto mb-2 position-relative" style="width:150px; height:150px;">
+              <img *ngIf="user.imageUrl; else avatarFallback" [src]="getAttachmentUrl(user.imageUrl)" [alt]="user.fullName"
+                class="rounded-circle border border-white shadow-sm" style="width:150px; height:150px; object-fit:cover;" />
+              <ng-template #avatarFallback>
+                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center text-primary fw-bold shadow-sm border border-white" style="width:150px; height:150px; font-size:2rem;">{{ initials }}</div>
+              </ng-template>
+              <span class="position-absolute" style="right:6px; bottom:6px; width:18px; height:18px; border-radius:999px; border:3px solid #fff;" [ngClass]="user.isActive ? 'bg-success' : 'bg-danger'"></span>
+            </div>
+            <h2 class="h5 fw-bold mb-1">{{ user.fullName }}</h2>
+            <p class="text-muted small mb-2">{{ user.email }}</p>
+            <div class="d-flex justify-content-center flex-wrap gap-2 mb-3">
+              <span class="badge role-badge">{{ user.role }}</span>
+              <!-- <span class="badge status-badge" [ngClass]="user.isActive ? 'text-bg-success' : 'text-bg-danger'">{{ getStatusText() }}</span> -->
+            </div>
+            <hr class="my-3">
+            <div class="text-start small profile-meta">
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">Member Since</span>
+                <span class="fw-semibold text-dark">{{ user.createdAt ? (toLocalDate(user.createdAt) | date:'mediumDate') : 'N/A' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-8">
+        <div class="card border-0 shadow-sm mb-4 info-card">
+          <div class="card-header bg-white py-2 px-3">
+            <h2 class="h6 fw-bold mb-0"><i class="bi bi-person me-2 text-primary"></i>Personal Information</h2>
+          </div>
+          <div class="card-body py-3 px-3">
+            <div class="row g-3">
+              <div class="col-md-6 detail-block">
+                <div class="label-small">Role</div>
+                <div class="detail-value">{{ getRoleLabel(user.role) }}</div>
+              </div>
+              <div class="col-md-6 detail-block">
+                <div class="label-small">Username</div>
+                <div class="detail-value">{{ user.userName }}</div>
+              </div>
+              <div class="col-md-6 detail-block">
+                <div class="label-small">Phone Number</div>
+                <div class="detail-value">{{ user.phoneNumber || 'N/A' }}</div>
+              </div>
+              <div class="col-md-6 detail-block">
+                <div class="label-small">Gender</div>
+                <div class="detail-value">{{ getGenderLabel(user.gender) }}</div>
+              </div>
+              <div class="col-md-6 detail-block">
+                <div class="label-small">Date of Birth</div>
+                <div class="detail-value">{{ user.dateOfBirth ? (user.dateOfBirth | date:'longDate') : 'N/A' }}</div>
+              </div>
+              <div class="col-12 detail-block">
+                <div class="label-small">Address</div>
+                <div class="detail-value">{{ user.address || 'N/A' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

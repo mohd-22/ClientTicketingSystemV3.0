@@ -38,4 +38,9 @@ export class DashboardComponent implements OnInit {
     this.mobileMenuOpen = false;
   }
 
+  goToProfile(): void {
+    void this.router.navigateByUrl('/dashboard/profile');
+    this.closeMobileMenu();
+  }
+
 }

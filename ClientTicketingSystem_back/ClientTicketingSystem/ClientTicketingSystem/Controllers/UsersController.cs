@@ -10,7 +10,7 @@ namespace ClientTicketingSystem.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = nameof(UserRole.Manager))]
+//[Authorize(Roles = nameof(UserRole.Manager))]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -35,7 +35,7 @@ public class UsersController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
-    [Authorize(Roles = nameof(UserRole.Manager))]
+    //[Authorize(Roles = nameof(UserRole.Manager))]
     [HttpGet("GetUserById/{id}")]
     public async Task<ActionResult> GetUserById(Guid id)
     {

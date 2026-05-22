@@ -13,7 +13,7 @@ export class GuestGuardGuard implements CanActivate {
     const token = localStorage.getItem('access_token');
 
      if (token) {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/tickets']);
     return false;
   }
 

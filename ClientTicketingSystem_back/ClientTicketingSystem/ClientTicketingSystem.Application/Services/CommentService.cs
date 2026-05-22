@@ -18,6 +18,7 @@ public class CommentService : ICommentService
             TicketId = commentDto.TicketId,
             CreatorId = Userid,
             CreatedBy = Userid,
+            CreatedDate = DateTime.Now
         };
         await _unitOfWork.Comments.AddAsync(comment);
         await _unitOfWork.CompleteAsync();

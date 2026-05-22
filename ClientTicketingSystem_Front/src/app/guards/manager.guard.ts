@@ -18,7 +18,7 @@ export class ManagerGuard implements CanActivate {
         return true;
       }
   
-      this.router.navigate(['/dashboard'], { queryParams: { returnUrl: state.url } });
+      this.router.navigate(['/dashboard/tickets'], { queryParams: { returnUrl: state.url } });
       return false;
     }
 }

@@ -1,17 +1,17 @@
 <ng-template #sidebarNavTpl>
 	<div class="px-3 py-3 border-bottom border-secondary border-opacity-25">
-		<div class="d-flex align-items-center gap-2">
-			<img src="https://dummyimage.com/40x40/4b5563/ffffff&text=SA" alt="System Admin"
-				class="rounded-circle flex-shrink-0" />
-			<div class="lh-sm">
-				<div class="fw-semibold small">{{FullName}}</div>
-				<div class="small text-white-50">{{UserRole}}</div>
+		<div class="d-flex align-items-center gap-2" role="button" (click)="goToProfile()" style="cursor:pointer;">
+				<img src="https://dummyimage.com/40x40/4b5563/ffffff&text=SA" alt="System Admin"
+					class="rounded-circle flex-shrink-0" />
+				<div class="lh-sm">
+					<div class="fw-semibold small">{{FullName}}</div>
+					<div class="small text-white-50">{{UserRole}}</div>
+				</div>
 			</div>
-		</div>
 	</div>
 
 	<nav class="nav nav-pills flex-column gap-1 px-2 py-3" (click)="closeMobileMenu()">
-		<a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+		<a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" *ngIf="isManager"
 			class="nav-link text-white-50 d-flex align-items-center gap-2">
 			<i class="bi bi-grid-1x2"></i><span>Dashboard</span>
 		</a>

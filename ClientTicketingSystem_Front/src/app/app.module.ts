@@ -23,6 +23,7 @@ import { UserDetailsComponent } from './dashboard/users/user-details/user-detail
 import { ClientsComponent } from './dashboard/clients/clients.component';
 import { TicketDetailsComponent } from './dashboard/tickets/ticket-details/ticket-details.component';
 import { ClientDetailsComponent } from './dashboard/clients/client-details/client-details.component';
+import { ProfileComponent } from './dashboard/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { ClientDetailsComponent } from './dashboard/clients/client-details/clien
     ClientsComponent,
     TicketDetailsComponent,
     ClientDetailsComponent
+    ,ProfileComponent
   ],
   imports: [
     BrowserModule,

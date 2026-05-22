@@ -68,7 +68,7 @@
             <div class="mt-2 text-end">
               <button type="button" class="btn btn-primary btn-sm" (click)="sendComment()" [disabled]="commentSubmitting">
                 <span *ngIf="commentSubmitting" class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
-                Send Response
+                Send
               </button>
             </div>
             <div *ngIf="commentError" class="text-danger small mt-2">{{ commentError }}</div>

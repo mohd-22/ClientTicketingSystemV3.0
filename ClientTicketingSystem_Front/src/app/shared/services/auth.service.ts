@@ -70,7 +70,6 @@ export class AuthService {
     return this.getUserRole().toLowerCase() === 'manager';
   }
 
-
   getFullName(): string {
     const token = localStorage.getItem('access_token');
     if (!token) return '';
@@ -78,6 +77,18 @@ export class AuthService {
     try {
       const decoded: any = jwtDecode(token);
       return decoded.FullName || decoded.fullName || '';
+    } catch {
+      return '';
+    }
+  }
+
+  getUserId(): string {
+    const token = localStorage.getItem('access_token');
+    if (!token) return '';
+
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.id || decoded.Id || decoded.sub || '';
     } catch {
       return '';
     }
