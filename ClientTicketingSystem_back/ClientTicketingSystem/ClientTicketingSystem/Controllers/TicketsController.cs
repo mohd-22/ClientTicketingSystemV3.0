@@ -12,11 +12,9 @@ namespace ClientTicketingSystem.API.Controllers;
 public class TicketsController : ControllerBase
 {
     readonly ITicketService _ticketService;
-    readonly ILogger<TicketsController> _logger;
-    public TicketsController(ITicketService ticketService, ILogger<TicketsController> logger)
+    public TicketsController(ITicketService ticketService)
     {
         _ticketService = ticketService;
-        _logger = logger;
     }
 
     [Authorize(Roles = $"{nameof(UserRole.Client)}")]
@@ -32,6 +30,7 @@ public class TicketsController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
+    [Authorize]
     [HttpGet("GetAllTickets")]
     public async Task<ActionResult> GetAllTickets(
         [FromQuery] string? search,
@@ -53,6 +52,7 @@ public class TicketsController : ControllerBase
         var result = await _ticketService.GetAllTickets(search, sort, status, pageIndex, pageSize, clientId, employeeId, currentUserRole, userGuid);
         return StatusCode(result.StatusCode, result);
     }
+    [Authorize]
     [HttpGet("GetTicketById/{id}")]
     public async Task<ActionResult> GetTicketById(Guid id)
     {
@@ -65,6 +65,7 @@ public class TicketsController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
+    [Authorize(Roles = nameof(UserRole.Client))]
     [HttpPut("UpdateTicket/{id}")] 
     public async Task<ActionResult> UpdateTicket([FromBody] CreateTicketDto dto, Guid id)
     {
@@ -76,6 +77,8 @@ public class TicketsController : ControllerBase
         var result = await _ticketService.UpdateTicket(dto,id, userGuid);
         return StatusCode(result.StatusCode, result);
     }
+
+    [Authorize(Roles = nameof(UserRole.Client))]
     [HttpPut("TicketFix/{id}")]
     public async Task<ActionResult> TicketFix(Guid id)
     {

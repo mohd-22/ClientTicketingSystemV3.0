@@ -19,13 +19,7 @@ public class ProductsController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet("GetProductById/{id}")]
-    public async Task<ActionResult> GetProductById(Guid id)
-    {
-        var result = await _productService.GetProductById(id);
-        return StatusCode(result.StatusCode, result);
-    }
-
+    [Authorize]
     [HttpGet("GetAllProducts")]
     public async Task<ActionResult> GetAllProducts(
         [FromQuery] string? search,
@@ -36,42 +30,6 @@ public class ProductsController : ControllerBase
         var result = await _productService.GetAllProducts(search, sort, pageIndex, pageSize);
         return StatusCode(result.StatusCode, result);
 
-    }
-
-    [Authorize(Roles = nameof(UserRole.Manager))]
-    [HttpPost("CreateProduct")]
-    public async Task<ActionResult> CreateProduct(CreateProductDto dto)
-    {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (!Guid.TryParse(userId, out Guid userGuid))
-        {
-            return Unauthorized();
-        }
-        var result = await _productService.CreateProduct(dto, userGuid);
-        return StatusCode(result.StatusCode, result);
-
-    }
-
-    [Authorize(Roles = nameof(UserRole.Manager))]
-    [HttpPost("UpdateProduct")]
-    public async Task<ActionResult> UpdateProduct(UpdateProductDto dto)
-    {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (!Guid.TryParse(userId, out Guid userGuid))
-        {
-            return Unauthorized();
-        }
-        var result = await _productService.UpdateProduct(dto, userGuid);
-        return StatusCode(result.StatusCode, result);
-    }
-
-
-    [Authorize(Roles = nameof(UserRole.Manager))]
-    [HttpDelete("{Id}")]
-    public async Task<ActionResult> DeleteItem(Guid Id)
-    {
-        var result = await _productService.DeleteProduct(Id);
-        return StatusCode(result.StatusCode, result);
     }
 
 }

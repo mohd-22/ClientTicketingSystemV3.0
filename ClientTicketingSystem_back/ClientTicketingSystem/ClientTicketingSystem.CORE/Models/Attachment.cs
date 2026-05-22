@@ -5,4 +5,5 @@ public class Attachment : BaseEntity
     public string FilePath { get; set; } = string.Empty;
     public Guid TicketId { get; set; }
     public Ticket? Ticket { get; set; }
+    
 }

@@ -19,7 +19,7 @@ namespace ClientTicketingSystem.API.Controllers
             _commentService = commentService;
         }
 
-        //[Authorize(Roles = $"{nameof(UserRole.Client)},{nameof(UserRole.Employee)}")]
+        [Authorize(Roles = $"{nameof(UserRole.Client)},{nameof(UserRole.Employee)}")]
         [HttpPost]
         public async Task<ActionResult> CreateComment(CreateCommentDto dto)
         {
@@ -32,7 +32,7 @@ namespace ClientTicketingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("{requestId}")]
         public async Task<ActionResult> GetAllComments(Guid requestId)
         {
