@@ -37,6 +37,7 @@ public class TicketService : ITicketService
     }
     public async Task<ApiResponse<bool>> DeleteTicket(Guid Id)
     {
+        _logger.LogInformation("Deleting a ticket with ID: {Id}", Id);
         var request = await _unitOfWork.Tickets.GetByIdAsync(Id);
         if (request == null) { return new ApiResponse<bool> { Data = false, Message = "Request Not found", Success = false, StatusCode = 404 }; }
 
@@ -48,6 +49,7 @@ public class TicketService : ITicketService
 
         _unitOfWork.Tickets.Delete(request);
         await _unitOfWork.CompleteAsync();
+        _logger.LogInformation("Request with ID: {Id} deleted successfully", Id);
         return new ApiResponse<bool> { Data = true, Message = "Request Deleted Successfully", Success = true, StatusCode = 200 };
     }
     public async Task<ApiResponse<bool>> UpdateTicket(CreateTicketDto dto, Guid TicketId, Guid clientId)
@@ -79,15 +81,16 @@ public class TicketService : ITicketService
         await _unitOfWork.CompleteAsync();
         return new ApiResponse<bool> { Data = true, Message = "Ticket Updated Successfully", Success = true, StatusCode = 200 };
     }
-    public async Task<ApiResponse<PaginationDto<TicketDto>>> GetAllTickets(string? search,
-                                                                           string? sort,
-                                                                           TicketStatus? status,
-                                                                           int pageIndex,
-                                                                           int pageSize,
-                                                                           Guid? clientId,
-                                                                           Guid? employeeId,
-                                                                           UserRole role,
-                                                                           Guid userId)
+    public async Task<ApiResponse<PaginationDto<TicketDto>>> GetAllTickets(
+        string? search,
+        string? sort,
+        TicketStatus? status,
+        int pageIndex,
+        int pageSize,
+        Guid? clientId,
+        Guid? employeeId,
+        UserRole role,
+        Guid userId)
     {
         try
         {

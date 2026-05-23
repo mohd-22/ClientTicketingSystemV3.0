@@ -29,7 +29,7 @@ public class UserService : IUserService
     public async Task<ApiResponse<bool>> ActivateUserAsync(Guid id)
     {
         var user = await _unitOfWork.Users.GetByIdAsync(id);
-        if (user == null) new ApiResponse<bool> { Data = false, Message = "User Not found", Success = false, StatusCode = 404 };
+        if (user == null) return new ApiResponse<bool> { Data = false, Message = "User Not found", Success = false, StatusCode = 404 };
         if (user.IsActive == true) { return new ApiResponse<bool> { Data = false, Message = "User is already Active", Success = false, StatusCode = 400 }; }
 
         user.IsActive = true;
@@ -47,14 +47,14 @@ public class UserService : IUserService
 
         if (user.Role == UserRole.Client)
         {
-            canDeactivate = await HandleEmployeeDeactivation(id);
+            canDeactivate = await HandleClientDeactivation(id);
         }
         else if (user.Role == UserRole.Employee)
         {
-            canDeactivate = await HandleStaffDeactivation(id);
+            canDeactivate = await HandleEmployeeDeactivation(id);
         }
 
-        if (!canDeactivate) new ApiResponse<bool> { Data = false, Message = "The Client has incomplete requests yet.", Success = false, StatusCode = 400 };
+        if (!canDeactivate) return new ApiResponse<bool> { Data = false, Message = "The Client has incomplete requests yet.", Success = false, StatusCode = 400 };
 
         user.IsActive = false;
         _unitOfWork.Users.Update(user);
@@ -62,7 +62,7 @@ public class UserService : IUserService
         return new ApiResponse<bool> { Data = true, Message = "user Deactivated Succesfully", Success = true, StatusCode = 200 };
 
     }
-    private async Task<bool> HandleStaffDeactivation(Guid clientId)
+    private async Task<bool> HandleEmployeeDeactivation(Guid clientId)
     {
         var requests = await _unitOfWork.Tickets.FindAllAsync(r =>
 
@@ -77,7 +77,7 @@ public class UserService : IUserService
         }
         return true;
     }
-    private async Task<bool> HandleEmployeeDeactivation(Guid employeeId)
+    private async Task<bool> HandleClientDeactivation(Guid employeeId)
     {
 
         bool hasActiveRequests = await _unitOfWork.Tickets.AnyAsync(r => r.CreatedBy == employeeId );
@@ -151,13 +151,8 @@ public class UserService : IUserService
     {
 
         var user = await _unitOfWork.Users.GetByIdAsync(id);
-        if (user == null) new ApiResponse<UserDto> { Data = null, Message = "User Not found", Success = false, StatusCode = 404 };
-
-        var requests = await _unitOfWork.Tickets.FindAsNoTrackingAsync(r =>
-          r.CreatedBy == id || r.AssignedEmpId == id);
-
+        if (user == null) return new ApiResponse<UserDto> { Data = null, Message = "User Not found", Success = false, StatusCode = 404 };
         var userDto = MapToUserDto(user!);
-
         return new ApiResponse<UserDto> { Data = userDto, Message = "User Retrieved Succesfully", Success = true, StatusCode = 200 };
     }
     public async Task<ApiResponse<UserRegistraionDto>> CreateUserAsync(UserRegistraionDto request, Guid UserId)
@@ -209,7 +204,7 @@ public class UserService : IUserService
 
         await _unitOfWork.Users.AddAsync(user);
         await _unitOfWork.CompleteAsync();
-        return new ApiResponse<UserRegistraionDto> { Data = request, Message = "User Created succesfully", Success = true, StatusCode = 200 };
+        return new ApiResponse<UserRegistraionDto> { Message = "User Created succesfully", Success = true, StatusCode = 200 };
     }
     public async Task<ApiResponse<bool>> UpdtaeUserAsync(UpdateUserDto request, Guid id)
     {
@@ -245,28 +240,46 @@ public class UserService : IUserService
         {
             return new ApiResponse<bool> { Data = false, Message = "File is Required", Success = false, StatusCode = 400 };
         }
+
+        var user = await _unitOfWork.Users.GetByIdAsync(userId);
+        if (user == null)
+        {
+            return new ApiResponse<bool> { Data = false, Message = "User Not found", Success = false, StatusCode = 404 };
+        }
+
+        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+        string uploadFolder = Path.Combine(_env.WebRootPath, "Attachments");
+        string filePath = Path.Combine(uploadFolder, fileName);
+
         try
         {
-            var user = await _unitOfWork.Users.GetByIdAsync(userId);
-            string uploadFolder = Path.Combine(_env.WebRootPath, "Attachments");
             if (!Directory.Exists(uploadFolder))
             {
                 Directory.CreateDirectory(uploadFolder);
             }
-            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            string filePath = Path.Combine(uploadFolder, fileName);
+
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
+
             user.ImageUrl = Path.Combine("Attachments", fileName);
-             _unitOfWork.Users.Update(user);
+            _unitOfWork.Users.Update(user);
             await _unitOfWork.CompleteAsync();
-            return new ApiResponse<bool> { Data = true, Message = "Avater changed successfully", Success = true, StatusCode = 200 };
+
+            return new ApiResponse<bool> { Data = true, Message = "Avatar changed successfully", Success = true, StatusCode = 200 };
         }
         catch (Exception ex)
         {
-            throw new Exception("Failed to change avatar", ex);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+                _logger.LogWarning("Cleaned up uploaded file due to database failure: {FilePath}", filePath);
+            }
+
+            _logger.LogError(ex, "Error occurred while changing avatar for user {UserId}", userId);
+
+            throw;
         }
     }
 }
