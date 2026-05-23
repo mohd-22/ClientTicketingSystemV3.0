@@ -5,6 +5,7 @@ import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import { ToastrService } from 'ngx-toastr';
 import { UserDto, UsersService, UpdateUserRequest } from '../../../shared/services/users.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-user-details',
@@ -12,6 +13,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./user-details.component.css']
 })
 export class UserDetailsComponent implements OnInit {
+  private readonly PhonePattern = /^(?:\+9627|07)\d{8}$/;
   user: UserDto | null = null;
   isLoading = false;
   isUpdatingStatus = false;
@@ -23,9 +25,6 @@ export class UserDetailsComponent implements OnInit {
   isSaving = false;
   showConfirmStatusModal = false;
   confirmStatusAction: 'activate' | 'deactivate' | null = null;
-  readonly backendUrl = 'https://localhost:7100/';
-
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -50,12 +49,10 @@ export class UserDetailsComponent implements OnInit {
   }
 
   getAttachmentUrl(path: string | undefined): string {
-    if (!path) return 'assets/images/default-avatar.png'; 
-    
-    
-    const cleanPath = path.replace(/\\/g, '/');
-    
-    return `${this.backendUrl}${cleanPath}`;
+    if (!path) return 'assets/images/default-avatar.png';
+    const cleanPath = path.replace(/\\/g, '/').replace(/^\/+/, '');
+    const base = (environment.apiUrl || '').replace(/\/+$/, '');
+    return `${base}/${cleanPath}`;
   }
   editUser(): void {
     if (!this.user) return;
@@ -69,7 +66,7 @@ export class UserDetailsComponent implements OnInit {
     };
     this.editForm = this.fb.group({
       fullName: [this.editModel.fullName || '', [Validators.required, Validators.minLength(2)]],
-      phoneNumber: [this.editModel.phoneNumber || '', [Validators.pattern(/^\+?[0-9\s-]{7,15}$/)]],
+      phoneNumber: [this.editModel.phoneNumber || '', [Validators.required, Validators.pattern(this.PhonePattern)]],
       dateOfBirth: [this.editModel.dateOfBirth || ''],
       gender: [this.editModel.gender ?? ''],
       address: [this.editModel.address || '']

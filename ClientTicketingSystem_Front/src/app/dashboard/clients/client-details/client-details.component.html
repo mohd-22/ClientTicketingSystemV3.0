@@ -51,9 +51,10 @@
 								</div>
 								<div class="col-md-6">
 									<label class="form-label">Phone Number</label>
-									<input formControlName="phoneNumber" type="text" class="form-control" [class.is-invalid]="editForm.get('phoneNumber')?.invalid && (editForm.get('phoneNumber')?.touched || editForm.get('phoneNumber')?.dirty)">
+									<input formControlName="phoneNumber" type="tel" inputmode="tel" placeholder="0791234567 or +962791234567" class="form-control" [class.is-invalid]="editForm.get('phoneNumber')?.invalid && (editForm.get('phoneNumber')?.touched || editForm.get('phoneNumber')?.dirty)">
 									<div *ngIf="editForm.get('phoneNumber')?.invalid && (editForm.get('phoneNumber')?.touched || editForm.get('phoneNumber')?.dirty)" class="invalid-feedback d-block">
-										<div *ngIf="editForm.get('phoneNumber')?.errors?.['pattern']">Invalid phone number format.</div>
+										<div *ngIf="editForm.get('phoneNumber')?.errors?.['required']">Phone number is required.</div>
+										<div *ngIf="editForm.get('phoneNumber')?.errors?.['pattern']">Enter a valid mobile number, such as 0791234567 or +962791234567.</div>
 									</div>
 								</div>
 								<div class="col-md-6">
@@ -118,7 +119,7 @@
 				<div class="card shadow-sm border-0 h-100">
 					<div class="card-body text-center py-4">
 						<div class="position-relative d-inline-block mb-3">
-							<img *ngIf="client.imageUrl; else avatarFallback" [src]="client.imageUrl" [alt]="client.fullName" width="96" height="96" class="rounded-circle border border-3 border-white shadow-sm object-fit-cover" />
+							<img *ngIf="client.imageUrl; else avatarFallback" [src]="getAttachmentUrl(client.imageUrl)" [alt]="client.fullName" width="96" height="96" class="rounded-circle border border-3 border-white shadow-sm object-fit-cover" />
 							<ng-template #avatarFallback>
 								<div class="rounded-circle bg-primary-subtle text-primary fw-bold shadow-sm border border-3 border-white d-flex align-items-center justify-content-center" style="width: 96px; height: 96px; font-size: 1.6rem;">
 									{{ getInitials() }}

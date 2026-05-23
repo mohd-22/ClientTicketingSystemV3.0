@@ -31,7 +31,7 @@ public class AuthService : IAuthService
         try
         {
             var user = await _unitOfWork.Users.FindAsync(u =>
-                u.UserName == request.EmailOrUsername || u.Email == request.EmailOrUsername);
+                u.UserName == request.EmailOrUsername || u.Email == request.EmailOrUsername || u.PhoneNumber == request.EmailOrUsername);
 
             if (user == null)
             {
@@ -39,7 +39,7 @@ public class AuthService : IAuthService
                 return new ApiResponse<string>
                 {
                     Success = false,
-                    Message = "User not found",
+                    Message = "Wrong credentials",
                     StatusCode = 401
                 };
             }
@@ -51,7 +51,7 @@ public class AuthService : IAuthService
                 return new ApiResponse<string>
                 {
                     Success = false,
-                    Message = "Invalid password",
+                    Message = "Wrong credentials",
                     StatusCode = 401
                 };
             }

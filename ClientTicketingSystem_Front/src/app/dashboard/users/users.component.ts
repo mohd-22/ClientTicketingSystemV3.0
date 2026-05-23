@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs';
 import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import { UsersService, UserDto, PaginationDto } from '../../shared/services/users.service';
+import { environment } from 'src/environments/environment';
 
 interface User {
   id: string;
@@ -28,7 +29,7 @@ export class UsersComponent implements OnInit {
   totalCount: number = 0;
   isLoading: boolean = false;
   errorMessage: string = '';
-  readonly backendUrl = 'https://localhost:7100/';
+  
 
   
   sortColumn: 'name' | 'email' | 'role' | 'isActive' = 'name';
@@ -65,12 +66,10 @@ export class UsersComponent implements OnInit {
   }
 
   getAttachmentUrl(path: string | undefined): string {
-    if (!path) return 'assets/images/default-avatar.png'; 
-    
-    
-    const cleanPath = path.replace(/\\/g, '/');
-    
-    return `${this.backendUrl}${cleanPath}`;
+    if (!path) return 'assets/images/default-avatar.png';
+    const cleanPath = path.replace(/\\/g, '/').replace(/^\/+/, '');
+    const base = (environment.apiUrl || '').replace(/\/+$/, '');
+    return `${base}/${cleanPath}`;
   }
 
   loadUsers(): void {

@@ -9,8 +9,4 @@ public interface IProductService
                                                                          string? sort,
                                                                          int pageIndex,
                                                                          int pageSize);
-    Task<ApiResponse<CreateProductDto>> CreateProduct(CreateProductDto CatDto, Guid UserId);
-    Task<ApiResponse<UpdateProductDto>> UpdateProduct(UpdateProductDto CatDto, Guid UserId);
-    Task<ApiResponse<ProductDto>> GetProductById(Guid ProductId);
-    Task<ApiResponse<bool>> DeleteProduct(Guid Id);
 }

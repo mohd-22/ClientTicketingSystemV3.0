@@ -51,7 +51,11 @@ import { ProfileComponent } from './dashboard/profile/profile.component';
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot({
+    positionClass: 'toast-bottom-right', 
+    preventDuplicates: true,            
+    timeOut: 3000                       
+  })
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

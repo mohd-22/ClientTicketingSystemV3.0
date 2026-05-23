@@ -28,11 +28,10 @@
 
 								<div class="col-md-6">
 										<label class="form-label small text-muted">PHONE NUMBER</label>
-										<input class="form-control" formControlName="phoneNumber" placeholder="e.g. 0712345678" inputmode="numeric" pattern="[0-9]*" maxlength="15" />
+									<input class="form-control" formControlName="phoneNumber" type="tel" inputmode="tel" placeholder="0791234567 or +962791234567" />
 										<div *ngIf="submitted && f.phoneNumber.errors" class="text-danger small mt-1">
 											<div *ngIf="f.phoneNumber.errors?.['required']">Phone is required.</div>
-											<div *ngIf="f.phoneNumber.errors?.['minlength']">Phone number is too short.</div>
-											<div *ngIf="f.phoneNumber.errors?.['pattern']">Phone must contain only numbers.</div>
+										<div *ngIf="f.phoneNumber.errors?.['pattern']">Enter a valid  mobile number, such as 0791234567 or +962791234567.</div>
 										</div>
 								</div>
 				<div class="col-md-6">

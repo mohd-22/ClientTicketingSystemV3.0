@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { UserDto, UsersService, UpdateUserRequest } from '../../../shared/services/users.service';
 import { TicketDto, TicketsService } from '../../../shared/services/tickets.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-client-details',
@@ -14,6 +15,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 
 export class ClientDetailsComponent implements OnInit {
+  private readonly PhonePattern = /^(?:\+9627|07)\d{8}$/;
   client: UserDto | null = null;
   tickets: TicketDto[] = [];
   isLoading = false;
@@ -28,6 +30,12 @@ export class ClientDetailsComponent implements OnInit {
   isSaving = false;
   showConfirmStatusModal = false;
   confirmStatusAction: 'activate' | 'deactivate' | null = null;
+  getAttachmentUrl(path: string | undefined): string {
+    if (!path) return 'assets/images/default-avatar.png';
+    const cleanPath = path.replace(/\\/g, '/').replace(/^\/+/, '');
+    const base = (environment.apiUrl || '').replace(/\/+$/, '');
+    return `${base}/${cleanPath}`;
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -65,7 +73,7 @@ export class ClientDetailsComponent implements OnInit {
 
     this.editForm = this.fb.group({
       fullName: [this.editModel.fullName || '', [Validators.required, Validators.minLength(2)]],
-      phoneNumber: [this.editModel.phoneNumber || '', [Validators.pattern(/^\+?[0-9\s-]{7,15}$/)]],
+      phoneNumber: [this.editModel.phoneNumber || '', [Validators.required, Validators.pattern(this.PhonePattern)]],
       dateOfBirth: [this.editModel.dateOfBirth || ''],
       gender: [this.editModel.gender ?? ''],
       address: [this.editModel.address || '']

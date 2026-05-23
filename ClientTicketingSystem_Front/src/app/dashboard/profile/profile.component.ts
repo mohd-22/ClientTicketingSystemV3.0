@@ -3,6 +3,7 @@ import { finalize } from 'rxjs';
 import { AuthService } from '../../shared/services/auth.service';
 import { UsersService, UserDto } from '../../shared/services/users.service';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -15,7 +16,7 @@ export class ProfileComponent implements OnInit {
   error = '';
   initials = 'U';
   uploadingAvatar = false;
-  readonly backendUrl = 'https://localhost:7100/';
+  
 
   constructor(
     private authService: AuthService,
@@ -73,12 +74,10 @@ export class ProfileComponent implements OnInit {
 
 
   getAttachmentUrl(path: string | undefined): string {
-    if (!path) return 'assets/images/default-avatar.png'; 
-    
-    
-    const cleanPath = path.replace(/\\/g, '/');
-    
-    return `${this.backendUrl}${cleanPath}`;
+    if (!path) return 'assets/images/default-avatar.png';
+    const cleanPath = path.replace(/\\/g, '/').replace(/^\/+/, '');
+    const base = (environment.apiUrl || '').replace(/\/+$/, '');
+    return `${base}/${cleanPath}`;
   }
 
   onAvatarSelected(event: Event): void {

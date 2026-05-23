@@ -123,13 +123,13 @@ export class TicketsService {
   }
 
   assignTicketToEmployee(ticketId: string, employeeId: string): Observable<ApiResponse<unknown>> {
-    const url = `${environment.apiUrl}/api/Employees/assign/${ticketId}`;
+    const url = `${environment.apiUrl}/api/Users/assign/${ticketId}`;
     const params = new HttpParams().set('employeeId', employeeId);
     return this.http.put<ApiResponse<unknown>>(url, {}, { params });
   }
 
   changeTicketStatus(ticketId: string): Observable<ApiResponse<unknown>> {
-    const url = `${environment.apiUrl}/api/Employees/ChangeStatus/${ticketId}`;
+    const url = `${environment.apiUrl}/api/Users/ChangeStatus/${ticketId}`;
     return this.http.put<ApiResponse<unknown>>(url, {});
   }
 

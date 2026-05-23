@@ -36,7 +36,7 @@ export class TicketDetailsComponent implements OnInit {
   assignLoading = false;
   assignErrorMessage = '';
   priority: string = 'High';
-  relatedAssets: Array<{ name: string; url?: string }> = [];
+  relatedAssets: Array<{ id: string; name: string }> = [];
   estimatedResolution: string | null = null;
   ticket: (TicketDto & { description?: string; createdDate?: string; productId?: string; ProductId?: string }) | null = null;
   comments: CommentReadDto[] = [];
@@ -151,8 +151,8 @@ export class TicketDetailsComponent implements OnInit {
       next: response => {
         const attachments = response.data ?? [];
         this.relatedAssets = attachments.map((attachment: AttachmentDto) => ({
+          id: attachment.id,
           name: attachment.fileName,
-          url: `${this.getAttachmentDownloadUrl(attachment.id)}`
         }));
       },
       error: err => {
@@ -162,8 +162,21 @@ export class TicketDetailsComponent implements OnInit {
     });
   }
 
-  private getAttachmentDownloadUrl(id: string): string {
-    return `${environment.apiUrl}/api/Attachment/download/${id}`;
+  downloadAttachment(attachment: { id: string; name: string }): void {
+    this.attachmentsService.downloadAttachment(attachment.id).subscribe({
+      next: blob => {
+        const objectUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = attachment.name;
+        link.click();
+        window.URL.revokeObjectURL(objectUrl);
+      },
+      error: err => {
+        console.error('Failed to download attachment', err);
+        this.toastr.error('Failed to download attachment.', 'Error');
+      }
+    });
   }
 
   sendComment(): void {

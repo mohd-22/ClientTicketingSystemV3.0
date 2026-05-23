@@ -36,7 +36,7 @@ public class UsersController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
-    //[Authorize(Roles = nameof(UserRole.Manager))]
+    [Authorize]
     [HttpGet("GetUserById/{id}")]
     public async Task<ActionResult> GetUserById(Guid id)
     {
@@ -90,6 +90,21 @@ public class UsersController : ControllerBase
             return Unauthorized("User ID is not valid.");
         }
         var result = await _userService.ChangeAvatar(userGuid, file);
+        return StatusCode(result.StatusCode, result);
+    }
+
+    [Authorize(Roles = nameof(UserRole.Manager))]
+    [HttpPut("assign/{ticketId}")]
+    public async Task<IActionResult> AssignTicket(Guid ticketId, [FromQuery] Guid employeeId)
+    {
+        var result = await _userService.AssignTicketToEmployee(ticketId, employeeId);
+        return StatusCode(result.StatusCode, result);
+    }
+    [Authorize(Roles = nameof(UserRole.Employee))]
+    [HttpPut("ChangeStatus/{ticketId}")]
+    public async Task<IActionResult> ChangeStatus(Guid ticketId)
+    {
+        var result = await _userService.TicketChangeStatus(ticketId);
         return StatusCode(result.StatusCode, result);
     }
 }

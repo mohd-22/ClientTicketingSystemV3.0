@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('access_token', accessToken);
         }
 
-        this.toastr.success('Login successful', 'Success', { timeOut: 3000 });
+        // this.toastr.success('Login successful', 'Success', { timeOut: 3000 });
         void this.router.navigateByUrl('/dashboard', { replaceUrl: true });
       },
       error: (err: HttpErrorResponse) => {
@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit {
         } else {
           this.errorMessage = 'Could not reach the server. Is the API running at ' + environment.apiUrl + ' ?';
         }
-        this.toastr.error(this.errorMessage, 'Error', { timeOut: 3000 });
+        // this.toastr.error(this.errorMessage, 'Error', { timeOut: 3000 });
       }
     });
   }

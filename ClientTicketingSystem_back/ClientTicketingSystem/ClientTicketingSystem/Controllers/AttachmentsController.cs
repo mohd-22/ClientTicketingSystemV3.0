@@ -8,7 +8,6 @@ namespace ClientTicketingSystem.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = nameof(UserRole.Client))]
     public class AttachmentController : ControllerBase
     {
         private readonly IAttachmentService _attachmentService;
@@ -17,6 +16,7 @@ namespace ClientTicketingSystem.API.Controllers
             _attachmentService = attachmentService;
         }
 
+        [Authorize(Roles = nameof(UserRole.Client))]
         [HttpPost("UploadAttachment/{TicketId}")]
         public async Task<IActionResult> UploadAttachment([FromRoute] Guid TicketId, IFormFile file)
         {
@@ -30,6 +30,7 @@ namespace ClientTicketingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        [Authorize]
         [HttpGet("Ticket/{TicketId}")]
         public async Task<IActionResult> GetAttachmentsByTicket([FromRoute] Guid TicketId)
         {
@@ -37,6 +38,7 @@ namespace ClientTicketingSystem.API.Controllers
             return StatusCode(result.StatusCode, result);
         }
 
+        [Authorize]
         [HttpGet("download/{id}")]
         public async Task<IActionResult> DownloadFile(Guid id)
         {

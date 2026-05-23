@@ -63,7 +63,7 @@
             </div>
           </div>
 
-          <div>
+          <div *ngIf="ticket.status.toLowerCase() !== 'closed' && !isManager">
             <textarea class="form-control" rows="3" placeholder="Add a comment or internal note..." [(ngModel)]="newCommentText"></textarea>
             <div class="mt-2 text-end">
               <button type="button" class="btn btn-primary btn-sm" (click)="sendComment()" [disabled]="commentSubmitting">
@@ -96,9 +96,7 @@
         </button>
       </div>
 
-      <div *ngIf="statusChangeErrorMessage" class="alert alert-danger py-2 mb-4">
-        {{ statusChangeErrorMessage }}
-      </div>
+     
 
       <div *ngIf="showEditModal">
         <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true" style="z-index: 2000;">
@@ -248,9 +246,9 @@
               <li *ngFor="let a of relatedAssets" class="d-flex justify-content-between align-items-center py-1">
                 <div class="text-truncate">{{ a.name }}</div>
                 <div>
-                  <a class="btn btn-sm btn-light" [href]="a.url || '#'" [attr.download]="a.name">
+                  <button type="button" class="btn btn-sm btn-light" (click)="downloadAttachment(a)">
                     <i class="bi bi-download"></i>
-                  </a>
+                  </button>
                 </div>
               </li>
             </ul>

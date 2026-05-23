@@ -21,5 +21,7 @@ public interface IUserService
     Task<ApiResponse<bool>> DeactivateUserAsync(Guid id);
     Task<ApiResponse<bool>> ActivateUserAsync(Guid id);
     Task<ApiResponse<bool>> ChangeAvatar(Guid userId, IFormFile file);
+    Task<ApiResponse<bool>> AssignTicketToEmployee(Guid TicketId, Guid EmployeeId);
+    Task<ApiResponse<bool>> TicketChangeStatus(Guid TicketId);
 
 }

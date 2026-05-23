@@ -21,6 +21,7 @@ export class RegistrationComponent implements OnInit {
   successMessage = '';
   errorMessage = '';
   loading = false;
+  private readonly PhonePattern = /^(?:\+9627|07)\d{8}$/;
   genderOptions: GenderOption[] = [
     { label: 'Male', value: 1 },
     { label: 'Female', value: 2 },
@@ -34,7 +35,7 @@ export class RegistrationComponent implements OnInit {
       fullName: ['', [Validators.required, Validators.minLength(2)]],
       userName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      phoneNumber: ['', [Validators.required, Validators.minLength(7)]],
+      phoneNumber: ['', [Validators.required, Validators.pattern(this.PhonePattern)]],
       address: ['', [Validators.required, Validators.minLength(3)]],
       dateOfBirth: ['', Validators.required],
       gender: ['', Validators.required],

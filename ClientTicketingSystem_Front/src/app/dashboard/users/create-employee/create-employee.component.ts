@@ -25,6 +25,7 @@ export class CreateEmployeeComponent implements OnInit {
     { label: 'Male', value: 1 },
     { label: 'Female', value: 2 }
   ];
+  private readonly PhonePattern = /^(?:\+9627|07)\d{8}$/;
 
   constructor(
     private fb: FormBuilder,
@@ -38,7 +39,7 @@ export class CreateEmployeeComponent implements OnInit {
       fullName: ['', [Validators.required, Validators.minLength(2)]],
       userName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      phoneNumber: ['', [Validators.required, Validators.minLength(7), Validators.pattern(/^[0-9]+$/)]],
+      phoneNumber: ['', [Validators.required, Validators.pattern(this.PhonePattern)]],
       address: ['', [Validators.required, Validators.minLength(3)]],
       dateOfBirth: ['', Validators.required],
       gender: ['', Validators.required],

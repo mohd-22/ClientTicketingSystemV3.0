@@ -182,7 +182,7 @@ export class DashboardHomeComponent implements OnInit {
       }
     });
 
-    this.usersService.getAllUsers(undefined, undefined, 'Employee', true, 1, 1).subscribe({
+    this.usersService.getAllUsers(undefined, undefined, 'Employee', undefined, 1, 1).subscribe({
       next: r => this.stats.employees = r.count ?? 0,
       error: e => console.error('Failed to load employees count', e)
     });

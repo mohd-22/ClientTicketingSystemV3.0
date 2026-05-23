@@ -29,4 +29,10 @@ export class AttachmentsService {
       formData
     );
   }
+
+  downloadAttachment(id: string): Observable<Blob> {
+    return this.http.get(`${environment.apiUrl}/api/Attachment/download/${id}`, {
+      responseType: 'blob'
+    });
+  }
 }

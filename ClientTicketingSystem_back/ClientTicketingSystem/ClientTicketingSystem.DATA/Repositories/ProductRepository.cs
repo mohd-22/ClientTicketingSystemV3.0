@@ -15,7 +15,7 @@ public class ProductRepository : GenericRepository<Product>,IProductRepository
         return (await _context.Set<Product>()
         .FirstOrDefaultAsync(c => c.Id == id))!;
     }
-    public async Task<List<ProductWithCountDto>> GetProductsWithModulesCountAsync(ISpecification<Product> spec)
+    public async Task<List<ProductWithCountDto>> GetProductsAsync(ISpecification<Product> spec)
     {
         var query = SpecificationEvaluator<Product>.GetQuery(_context.Products.AsQueryable(), spec);
 

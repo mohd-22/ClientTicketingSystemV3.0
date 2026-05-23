@@ -1,8 +1,10 @@
 <ng-template #sidebarNavTpl>
 	<div class="px-3 py-3 border-bottom border-secondary border-opacity-25">
 		<div class="d-flex align-items-center gap-2" role="button" (click)="goToProfile()" style="cursor:pointer;">
-				<img src="https://dummyimage.com/40x40/4b5563/ffffff&text=SA" alt="System Admin"
-					class="rounded-circle flex-shrink-0" />
+				<img *ngIf="userImageUrl; else avatarFallback" [src]="getAttachmentUrl(userImageUrl)" alt="{{FullName}}" class="rounded-circle flex-shrink-0" width="40" height="40" />
+				<ng-template #avatarFallback>
+				  <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width:40px;height:40px;font-size:0.85rem;">{{ getInitials(FullName) }}</div>
+				</ng-template>
 				<div class="lh-sm">
 					<div class="fw-semibold small">{{FullName}}</div>
 					<div class="small text-white-50">{{UserRole}}</div>

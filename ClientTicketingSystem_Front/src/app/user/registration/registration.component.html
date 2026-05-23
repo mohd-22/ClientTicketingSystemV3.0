@@ -69,15 +69,16 @@
                   <label for="phoneNumber" class="form-label fw-semibold">Phone Number</label>
                   <input
                     id="phoneNumber"
-                    type="text"
+                    type="tel"
+                    inputmode="tel"
                     formControlName="phoneNumber"
-                    placeholder="Enter your phone number"
+                    placeholder="0791234567 or +962791234567"
                     class="form-control"
                     [class.is-invalid]="submitted && f['phoneNumber'].invalid"
                   />
                   <div class="invalid-feedback d-block" *ngIf="submitted && f['phoneNumber'].errors">
                     <span *ngIf="f['phoneNumber'].errors['required']">Phone number is required.</span>
-                    <span *ngIf="f['phoneNumber'].errors['minlength']">Phone number looks too short.</span>
+                    <span *ngIf="f['phoneNumber'].errors['pattern']">Enter a valid mobile number, such as 0791234567 or +962791234567.</span>
                   </div>
                 </div>
 

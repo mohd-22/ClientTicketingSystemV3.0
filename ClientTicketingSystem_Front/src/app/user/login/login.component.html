@@ -14,12 +14,12 @@
 						<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
 							<div class="row g-2 g-md-3">
 								<div class="col-12">
-									<label for="emailOrUsername" class="form-label fw-semibold">Email or Username</label>
+									<label for="emailOrUsername" class="form-label fw-semibold">Email or Username or Phone Number</label>
 									<input
 										id="emailOrUsername"
 										type="text"
 										formControlName="emailOrUsername"
-										placeholder="Enter your email or username"
+										placeholder="Enter your email or username or phone number"
 										class="form-control"
 										[class.is-invalid]="submitted && f['emailOrUsername'].invalid"
 									/>
