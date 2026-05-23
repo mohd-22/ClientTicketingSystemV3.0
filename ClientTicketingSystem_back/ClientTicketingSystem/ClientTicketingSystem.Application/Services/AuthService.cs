@@ -1,6 +1,6 @@
 ﻿using ClientTicketingSystem.Application.Helpers;
 using ClientTicketingSystem.Application.Services.Interfaces;
-using ClientTicketingSystem.Core.Dtos;
+using ClientTicketingSystem.CORE.Dtos.AuthDtos;
 using ClientTicketingSystem.CORE.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;

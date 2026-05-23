@@ -1,7 +1,8 @@
 ﻿
 using ClientTicketingSystem.Application.Helpers;
-using ClientTicketingSystem.Core.Dtos;
 using ClientTicketingSystem.CORE.Dtos;
+using ClientTicketingSystem.CORE.Dtos.AuthDtos;
+using ClientTicketingSystem.CORE.Dtos.UserDtos;
 using ClientTicketingSystem.CORE.Models.Enums;
 using Microsoft.AspNetCore.Http;
 

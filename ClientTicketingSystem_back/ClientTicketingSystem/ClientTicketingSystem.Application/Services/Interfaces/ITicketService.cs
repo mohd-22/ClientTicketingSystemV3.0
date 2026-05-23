@@ -1,5 +1,6 @@
 ﻿using ClientTicketingSystem.Application.Helpers;
 using ClientTicketingSystem.CORE.Dtos;
+using ClientTicketingSystem.CORE.Dtos.TicketDtos;
 using ClientTicketingSystem.CORE.Models.Enums;
 using System.Data;
 

@@ -1,7 +1,7 @@
 using ClientTicketingSystem.Application.Services;
 using ClientTicketingSystem.Application.Services.Interfaces;
-using ClientTicketingSystem.Core.Dtos;
-using ClientTicketingSystem.CORE.Dtos;
+using ClientTicketingSystem.CORE.Dtos.AuthDtos;
+using ClientTicketingSystem.CORE.Dtos.UserDtos;
 using ClientTicketingSystem.CORE.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

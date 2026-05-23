@@ -1,5 +1,5 @@
 ﻿using ClientTicketingSystem.Application.Helpers;
-using ClientTicketingSystem.Core.Dtos;
+using ClientTicketingSystem.CORE.Dtos.AuthDtos;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace ClientTicketingSystem.Application.Services.Interfaces;

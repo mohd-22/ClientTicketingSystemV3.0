@@ -1,6 +1,6 @@
 ﻿using ClientTicketingSystem.Application.Helpers;
 using ClientTicketingSystem.Application.Services.Interfaces;
-using ClientTicketingSystem.CORE.Dtos;
+using ClientTicketingSystem.CORE.Dtos.CommentDtos;
 using ClientTicketingSystem.CORE.Models;
 using Microsoft.Extensions.Logging;
 using SupportHub.DATA.Repositories.Interfaces;

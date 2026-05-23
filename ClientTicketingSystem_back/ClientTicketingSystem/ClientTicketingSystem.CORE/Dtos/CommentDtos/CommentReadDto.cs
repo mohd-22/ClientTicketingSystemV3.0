@@ -1,4 +1,4 @@
-﻿namespace ClientTicketingSystem.CORE.Dtos;
+﻿namespace ClientTicketingSystem.CORE.Dtos.CommentDtos;
 public class CommentReadDto
 {
     public Guid Id { get; set; }

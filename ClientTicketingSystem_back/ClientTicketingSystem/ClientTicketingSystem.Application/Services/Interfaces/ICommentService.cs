@@ -1,5 +1,5 @@
 ﻿using ClientTicketingSystem.Application.Helpers;
-using ClientTicketingSystem.CORE.Dtos;
+using ClientTicketingSystem.CORE.Dtos.CommentDtos;
 
 namespace ClientTicketingSystem.Application.Services.Interfaces;
 public interface ICommentService

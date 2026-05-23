@@ -1,4 +1,4 @@
-﻿namespace ClientTicketingSystem.CORE.Dtos;
+﻿namespace ClientTicketingSystem.CORE.Dtos.TicketDtos;
 public class CreateTicketDto
 {
     public string Title { get; set; } = string.Empty;

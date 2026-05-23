@@ -1,6 +1,6 @@
 ﻿using ClientTicketingSystem.CORE.Models.Enums;
 
-namespace ClientTicketingSystem.Core.Dtos;
+namespace ClientTicketingSystem.CORE.Dtos.AuthDtos;
 
 public class UserRegistraionDto
 {

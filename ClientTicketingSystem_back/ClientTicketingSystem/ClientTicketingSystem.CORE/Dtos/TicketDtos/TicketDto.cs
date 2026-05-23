@@ -1,4 +1,4 @@
-﻿namespace ClientTicketingSystem.CORE.Dtos;
+﻿namespace ClientTicketingSystem.CORE.Dtos.TicketDtos;
 public class TicketDto
 {   
         public Guid Id { get; set; }

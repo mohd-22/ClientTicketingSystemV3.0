@@ -1,5 +1,5 @@
 ﻿using ClientTicketingSystem.CORE.Models.Enums;
-namespace ClientTicketingSystem.CORE.Dtos;
+namespace ClientTicketingSystem.CORE.Dtos.UserDtos;
 public class UpdateUserDto
 {    
 

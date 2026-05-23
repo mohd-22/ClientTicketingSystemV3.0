@@ -1,4 +1,4 @@
-﻿namespace ClientTicketingSystem.Core.Dtos;
+﻿namespace ClientTicketingSystem.CORE.Dtos.AuthDtos;
 public class LoginDto
 {
     public string EmailOrUsername { get; set; } = string.Empty;

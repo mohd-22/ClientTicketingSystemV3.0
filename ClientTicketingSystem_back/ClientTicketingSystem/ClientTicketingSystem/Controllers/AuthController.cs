@@ -1,5 +1,5 @@
 ﻿using ClientTicketingSystem.Application.Services.Interfaces;
-using ClientTicketingSystem.Core.Dtos;
+using ClientTicketingSystem.CORE.Dtos.AuthDtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClientTicketingSystem.API.Controllers;
