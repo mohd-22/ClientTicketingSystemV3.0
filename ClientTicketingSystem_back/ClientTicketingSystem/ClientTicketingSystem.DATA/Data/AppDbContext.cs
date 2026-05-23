@@ -59,5 +59,29 @@ public class AppDbContext : DbContext
              CreatedDate = DateTime.Now
          }
        );
+        modelBuilder.Entity<Product>().HasData(
+            new Product
+            {
+                Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                Name = "HR Management System",
+                Description = "A complete human resources management solution that helps companies manage employees, attendance, payroll, vacations, and performance tracking.",
+                CreatedDate = DateTime.Now
+            } ,
+            new Product
+            {
+                Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
+                Name = "Project Management System",
+                Description = "A project management system that helps companies manage projects, tasks, milestones, and timelines.",
+                CreatedDate = DateTime.Now
+            },
+
+            new Product
+            {
+                Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
+                Name = "Customer Relationship Management System",
+                Description = "A customer relationship management system that helps companies manage customer relationships, leads, and opportunities.",
+                CreatedDate = DateTime.Now
+            }
+            );
     }
 }
