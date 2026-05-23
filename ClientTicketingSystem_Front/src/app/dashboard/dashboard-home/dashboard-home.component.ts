@@ -22,10 +22,10 @@ export class DashboardHomeComponent implements OnInit {
   isLoading = false;
   isManager = false;
 
-  public statusLabels: string[] = ['New', 'Assigned', 'InProgress', 'Closed'];
+  public statusLabels: string[] = ['New', 'Assigned','Paused' ,'InProgress', 'Closed'];
   public statusData: ChartData<'doughnut', number[], string | string[]> = {
     labels: this.statusLabels,
-    datasets: [{ data: [0, 0, 0, 0], backgroundColor: ['#d9534f', '#f0ad4e', '#0275d8', '#5cb85c'] }]
+    datasets: [{ data: [0, 0, 0, 0, 0], backgroundColor: ['#d9534f', '#f0ad4e', '#6f42c1', '#0275d8', '#5cb85c'] }]
   };
   public statusChartType: ChartType = 'doughnut';
   public statusChartOptions = {
@@ -34,7 +34,7 @@ export class DashboardHomeComponent implements OnInit {
     plugins: { legend: { position: 'right' } }
   } as any;
 
-  public statusColors: string[] = ['#d9534f', '#f0ad4e', '#0275d8', '#5cb85c'];
+  public statusColors: string[] = ['#d9534f', '#f0ad4e', '#6f42c1', '#0275d8', '#5cb85c'];
 
   public getDatasetValue(i: number): number {
     try {
@@ -149,11 +149,12 @@ export class DashboardHomeComponent implements OnInit {
             this.stats.openTickets = data.filter((t: any) => String(t.status).toLowerCase() !== 'closed').length;
             this.stats.closedTickets = data.filter((t: any) => String(t.status).toLowerCase() === 'closed' || t.isFixed === true).length;
 
-            const counts: any = { New: 0, Assigned: 0, InProgress: 0, Closed: 0 };
+            const counts: any = { New: 0, Assigned: 0, Paused: 0, InProgress: 0, Closed: 0 };
             data.forEach((t: any) => {
               const s = String(t.status ?? '').toLowerCase();
               if (s.includes('new')) counts.New++;
               else if (s.includes('assigned')) counts.Assigned++;
+              else if (s.includes('paused')) counts.Paused++;
               else if (s.includes('inprogress') || s.includes('in progress') || s.includes('in-progress')) counts.InProgress++;
               else if (s.includes('closed') || t.isFixed === true) counts.Closed++;
               else {
@@ -164,7 +165,7 @@ export class DashboardHomeComponent implements OnInit {
 
             this.statusData = {
               labels: this.statusLabels,
-              datasets: [{ data: [counts.New, counts.Assigned, counts.InProgress, counts.Closed], backgroundColor: this.statusColors }]
+              datasets: [{ data: [counts.New, counts.Assigned, counts.Paused, counts.InProgress, counts.Closed], backgroundColor: this.statusColors }]
             };
 
             this.updateProductChart(data);
