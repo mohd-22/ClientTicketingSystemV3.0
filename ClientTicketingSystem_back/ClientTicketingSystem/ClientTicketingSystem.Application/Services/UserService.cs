@@ -6,6 +6,7 @@ using ClientTicketingSystem.CORE.Dtos.UserDtos;
 using ClientTicketingSystem.CORE.Models;
 using ClientTicketingSystem.CORE.Models.Enums;
 using ClientTicketingSystem.CORE.Specifications;
+using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -19,13 +20,15 @@ public class UserService : IUserService
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UserService> _logger;
     private readonly IWebHostEnvironment _env;
+    private readonly IMapper _mapper;
 
 
-    public UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger, IWebHostEnvironment env)
+    public UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger, IWebHostEnvironment env, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _env = env;
+        _mapper = mapper;
     }
     public async Task<ApiResponse<bool>> ActivateUserAsync(Guid id)
     {
@@ -104,7 +107,24 @@ public class UserService : IUserService
             var users = await _unitOfWork.Users.ListWithSpecAsync(spec);
             var totalCount = await _unitOfWork.Users.CountAsync(countSpec);
 
-            var userDtos = users.Select(MapToUserDto).ToList();
+            /*
+            // Previous manual mapping (kept here as a commented reference):
+            var userDtos = users.Select(u => new UserDto
+            {
+                Id = u.Id,
+                FullName = u.FullName,
+                UserName = u.UserName,
+                Email = u.Email,
+                PhoneNumber = u.PhoneNumber,
+                Address = u.Address,
+                Role = u.Role.ToString(),
+                IsActive = u.IsActive,
+                ImageUrl = u.ImageUrl,
+                CreatedDate = u.CreatedDate
+            }).ToList();
+            */
+
+            var userDtos = _mapper.Map<List<UserDto>>(users);
             var pagedResult = new PaginationDto<UserDto>(pageIndex, pageSize, totalCount, userDtos);
 
             _logger.LogInformation(
@@ -131,29 +151,30 @@ public class UserService : IUserService
         }
     }
 
-    private static UserDto MapToUserDto(User user) => new()
-    {
-        Id = user.Id,
-        FullName = user.FullName,
-        UserName = user.UserName,
-        Email = user.Email,
-        PhoneNumber = user.PhoneNumber,
-        Address = user.Address,
-        ImageUrl = user.ImageUrl,
-        DateOfBirth = user.DateOfBirth,
-        Gender = user.Gender,
-        Role = user.Role,
-        IsActive = user.IsActive
-        ,
-        CreatedAt = user.CreatedDate,
-        LastLogin = user.LastLogin
-    };
     public async Task<ApiResponse<UserDto>> GetUserByIdAsync(Guid id)
     {
 
         var user = await _unitOfWork.Users.GetByIdAsync(id);
         if (user == null) return new ApiResponse<UserDto> { Data = null, Message = "User Not found", Success = false, StatusCode = 404 };
-        var userDto = MapToUserDto(user!);
+
+        /*
+        // Previous manual mapping for single user (kept commented):
+        var userDto = new UserDto
+        {
+            Id = user.Id,
+            FullName = user.FullName,
+            UserName = user.UserName,
+            Email = user.Email,
+            PhoneNumber = user.PhoneNumber,
+            Address = user.Address,
+            Role = user.Role.ToString(),
+            IsActive = user.IsActive,
+            ImageUrl = user.ImageUrl,
+            CreatedDate = user.CreatedDate
+        };
+        */
+
+        var userDto = _mapper.Map<UserDto>(user!);
         return new ApiResponse<UserDto> { Data = userDto, Message = "User Retrieved Succesfully", Success = true, StatusCode = 200 };
     }
     public async Task<ApiResponse<UserRegistraionDto>> CreateUserAsync(UserRegistraionDto request, Guid UserId)
@@ -283,7 +304,6 @@ public class UserService : IUserService
             throw;
         }
     }
-
     public async Task<ApiResponse<bool>> AssignTicketToEmployee(Guid TicketId, Guid EmployeeId)
     {
         try

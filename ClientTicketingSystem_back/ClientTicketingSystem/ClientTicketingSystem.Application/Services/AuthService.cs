@@ -25,7 +25,32 @@ public class AuthService : IAuthService
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
+    private string CreateToken(User user)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, user.Role.ToString()),
+            new Claim("FullName", user.FullName)
+        };
 
+        var key = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JwtSettings:SecretKey")!));
+
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
+        var tokenDescriptor = new JwtSecurityToken(
+            issuer: _configuration.GetValue<string>("JwtSettings:Issuer"),
+            audience: _configuration.GetValue<string>("JwtSettings:Audience"),
+            claims: claims,
+            expires: DateTime.UtcNow.AddDays(1),
+            signingCredentials: creds);
+
+        return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+    }
     public async Task<ApiResponse<string>> LoginAsync(LoginDto request)
     {
         try
@@ -91,7 +116,6 @@ public class AuthService : IAuthService
             };
         }
     }
-
     public async Task<ApiResponse<UserRegistraionDto>> RigisterUserAsync(UserRegistraionDto request)
     {
         try
@@ -166,30 +190,4 @@ public class AuthService : IAuthService
         }
     }
 
-    private string CreateToken(User user)
-    {
-        var claims = new List<Claim>
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role.ToString()),
-            new Claim("FullName", user.FullName)
-        };
-
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JwtSettings:SecretKey")!));
-
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
-        var tokenDescriptor = new JwtSecurityToken(
-            issuer: _configuration.GetValue<string>("JwtSettings:Issuer"),
-            audience: _configuration.GetValue<string>("JwtSettings:Audience"),
-            claims: claims,
-            expires: DateTime.UtcNow.AddDays(1),
-            signingCredentials: creds);
-
-        return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
-    }
 }

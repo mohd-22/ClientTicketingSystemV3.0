@@ -2,6 +2,7 @@
 using ClientTicketingSystem.Application.Services.Interfaces;
 using ClientTicketingSystem.CORE.Dtos;
 using ClientTicketingSystem.CORE.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -13,11 +14,14 @@ public class AttachmentService : IAttachmentService
     private readonly IWebHostEnvironment _env;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<AttachmentService> _logger;
-    public AttachmentService(IWebHostEnvironment env, IUnitOfWork unitOfWork, ILogger<AttachmentService> logger)
+    private readonly IMapper _mapper;
+
+    public AttachmentService(IWebHostEnvironment env, IUnitOfWork unitOfWork, ILogger<AttachmentService> logger, IMapper mapper)
     {
         _env = env;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _mapper = mapper;
     }
 
     public async Task<ApiResponse<bool>> UploadAttachment(Guid userId, Guid ticketId, IFormFile file)
@@ -61,7 +65,7 @@ public class AttachmentService : IAttachmentService
     }
     public async Task<ApiResponse<IEnumerable<AttachmentDto>>> GetAttachmentsByTicket(Guid ticketId)
     {
-        var attachments = await _unitOfWork.Attachments.FindAsNoTrackingAsync(a => a.TicketId == ticketId);
+            var attachments = await _unitOfWork.Attachments.FindAsNoTrackingAsync(a => a.TicketId == ticketId);
         try
         {
             _logger.LogInformation("Getting attachments for ticket with ID: {TicketId}", ticketId);
@@ -70,12 +74,20 @@ public class AttachmentService : IAttachmentService
                 return new ApiResponse<IEnumerable<AttachmentDto>> { Data = null, Message = "Attachments not found", Success = false, StatusCode = 404 };
 
             }
+            /*
+            // Previous manual mapping (kept commented):
             var attachmentDtos = attachments.Select(a => new AttachmentDto
             {
                 Id = a.Id,
                 FileName = a.FileName,
                 FilePath = a.FilePath,
+                CreatedBy = a.CreatedBy,
+                CreatedDate = a.CreatedDate
             }).ToList();
+            return new ApiResponse<IEnumerable<AttachmentDto>> { Data = attachmentDtos, Message = "Attachments Fetched Successfully", Success = true, StatusCode = 200 };
+            */
+
+            var attachmentDtos = _mapper.Map<List<AttachmentDto>>(attachments);
             return new ApiResponse<IEnumerable<AttachmentDto>> { Data = attachmentDtos, Message = "Attachments Fetched Successfully", Success = true, StatusCode = 200 };
         }
         catch (Exception ex)

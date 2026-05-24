@@ -11,7 +11,6 @@ namespace ClientTicketingSystem.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize(Roles = nameof(UserRole.Manager))]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -100,6 +99,7 @@ public class UsersController : ControllerBase
         var result = await _userService.AssignTicketToEmployee(ticketId, employeeId);
         return StatusCode(result.StatusCode, result);
     }
+
     [Authorize(Roles = nameof(UserRole.Employee))]
     [HttpPut("ChangeStatus/{ticketId}")]
     public async Task<IActionResult> ChangeStatus(Guid ticketId)

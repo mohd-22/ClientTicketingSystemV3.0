@@ -5,6 +5,7 @@ using ClientTicketingSystem.CORE.Dtos.TicketDtos;
 using ClientTicketingSystem.CORE.Models;
 using ClientTicketingSystem.CORE.Models.Enums;
 using ClientTicketingSystem.CORE.Specifications;
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using SupportHub.DATA.Repositories.Interfaces;
 
@@ -12,12 +13,14 @@ namespace ClientTicketingSystem.Application.Services;
 public class TicketService : ITicketService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<Ticket> _logger;
+    private readonly ILogger<TicketService> _logger;
+    private readonly IMapper _mapper;
 
-    public TicketService(IUnitOfWork unitOfWork, ILogger<Ticket> logger)
+    public TicketService(IUnitOfWork unitOfWork, ILogger<TicketService> logger, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _mapper = mapper;
     }
 
     public async Task<ApiResponse<CreateTicketDto>> CreateTicket(CreateTicketDto TicketDto,Guid clientId)
@@ -99,21 +102,28 @@ public class TicketService : ITicketService
             pageSize = pageSize <= 0 ? 10 : pageSize;
 
             var spec = new TicketsWithFiltersSpecification(search, sort, status, pageIndex, pageSize, clientId, employeeId, role.ToString(), userId);
-            var countSpec = new TicketsWithFiltersForCountSpecification(search, status, clientId, employeeId);
+            var countSpec = new TicketsWithFiltersForCountSpecification(search, status, clientId, employeeId, role.ToString(), userId);
 
             var tickets = await _unitOfWork.Tickets.ListWithSpecAsync(spec);
             var totalCount = await _unitOfWork.Tickets.CountAsync(countSpec);
 
-            var ticketDtos = tickets.Select(ticket => new TicketDto
+            /*
+            // Previous manual mapping (kept here as a commented reference):
+            var ticketDtos = tickets.Select(t => new TicketDto
             {
-                Id = ticket.Id,
-                Title = ticket.Title,
-                ClientName = ticket.Client?.FullName ?? string.Empty,
-                AssignedEmpName = ticket.AssignedUser?.FullName ?? string.Empty,
-                ProductName = ticket.Product?.Name ?? string.Empty,
-                Status = ticket.Status.ToString(),
-                IsFixed = ticket.IsFixed
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                Status = t.Status.ToString(),
+                IsFixed = t.IsFixed,
+                Product = t.Product == null ? null : new ProductDto { Id = t.Product.Id, Name = t.Product.Name },
+                Client = t.Client == null ? null : new UserDto { Id = t.Client.Id, FullName = t.Client.FullName, ImageUrl = t.Client.ImageUrl },
+                AssignedEmployeeId = t.AssignedEmpId,
+                CreatedDate = t.CreatedDate
             }).ToList();
+            */
+
+            var ticketDtos = _mapper.Map<List<TicketDto>>(tickets);
 
             var pagedResult = new PaginationDto<TicketDto>(pageIndex, pageSize, totalCount, ticketDtos);
 
@@ -144,17 +154,26 @@ public class TicketService : ITicketService
         var user = await _unitOfWork.Users.GetByIdAsync(userId);
         if (ticket == null) return new ApiResponse<TicketDto> { Data = null, Message = "Ticket Not found", Success = false, StatusCode = 404 };
         if(ticket.ClientId != userId && user.Role == UserRole.Client) return new ApiResponse<TicketDto> { Data = null, Message = "You are not authorized to access or modify this ticket.", Success = false, StatusCode = 403 };
+
+        /*
+        // Previous manual mapping for ticket details (kept commented):
         var ticketDto = new TicketDto
-        {   
+        {
             Id = ticket.Id,
             Title = ticket.Title,
             Description = ticket.Description,
-            ClientName = ticket.Client?.FullName ?? string.Empty,
-            AssignedEmpName = ticket.AssignedUser?.FullName ?? string.Empty,
-            ProductName = ticket.Product?.Name ?? string.Empty,
             Status = ticket.Status.ToString(),
-            IsFixed = ticket.IsFixed
+            IsFixed = ticket.IsFixed,
+            Product = ticket.Product == null ? null : new ProductDto { Id = ticket.Product.Id, Name = ticket.Product.Name },
+            Client = ticket.Client == null ? null : new UserDto { Id = ticket.Client.Id, FullName = ticket.Client.FullName, ImageUrl = ticket.Client.ImageUrl },
+            AssignedEmployeeId = ticket.AssignedEmpId,
+            Comments = ticket.Comments?.Select(c => new CommentReadDto { Id = c.Id, Text = c.CommentText, CreatorId = c.CreatorId, CreatedDate = c.CreatedDate }).ToList(),
+            Attachments = ticket.Attachments?.Select(a => new AttachmentDto { Id = a.Id, FileName = a.FileName, FilePath = a.FilePath }).ToList(),
+            CreatedDate = ticket.CreatedDate
         };
+        */
+
+        var ticketDto = _mapper.Map<TicketDto>(ticket);
         return new ApiResponse<TicketDto> { Data = ticketDto, Message = "Ticket Retrieved Successfully", Success = true, StatusCode = 200 };
 
     }

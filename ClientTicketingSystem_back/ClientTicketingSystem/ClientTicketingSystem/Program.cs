@@ -1,5 +1,6 @@
 using ClientTicketingSystem.Application.Services;
 using ClientTicketingSystem.Application.Services.Interfaces;
+using ClientTicketingSystem.Application.Mappings;
 using ClientTicketingSystem.DATA.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,7 @@ try
         {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
+    builder.Services.AddAutoMapper(typeof(AppMappingProfile).Assembly);
 
     builder.Host.UseSerilog((context, services, configuration) => configuration
         .ReadFrom.Configuration(context.Configuration)

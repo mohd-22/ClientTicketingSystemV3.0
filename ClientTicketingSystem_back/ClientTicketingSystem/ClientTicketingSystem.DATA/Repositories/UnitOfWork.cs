@@ -1,5 +1,6 @@
 ﻿using ClientTicketingSystem.CORE.Models;
 using ClientTicketingSystem.DATA.Data;
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using SupportHub.DATA.Repositories.Interfaces;
 
@@ -16,14 +17,14 @@ public class UnitOfWork : IUnitOfWork
     public IProductRepository Products { get; }
     public ITicketRepository Tickets { get; }
 
-    public UnitOfWork(AppDbContext context, ILogger<UnitOfWork> logger)
+    public UnitOfWork(AppDbContext context, ILogger<UnitOfWork> logger, IMapper mapper)
     {
         _context = context;
         _logger = logger;
         Users = new UserRepository(_context);
         Attachments = new GenericRepository<Attachment>(_context);
         Comments = new CommentRepository(_context);
-        Products = new ProductRepository(_context);
+        Products = new ProductRepository(_context, mapper);
         Tickets = new TicketsRepository(_context);
     }
 

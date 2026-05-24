@@ -2,6 +2,7 @@
 using ClientTicketingSystem.Application.Services.Interfaces;
 using ClientTicketingSystem.CORE.Dtos.CommentDtos;
 using ClientTicketingSystem.CORE.Models;
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using SupportHub.DATA.Repositories.Interfaces;
 namespace ClientTicketingSystem.Application.Services;
@@ -10,12 +11,14 @@ public class CommentService : ICommentService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CommentService> _logger;
+    private readonly IMapper _mapper;
 
 
-    public CommentService(IUnitOfWork unitOfWork, ILogger<CommentService> logger)
+    public CommentService(IUnitOfWork unitOfWork, ILogger<CommentService> logger, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _mapper = mapper;
     }
     public async Task<ApiResponse<CreateCommentDto>> CreateComment(CreateCommentDto commentDto, Guid Userid)
     {
@@ -47,15 +50,20 @@ public class CommentService : ICommentService
         {
             _logger.LogInformation("Getting Comments");
             var comments = await _unitOfWork.Comments.GetAllCommnets(ticketId);
+            /*
+            // Previous manual mapping (kept commented):
             var commentDtos = comments.Select(c => new CommentReadDto
             {
                 Id = c.Id,
                 Text = c.CommentText,
-                CreatedAt = c.CreatedDate,
-                UserName = c.Creator!.FullName,
-                UserRole = c.Creator.Role.ToString(),
-                UserId = c.CreatorId
+                CreatorId = c.CreatorId,
+                CreatedDate = c.CreatedDate,
+                CreatorName = c.Creator?.FullName,
+                CreatorImageUrl = c.Creator?.ImageUrl
             }).ToList();
+            */
+
+            var commentDtos = _mapper.Map<List<CommentReadDto>>(comments);
             _logger.LogInformation("Comments Fetched Successfully");
             return new ApiResponse<IEnumerable<CommentReadDto>> { Data = commentDtos, Message = "Comments Fetched Successfully", Success = true, StatusCode = 200 };
         }

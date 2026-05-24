@@ -36,7 +36,6 @@ namespace ClientTicketingSystem.API.Controllers
         [HttpGet("{requestId}")]
         public async Task<ActionResult> GetAllComments(Guid requestId)
         {
-
             var result = await _commentService.GetAllComments(requestId);
             return StatusCode(result.StatusCode, result);
         }

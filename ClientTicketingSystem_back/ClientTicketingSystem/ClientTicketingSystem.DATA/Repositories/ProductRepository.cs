@@ -5,11 +5,17 @@ using SupportHub.DATA.Repositories.Interfaces;
 using ClientTicketingSystem.DATA.Specification;
 using ClientTicketingSystem.CORE.Specifications;
 using ClientTicketingSystem.CORE.Dtos.ProductDtos;
+using AutoMapper;
 
 namespace SupportHub.DATA.Repositories;
 public class ProductRepository : GenericRepository<Product>,IProductRepository
 {
-    public ProductRepository(AppDbContext context) : base(context) { }
+    private readonly IMapper _mapper;
+
+    public ProductRepository(AppDbContext context, IMapper mapper) : base(context)
+    {
+        _mapper = mapper;
+    }
     public async Task<Product> GetProductWithItemsAsync(Guid id)
     {
         return (await _context.Set<Product>()
@@ -19,13 +25,19 @@ public class ProductRepository : GenericRepository<Product>,IProductRepository
     {
         var query = SpecificationEvaluator<Product>.GetQuery(_context.Products.AsQueryable(), spec);
 
-        return await query
-            .Select(p => new ProductWithCountDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Description = p.Description
-            })
-            .ToListAsync();
+        var products = await query.ToListAsync();
+        /*
+        // Previous manual mapping (kept commented):
+        var productsDto = products.Select(p => new ProductWithCountDto
+        {
+            Id = p.Id,
+            Name = p.Name,
+            Description = p.Description,
+            ItemsCount = p.Items == null ? 0 : p.Items.Count
+        }).ToList();
+        return productsDto;
+        */
+
+        return _mapper.Map<List<ProductWithCountDto>>(products);
     }
 }

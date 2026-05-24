@@ -9,9 +9,15 @@ public class TicketsWithFiltersForCountSpecification : BaseSpecification<Ticket>
         string? search,
         TicketStatus? status,
         Guid? clientId,
-        Guid? employeeId
+        Guid? employeeId,
+        string role,
+        Guid userId
     )
     : base(ticket =>
+        ((role == "Manager") ||
+         (role == "Employee" && ticket.AssignedEmpId == userId) ||
+         (role == "Client" && ticket.ClientId == userId)) &&
+
         (!status.HasValue || ticket.Status == status.Value) &&
         (!clientId.HasValue || ticket.ClientId == clientId.Value) &&
         (!employeeId.HasValue || ticket.AssignedEmpId == employeeId.Value) &&

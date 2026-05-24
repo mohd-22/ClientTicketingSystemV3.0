@@ -25,7 +25,7 @@ export class UsersComponent implements OnInit {
   selectedRole: string = 'Employee';
   selectedStatus: string = 'All Status';
   currentPage: number = 1;
-  itemsPerPage: number = 10;
+  itemsPerPage: number = 5;
   totalCount: number = 0;
   isLoading: boolean = false;
   errorMessage: string = '';
