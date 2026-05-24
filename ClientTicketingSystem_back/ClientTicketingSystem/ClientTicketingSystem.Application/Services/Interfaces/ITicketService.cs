@@ -7,7 +7,6 @@ using System.Data;
 namespace ClientTicketingSystem.Application.Services.Interfaces;
 public interface ITicketService
 {
-    Task<ApiResponse<bool>> DeleteTicket(Guid Id);
     Task<ApiResponse<bool>> TicketFixed(Guid TicketId);
     Task<ApiResponse<PaginationDto<TicketDto>>> GetAllTickets(
         string? search,

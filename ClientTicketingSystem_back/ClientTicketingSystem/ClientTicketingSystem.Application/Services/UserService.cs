@@ -39,6 +39,7 @@ public class UserService : IUserService
         user.IsActive = true;
         _unitOfWork.Users.Update(user);
         await _unitOfWork.CompleteAsync();
+        _logger.LogInformation("User with ID {UserId} Activated successfully", id);
         return new ApiResponse<bool> { Data = true, Message = "user Activated Succesfully", Success = true, StatusCode = 200 };
     }
     public async Task<ApiResponse<bool>> DeactivateUserAsync(Guid id)
@@ -63,6 +64,7 @@ public class UserService : IUserService
         user.IsActive = false;
         _unitOfWork.Users.Update(user);
         await _unitOfWork.CompleteAsync();
+        _logger.LogInformation("User with ID {UserId} Deactivated successfully", id);
         return new ApiResponse<bool> { Data = true, Message = "user Deactivated Succesfully", Success = true, StatusCode = 200 };
 
     }
@@ -107,23 +109,6 @@ public class UserService : IUserService
             var users = await _unitOfWork.Users.ListWithSpecAsync(spec);
             var totalCount = await _unitOfWork.Users.CountAsync(countSpec);
 
-            /*
-            // Previous manual mapping (kept here as a commented reference):
-            var userDtos = users.Select(u => new UserDto
-            {
-                Id = u.Id,
-                FullName = u.FullName,
-                UserName = u.UserName,
-                Email = u.Email,
-                PhoneNumber = u.PhoneNumber,
-                Address = u.Address,
-                Role = u.Role.ToString(),
-                IsActive = u.IsActive,
-                ImageUrl = u.ImageUrl,
-                CreatedDate = u.CreatedDate
-            }).ToList();
-            */
-
             var userDtos = _mapper.Map<List<UserDto>>(users);
             var pagedResult = new PaginationDto<UserDto>(pageIndex, pageSize, totalCount, userDtos);
 
@@ -150,31 +135,15 @@ public class UserService : IUserService
             };
         }
     }
-
     public async Task<ApiResponse<UserDto>> GetUserByIdAsync(Guid id)
     {
 
         var user = await _unitOfWork.Users.GetByIdAsync(id);
         if (user == null) return new ApiResponse<UserDto> { Data = null, Message = "User Not found", Success = false, StatusCode = 404 };
 
-        /*
-        // Previous manual mapping for single user (kept commented):
-        var userDto = new UserDto
-        {
-            Id = user.Id,
-            FullName = user.FullName,
-            UserName = user.UserName,
-            Email = user.Email,
-            PhoneNumber = user.PhoneNumber,
-            Address = user.Address,
-            Role = user.Role.ToString(),
-            IsActive = user.IsActive,
-            ImageUrl = user.ImageUrl,
-            CreatedDate = user.CreatedDate
-        };
-        */
-
+        
         var userDto = _mapper.Map<UserDto>(user!);
+        _logger.LogInformation("User with ID {UserId} retrieved successfully", id);
         return new ApiResponse<UserDto> { Data = userDto, Message = "User Retrieved Succesfully", Success = true, StatusCode = 200 };
     }
     public async Task<ApiResponse<UserRegistraionDto>> CreateUserAsync(UserRegistraionDto request, Guid UserId)
@@ -226,21 +195,30 @@ public class UserService : IUserService
 
         await _unitOfWork.Users.AddAsync(user);
         await _unitOfWork.CompleteAsync();
+        _logger.LogInformation("User with ID {UserId} created successfully", user.Id);
         return new ApiResponse<UserRegistraionDto> { Message = "User Created succesfully", Success = true, StatusCode = 200 };
     }
     public async Task<ApiResponse<bool>> UpdtaeUserAsync(UpdateUserDto request, Guid id)
     {
         var user = await _unitOfWork.Users.GetByIdAsync(id);
         if (user == null) return new ApiResponse<bool> { Data = false, Message = "User Not found", Success = false, StatusCode = 404 };
-        var cheakPhone = await _unitOfWork.Users.AnyAsync(u => u.PhoneNumber == request.PhoneNumber && u.Id != id);
 
+        var cheakPhone = await _unitOfWork.Users.AnyAsync(u => u.PhoneNumber == request.PhoneNumber && u.Id != id);
         if (cheakPhone) return new ApiResponse<bool> { Data = false, Message = "Phone number already exists", Success = false, StatusCode = 400 };
+
+        var cheakEmail = await _unitOfWork.Users.AnyAsync(u => u.Email == request.Email && u.Id != id);
+        if (cheakEmail) return new ApiResponse<bool> { Data = false, Message = "Email already exists", Success = false, StatusCode = 400 };
+
+        var cheakUserName = await _unitOfWork.Users.AnyAsync(u => u.UserName == request.UserName && u.Id != id);
+        if (cheakUserName) return new ApiResponse<bool> { Data = false, Message = "Username already exists", Success = false, StatusCode = 400 };
         try
         {
             user.FullName = request.FullName;
             user.PhoneNumber = request.PhoneNumber;
             user.Address = request.Address;
             user.DateOfBirth = request.DateOfBirth;
+            user.UserName = request.UserName;
+            user.Email = request.Email;
             user.Gender = request.Gender;
             _logger.LogInformation("Updating user with ID {UserId}", id);
             _unitOfWork.Users.Update(user);
@@ -255,7 +233,40 @@ public class UserService : IUserService
             return new ApiResponse<bool> { Data = false, Message = "An error occurred while updating the user", Success = false, StatusCode = 500 };
         }
     }
+    public async Task<ApiResponse<bool>> TicketChangeStatus(Guid TicketId)
+    {
+        try
+        {
+            _logger.LogInformation("Changing the status of the ticket.");
+            var ticket = await _unitOfWork.Tickets.GetByIdAsync(TicketId);
+            if (ticket == null) return new ApiResponse<bool> { Data = false, Message = "Ticket Not found", Success = false, StatusCode = 404 };
+            if (ticket.Status == TicketStatus.Assigned)
+            {
+                ticket.Status = TicketStatus.InProgress;
+                _unitOfWork.Tickets.Update(ticket);
+                await _unitOfWork.CompleteAsync();
+                _logger.LogInformation("Ticket status changed successfully.");
+                return new ApiResponse<bool> { Data = true, Message = "Ticket Updated Successfully", Success = true, StatusCode = 200 };
+            }
+            else if (ticket.Status == TicketStatus.InProgress)
+            {
+                if (ticket.IsFixed == false) return new ApiResponse<bool> { Data = false, Message = "Ticket is not fixed yet", Success = false, StatusCode = 400 };
+                ticket.Status = TicketStatus.Closed;
+                _unitOfWork.Tickets.Update(ticket);
+                await _unitOfWork.CompleteAsync();
+                _logger.LogInformation("Ticket status changed successfully.");
 
+                return new ApiResponse<bool> { Data = true, Message = "Ticket Updated Successfully", Success = true, StatusCode = 200 };
+            }
+            _logger.LogWarning("you cant change the status of a request unless it 'Assigned' or 'InProgress' ");
+            return new ApiResponse<bool> { Data = false, Message = "you cant change the status of a request unless it 'Assigned' or 'InProgress' ", Success = false, StatusCode = 400 };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while changing the status of the ticket.");
+            return new ApiResponse<bool> { Data = false, Message = "An error occurred while changing the status of the ticket.", Success = false, StatusCode = 500 };
+        }
+    }
     public async Task<ApiResponse<bool>> ChangeAvatar(Guid userId, IFormFile file)
     {
         if (file == null)
@@ -288,7 +299,7 @@ public class UserService : IUserService
             user.ImageUrl = Path.Combine("Attachments", fileName);
             _unitOfWork.Users.Update(user);
             await _unitOfWork.CompleteAsync();
-
+            _logger.LogInformation("Avatar changed successfully for user with ID: {UserId}", userId);
             return new ApiResponse<bool> { Data = true, Message = "Avatar changed successfully", Success = true, StatusCode = 200 };
         }
         catch (Exception ex)
@@ -335,40 +346,6 @@ public class UserService : IUserService
         {
             _logger.LogError(ex, "An error occurred while assigning a ticket to an employee.");
             return new ApiResponse<bool> { Data = false, Message = "An error occurred while assigning a ticket to an employee.", Success = false, StatusCode = 500 };
-        }
-    }
-    public async Task<ApiResponse<bool>> TicketChangeStatus(Guid TicketId)
-    {
-        try
-        {
-            _logger.LogInformation("Changing the status of the ticket.");
-            var ticket = await _unitOfWork.Tickets.GetByIdAsync(TicketId);
-            if (ticket == null) return new ApiResponse<bool> { Data = false, Message = "Ticket Not found", Success = false, StatusCode = 404 };
-            if (ticket.Status == TicketStatus.Assigned)
-            {
-                ticket.Status = TicketStatus.InProgress;
-                _unitOfWork.Tickets.Update(ticket);
-                await _unitOfWork.CompleteAsync();
-                _logger.LogInformation("Ticket status changed successfully.");
-                return new ApiResponse<bool> { Data = true, Message = "Ticket Updated Successfully", Success = true, StatusCode = 200 };
-            }
-            else if (ticket.Status == TicketStatus.InProgress)
-            {
-                if (ticket.IsFixed == false) return new ApiResponse<bool> { Data = false, Message = "Ticket is not fixed yet", Success = false, StatusCode = 400 };
-                ticket.Status = TicketStatus.Closed;
-                _unitOfWork.Tickets.Update(ticket);
-                await _unitOfWork.CompleteAsync();
-                _logger.LogInformation("Ticket status changed successfully.");
-
-                return new ApiResponse<bool> { Data = true, Message = "Ticket Updated Successfully", Success = true, StatusCode = 200 };
-            }
-            _logger.LogWarning("you cant change the status of a request unless it 'Assigned' or 'InProgress' ");
-            return new ApiResponse<bool> { Data = false, Message = "you cant change the status of a request unless it 'Assigned' or 'InProgress' ", Success = false, StatusCode = 400 };
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred while changing the status of the ticket.");
-            return new ApiResponse<bool> { Data = false, Message = "An error occurred while changing the status of the ticket.", Success = false, StatusCode = 500 };
         }
     }
 }

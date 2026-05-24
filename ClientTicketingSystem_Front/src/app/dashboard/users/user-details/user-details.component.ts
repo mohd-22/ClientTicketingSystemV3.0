@@ -59,6 +59,8 @@ export class UserDetailsComponent implements OnInit {
 
     this.editModel = {
       fullName: this.user.fullName,
+      userName: this.user.userName,
+      email: this.user.email,
       phoneNumber: this.user.phoneNumber,
       address: this.user.address,
       dateOfBirth: this.user.dateOfBirth ? new Date(this.user.dateOfBirth).toISOString().slice(0,10) : '',
@@ -66,6 +68,8 @@ export class UserDetailsComponent implements OnInit {
     };
     this.editForm = this.fb.group({
       fullName: [this.editModel.fullName || '', [Validators.required, Validators.minLength(2)]],
+      userName: [this.editModel.userName || '', [Validators.required, Validators.minLength(3)]],
+      email: [this.editModel.email || '', [Validators.required, Validators.email]],
       phoneNumber: [this.editModel.phoneNumber || '', [Validators.required, Validators.pattern(this.PhonePattern)]],
       dateOfBirth: [this.editModel.dateOfBirth || ''],
       gender: [this.editModel.gender ?? ''],
@@ -109,6 +113,8 @@ export class UserDetailsComponent implements OnInit {
     const values = this.editForm.value;
     const payload: Partial<UpdateUserRequest> = {
       fullName: values.fullName ?? '',
+      userName: values.userName ?? '',
+      email: values.email ?? '',
       phoneNumber: values.phoneNumber ?? '',
       address: values.address ?? '',
       dateOfBirth: values.dateOfBirth ?? '',

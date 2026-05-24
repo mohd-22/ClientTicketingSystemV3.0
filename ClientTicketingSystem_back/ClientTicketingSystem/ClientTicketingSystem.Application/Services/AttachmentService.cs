@@ -74,19 +74,7 @@ public class AttachmentService : IAttachmentService
                 return new ApiResponse<IEnumerable<AttachmentDto>> { Data = null, Message = "Attachments not found", Success = false, StatusCode = 404 };
 
             }
-            /*
-            // Previous manual mapping (kept commented):
-            var attachmentDtos = attachments.Select(a => new AttachmentDto
-            {
-                Id = a.Id,
-                FileName = a.FileName,
-                FilePath = a.FilePath,
-                CreatedBy = a.CreatedBy,
-                CreatedDate = a.CreatedDate
-            }).ToList();
-            return new ApiResponse<IEnumerable<AttachmentDto>> { Data = attachmentDtos, Message = "Attachments Fetched Successfully", Success = true, StatusCode = 200 };
-            */
-
+           
             var attachmentDtos = _mapper.Map<List<AttachmentDto>>(attachments);
             return new ApiResponse<IEnumerable<AttachmentDto>> { Data = attachmentDtos, Message = "Attachments Fetched Successfully", Success = true, StatusCode = 200 };
         }

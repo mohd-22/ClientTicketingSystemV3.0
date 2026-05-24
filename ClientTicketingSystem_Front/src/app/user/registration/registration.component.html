@@ -1,11 +1,14 @@
-<div class="min-vh-100 d-flex align-items-center justify-content-center py-3 py-lg-4 bg-light">
+<div class="min-vh-100 d-flex align-items-center justify-content-center py-3 py-lg-4 login-bg">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-12 col-sm-11 col-md-10 col-lg-9 col-xl-8">
-        <div class="card shadow border-0 w-100">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-6">
+        <div class="card shadow-sm border-0 w-100">
           <div class="card-body p-3 p-md-4">
-            <h2 class="h3 fw-bold text-center mb-1">Create Account</h2>
-            <p class="text-center text-muted mb-3">Register a new user account</p>
+            <div class="d-flex justify-content-center mb-3">
+              <div class="brand">CT</div>
+            </div>
+            <h2 class="h4 fw-bold text-center mb-1">Create Account</h2>
+            <p class="text-center text-muted mb-3 small">Register a new user account</p>
 
             <div *ngIf="successMessage" class="alert alert-success py-2 small" role="alert">
               {{ successMessage }}
@@ -161,9 +164,10 @@
                     Passwords do not match.
                   </div>
                 </div>
-                <div class="col-12 pt-1 pt-md-2">
-                  <a routerLink="/user/login" class="text-decoration-none fw-semibold">Already have an account? Login</a>
-                  
+                <div class="col-12">
+                  <div class="d-flex justify-content-between align-items-center mb-3 small">
+                    <a routerLink="/user/login" class="text-decoration-none">Already have an account? Login</a>
+                  </div>
                   <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold" [disabled]="loading">
                     <span *ngIf="!loading">Register</span>
                     <span *ngIf="loading">Registering…</span>

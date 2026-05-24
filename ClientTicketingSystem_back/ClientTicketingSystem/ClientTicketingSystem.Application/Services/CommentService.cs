@@ -20,6 +20,21 @@ public class CommentService : ICommentService
         _logger = logger;
         _mapper = mapper;
     }
+    public async Task<ApiResponse<IEnumerable<CommentReadDto>>> GetAllComments(Guid ticketId)
+    {
+        try
+        {
+            _logger.LogInformation("Getting Comments");
+            var comments = await _unitOfWork.Comments.GetAllCommnets(ticketId);
+            var commentDtos = _mapper.Map<List<CommentReadDto>>(comments);
+            _logger.LogInformation("Comments Fetched Successfully");
+            return new ApiResponse<IEnumerable<CommentReadDto>> { Data = commentDtos, Message = "Comments Fetched Successfully", Success = true, StatusCode = 200 };
+        }
+        catch(Exception ex) { 
+            _logger.LogError(ex, "Error getting Comments");
+            return new ApiResponse<IEnumerable<CommentReadDto>> { Data = null, Message = ex.Message, Success = false, StatusCode = 500 };
+        }
+    }
     public async Task<ApiResponse<CreateCommentDto>> CreateComment(CreateCommentDto commentDto, Guid Userid)
     {
         try
@@ -44,36 +59,4 @@ public class CommentService : ICommentService
             return new ApiResponse<CreateCommentDto> { Data = commentDto, Message = ex.Message, Success = false, StatusCode = 500 };
         }
     }
-    public async Task<ApiResponse<IEnumerable<CommentReadDto>>> GetAllComments(Guid ticketId)
-    {
-        try
-        {
-            _logger.LogInformation("Getting Comments");
-            var comments = await _unitOfWork.Comments.GetAllCommnets(ticketId);
-            /*
-            // Previous manual mapping (kept commented):
-            var commentDtos = comments.Select(c => new CommentReadDto
-            {
-                Id = c.Id,
-                Text = c.CommentText,
-                CreatorId = c.CreatorId,
-                CreatedDate = c.CreatedDate,
-                CreatorName = c.Creator?.FullName,
-                CreatorImageUrl = c.Creator?.ImageUrl
-            }).ToList();
-            */
-
-            var commentDtos = _mapper.Map<List<CommentReadDto>>(comments);
-            _logger.LogInformation("Comments Fetched Successfully");
-            return new ApiResponse<IEnumerable<CommentReadDto>> { Data = commentDtos, Message = "Comments Fetched Successfully", Success = true, StatusCode = 200 };
-        }
-        catch(Exception ex) { 
-            _logger.LogError(ex, "Error getting Comments");
-            return new ApiResponse<IEnumerable<CommentReadDto>> { Data = null, Message = ex.Message, Success = false, StatusCode = 500 };
-        }
-    }
-
-
-
-
 }

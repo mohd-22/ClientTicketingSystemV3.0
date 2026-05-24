@@ -92,7 +92,7 @@ export class RegistrationComponent implements OnInit {
       error: (err: HttpErrorResponse) => {
         this.loading = false;
         this.errorMessage = err.error?.message || 'Registration failed. Please try again.';
-        this.toastr.error(this.errorMessage, 'Error', { timeOut: 3000 });
+        // this.toastr.error(this.errorMessage, 'Error', { timeOut: 3000 });
       },
     });
   }

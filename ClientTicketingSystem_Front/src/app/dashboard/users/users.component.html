@@ -49,13 +49,11 @@
             <th class="fw-semibold text-uppercase small text-muted">
               <button type="button" class="btn btn-link p-0 text-decoration-none text-muted fw-semibold small text-uppercase" (click)="sortBy('role')">
                 Role
-                <i class="bi ms-1" [ngClass]="sortColumn === 'role' ? (sortDirection === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down-up'"></i>
               </button>
             </th>
             <th class="fw-semibold text-uppercase small text-muted">
               <button type="button" class="btn btn-link p-0 text-decoration-none text-muted fw-semibold small text-uppercase" (click)="sortBy('isActive')">
                 Status
-                <i class="bi ms-1" [ngClass]="sortColumn === 'isActive' ? (sortDirection === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down-up'"></i>
               </button>
             </th>
             <th class="fw-semibold text-uppercase small text-muted text-end">Actions</th>

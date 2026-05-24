@@ -1,60 +1,59 @@
-<div class="min-vh-100 d-flex align-items-center justify-content-center py-3 py-lg-4 bg-light">
+<div class="min-vh-100 d-flex align-items-center justify-content-center py-3 py-lg-4 login-bg">
 	<div class="container">
 		<div class="row justify-content-center">
-			<div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-6">
-				<div class="card shadow border-0 w-100">
-					<div class="card-body p-3 p-md-4">
-						<h2 class="h3 fw-bold text-center mb-1">Welcome Back</h2>
-						<p class="text-center text-muted mb-3">Sign in to your account</p>
+			<div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+				<div class="card shadow-sm border-0">
+					<div class="card-body p-4">
+						<div class="d-flex justify-content-center mb-3">
+							<div class="brand">CT</div>
+						</div>
+						<h2 class="h4 fw-bold text-center mb-1">Welcome Back</h2>
+						<p class="text-center text-muted mb-3 small">Sign in to your account</p>
 
 						<div *ngIf="errorMessage" class="alert alert-danger py-2 small" role="alert">
 							{{ errorMessage }}
 						</div>
 
 						<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
-							<div class="row g-2 g-md-3">
-								<div class="col-12">
-									<label for="emailOrUsername" class="form-label fw-semibold">Email or Username or Phone Number</label>
-									<input
-										id="emailOrUsername"
-										type="text"
-										formControlName="emailOrUsername"
-										placeholder="Enter your email or username or phone number"
-										class="form-control"
-										[class.is-invalid]="submitted && f['emailOrUsername'].invalid"
-									/>
-									<div class="invalid-feedback d-block" *ngIf="submitted && f['emailOrUsername'].errors">
-										<span *ngIf="f['emailOrUsername'].errors['required']">Email or username is required.</span>
-									</div>
-								</div>
-
-								<div class="col-12">
-									<label for="password" class="form-label fw-semibold">Password</label>
-									<input
-										id="password"
-										type="password"
-										formControlName="password"
-										placeholder="Enter your password"
-										class="form-control"
-										[class.is-invalid]="submitted && f['password'].invalid"
-									/>
-									<div class="invalid-feedback d-block" *ngIf="submitted && f['password'].errors">
-										<span *ngIf="f['password'].errors['required']">Password is required.</span>
-										<span *ngIf="f['password'].errors['minlength']">Password must be at least 6 characters.</span>
-									</div>
-								</div>
-
-								<div class="col-12 d-flex align-items-center justify-content-between flex-wrap gap-2">
-									<a routerLink="/user/signup" class="text-decoration-none fw-semibold">Create account</a>
-								</div>
-
-								<div class="col-12 pt-1 pt-md-2">
-									<button type="submit" class="btn btn-primary w-100 py-2 fw-semibold" [disabled]="loading">
-										<span *ngIf="!loading">Login</span>
-										<span *ngIf="loading">Logging in…</span>
-									</button>
+							<div class="mb-3">
+								<label for="emailOrUsername" class="form-label">Email, username or phone</label>
+								<input
+									id="emailOrUsername"
+									type="text"
+									formControlName="emailOrUsername"
+									placeholder="you@example.com"
+									class="form-control"
+									[class.is-invalid]="submitted && f['emailOrUsername'].invalid"
+								/>
+								<div class="invalid-feedback d-block" *ngIf="submitted && f['emailOrUsername'].errors">
+									<span *ngIf="f['emailOrUsername'].errors['required']">This field is required.</span>
 								</div>
 							</div>
+
+							<div class="mb-3">
+								<label for="password" class="form-label">Password</label>
+								<input
+									id="password"
+									type="password"
+									formControlName="password"
+									placeholder="••••••••"
+									class="form-control"
+									[class.is-invalid]="submitted && f['password'].invalid"
+								/>
+								<div class="invalid-feedback d-block" *ngIf="submitted && f['password'].errors">
+									<span *ngIf="f['password'].errors['required']">Password is required.</span>
+									<span *ngIf="f['password'].errors['minlength']">Password must be at least 6 characters.</span>
+								</div>
+							</div>
+
+							<div class="d-flex justify-content-between align-items-center mb-3 small">
+								<a routerLink="/user/signup" class="text-decoration-none">Create account</a>
+							</div>
+
+							<button type="submit" class="btn btn-primary w-100 py-2 fw-semibold" [disabled]="loading">
+								<span *ngIf="!loading">Login</span>
+								<span *ngIf="loading">Logging in…</span>
+							</button>
 						</form>
 					</div>
 				</div>

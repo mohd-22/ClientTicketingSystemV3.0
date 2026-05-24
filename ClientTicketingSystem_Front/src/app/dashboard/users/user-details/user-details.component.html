@@ -50,6 +50,22 @@
 									</div>
 								</div>
 								<div class="col-md-6">
+									<label class="form-label">Username</label>
+									<input formControlName="userName" type="text" class="form-control" [class.is-invalid]="editForm.get('userName')?.invalid && (editForm.get('userName')?.touched || editForm.get('userName')?.dirty)">
+									<div *ngIf="editForm.get('userName')?.invalid && (editForm.get('userName')?.touched || editForm.get('userName')?.dirty)" class="invalid-feedback d-block">
+										<div *ngIf="editForm.get('userName')?.errors?.['required']">Username is required.</div>
+										<div *ngIf="editForm.get('userName')?.errors?.['minlength']">Username must be at least 3 characters.</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<label class="form-label">Email</label>
+									<input formControlName="email" type="email" class="form-control" [class.is-invalid]="editForm.get('email')?.invalid && (editForm.get('email')?.touched || editForm.get('email')?.dirty)">
+									<div *ngIf="editForm.get('email')?.invalid && (editForm.get('email')?.touched || editForm.get('email')?.dirty)" class="invalid-feedback d-block">
+										<div *ngIf="editForm.get('email')?.errors?.['required']">Email is required.</div>
+										<div *ngIf="editForm.get('email')?.errors?.['email']">Enter a valid email address.</div>
+									</div>
+								</div>
+								<div class="col-md-6">
 									<label class="form-label">Phone Number</label>
 									<input formControlName="phoneNumber" type="tel" inputmode="tel" class="form-control" placeholder="0791234567 or +962791234567" [class.is-invalid]="editForm.get('phoneNumber')?.invalid && (editForm.get('phoneNumber')?.touched || editForm.get('phoneNumber')?.dirty)">
 									<div *ngIf="editForm.get('phoneNumber')?.invalid && (editForm.get('phoneNumber')?.touched || editForm.get('phoneNumber')?.dirty)" class="invalid-feedback d-block">

@@ -140,6 +140,8 @@ export class UsersService {
 
 export interface UpdateUserRequest {
   fullName: string;
+  userName: string;
+  email: string;
   phoneNumber: string;
   address: string;
   dateOfBirth: string; // ISO date

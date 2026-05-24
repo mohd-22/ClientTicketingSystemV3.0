@@ -22,7 +22,7 @@ public interface IUserService
         int pageSize
         );
     Task<ApiResponse<bool>> ChangeAvatar(Guid userId, IFormFile file);
-Task<ApiResponse<bool>> UpdtaeUserAsync(UpdateUserDto request,Guid id);
+    Task<ApiResponse<bool>> UpdtaeUserAsync(UpdateUserDto request,Guid id);
     Task<ApiResponse<bool>> AssignTicketToEmployee(Guid TicketId, Guid EmployeeId);
     Task<ApiResponse<UserRegistraionDto>> CreateUserAsync(UserRegistraionDto request,Guid UserId);
 
