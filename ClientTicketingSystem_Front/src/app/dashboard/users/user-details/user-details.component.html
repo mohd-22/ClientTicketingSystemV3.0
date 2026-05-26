@@ -67,15 +67,22 @@
 								</div>
 								<div class="col-md-6">
 									<label class="form-label">Phone Number</label>
-									<input formControlName="phoneNumber" type="tel" inputmode="tel" class="form-control" placeholder="0791234567 or +962791234567" [class.is-invalid]="editForm.get('phoneNumber')?.invalid && (editForm.get('phoneNumber')?.touched || editForm.get('phoneNumber')?.dirty)">
+									<input formControlName="phoneNumber" type="tel" inputmode="tel" class="form-control" placeholder="07********" [class.is-invalid]="editForm.get('phoneNumber')?.invalid && (editForm.get('phoneNumber')?.touched || editForm.get('phoneNumber')?.dirty)">
 									<div *ngIf="editForm.get('phoneNumber')?.invalid && (editForm.get('phoneNumber')?.touched || editForm.get('phoneNumber')?.dirty)" class="invalid-feedback d-block">
 										<div *ngIf="editForm.get('phoneNumber')?.errors?.['required']">Phone number is required.</div>
-										<div *ngIf="editForm.get('phoneNumber')?.errors?.['pattern']">Enter a valid  mobile number, such as 0791234567 or +962791234567</div>
+										<div *ngIf="editForm.get('phoneNumber')?.errors?.['pattern']">Enter a valid mobile number in this format: 07********.</div>
 									</div>
 								</div>
 								<div class="col-md-6">
 									<label class="form-label">Date of Birth</label>
-									<input formControlName="dateOfBirth" type="date" class="form-control">
+									<input formControlName="dateOfBirth" type="date" class="form-control" [class.is-invalid]="editForm.get('dateOfBirth')?.invalid && (editForm.get('dateOfBirth')?.touched || editForm.get('dateOfBirth')?.dirty)">
+									<div *ngIf="editForm.get('dateOfBirth')?.invalid && (editForm.get('dateOfBirth')?.touched || editForm.get('dateOfBirth')?.dirty)" class="invalid-feedback d-block">
+										<div *ngIf="editForm.get('dateOfBirth')?.errors?.['required']">Date of birth is required.</div>
+										<div *ngIf="editForm.get('dateOfBirth')?.errors?.['invalidDate']">Please enter a valid date.</div>
+										<div *ngIf="editForm.get('dateOfBirth')?.errors?.['futureDate']">Date of birth cannot be in the future.</div>
+										<div *ngIf="editForm.get('dateOfBirth')?.errors?.['tooYoung']">User must be at least 18 years old.</div>
+										<div *ngIf="editForm.get('dateOfBirth')?.errors?.['tooOld']">Age must be 90 or younger.</div>
+									</div>
 								</div>
 								<div class="col-md-6">
 									<label class="form-label">Gender</label>

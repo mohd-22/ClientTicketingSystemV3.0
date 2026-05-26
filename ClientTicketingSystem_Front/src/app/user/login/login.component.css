@@ -3,11 +3,57 @@
 }
 
 .login-bg {
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
 .card {
-  border-radius: 10px;
+  position: relative;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  box-shadow:
+    0 18px 40px rgba(15, 23, 42, 0.12),
+    0 3px 10px rgba(15, 23, 42, 0.06);
+  backdrop-filter: blur(6px);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 24px 48px rgba(15, 23, 42, 0.14),
+    0 8px 16px rgba(15, 23, 42, 0.08);
+}
+
+.card-body {
+  padding: 1.75rem;
+}
+
+.login-bg::before,
+.login-bg::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(2px);
+}
+
+.login-bg::before {
+  width: 260px;
+  height: 260px;
+  top: -70px;
+  left: -90px;
+  background: radial-gradient(circle, rgba(13, 110, 253, 0.16) 0%, rgba(13, 110, 253, 0) 70%);
+}
+
+.login-bg::after {
+  width: 220px;
+  height: 220px;
+  bottom: -80px;
+  right: -70px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, rgba(37, 99, 235, 0) 72%);
 }
 
 .brand {
@@ -32,6 +78,19 @@
 .form-control:focus {
   box-shadow: 0 0 0 .15rem rgba(13,110,253,.12);
   border-color: #0d6efd;
+}
+
+.input-icon {
+  background-color: #f8fafc;
+  color: #64748b;
+}
+
+.password-toggle {
+  border-color: #ced4da;
+}
+
+.password-toggle:focus {
+  box-shadow: 0 0 0 .15rem rgba(13,110,253,.12);
 }
 
 .invalid-feedback {

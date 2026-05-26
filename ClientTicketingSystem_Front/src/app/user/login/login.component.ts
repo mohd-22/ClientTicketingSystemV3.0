@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
   submitted = false;
   loading = false;
   errorMessage = '';
+  showPassword = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -74,6 +75,10 @@ export class LoginComponent implements OnInit {
         // this.toastr.error(this.errorMessage, 'Error', { timeOut: 3000 });
       }
     });
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 
 }

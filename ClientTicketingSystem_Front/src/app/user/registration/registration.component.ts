@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { ageRangeValidator } from '../../shared/validators/age.validator';
 import { AuthService } from '../../shared/services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router, RouteReuseStrategy } from '@angular/router';
@@ -21,7 +22,7 @@ export class RegistrationComponent implements OnInit {
   successMessage = '';
   errorMessage = '';
   loading = false;
-  private readonly PhonePattern = /^(?:\+9627|07)\d{8}$/;
+  private readonly PhonePattern = /^07\d{8}$/;
   genderOptions: GenderOption[] = [
     { label: 'Male', value: 1 },
     { label: 'Female', value: 2 },
@@ -37,7 +38,7 @@ export class RegistrationComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       phoneNumber: ['', [Validators.required, Validators.pattern(this.PhonePattern)]],
       address: ['', [Validators.required, Validators.minLength(3)]],
-      dateOfBirth: ['', Validators.required],
+      dateOfBirth: ['', [Validators.required, ageRangeValidator(18, 90)]],
       gender: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required],
@@ -52,6 +53,7 @@ export class RegistrationComponent implements OnInit {
     return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
+  
   get f() {
     return this.registrationForm.controls;
   }

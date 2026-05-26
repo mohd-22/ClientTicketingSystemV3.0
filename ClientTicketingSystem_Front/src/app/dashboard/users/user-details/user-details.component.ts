@@ -5,6 +5,7 @@ import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import { ToastrService } from 'ngx-toastr';
 import { UserDto, UsersService, UpdateUserRequest } from '../../../shared/services/users.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ageRangeValidator } from '../../../shared/validators/age.validator';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -13,7 +14,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./user-details.component.css']
 })
 export class UserDetailsComponent implements OnInit {
-  private readonly PhonePattern = /^(?:\+9627|07)\d{8}$/;
+  private readonly PhonePattern = /^07\d{8}$/;
   user: UserDto | null = null;
   isLoading = false;
   isUpdatingStatus = false;
@@ -71,7 +72,7 @@ export class UserDetailsComponent implements OnInit {
       userName: [this.editModel.userName || '', [Validators.required, Validators.minLength(3)]],
       email: [this.editModel.email || '', [Validators.required, Validators.email]],
       phoneNumber: [this.editModel.phoneNumber || '', [Validators.required, Validators.pattern(this.PhonePattern)]],
-      dateOfBirth: [this.editModel.dateOfBirth || ''],
+      dateOfBirth: [this.editModel.dateOfBirth || '', [Validators.required, ageRangeValidator(18, 90)]],
       gender: [this.editModel.gender ?? ''],
       address: [this.editModel.address || '']
     });

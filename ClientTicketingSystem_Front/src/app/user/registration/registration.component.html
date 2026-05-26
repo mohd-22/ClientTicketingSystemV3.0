@@ -1,183 +1,181 @@
-<div class="min-vh-100 d-flex align-items-center justify-content-center py-3 py-lg-4 login-bg">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-6">
-        <div class="card shadow-sm border-0 w-100">
-          <div class="card-body p-3 p-md-4">
-            <div class="d-flex justify-content-center mb-3">
-              <div class="brand">CT</div>
-            </div>
-            <h2 class="h4 fw-bold text-center mb-1">Create Account</h2>
-            <p class="text-center text-muted mb-3 small">Register a new user account</p>
+<div class="registration-page min-vh-100 d-flex flex-column">
+  
+  <main class="flex-grow-1 d-flex align-items-center justify-content-center px-3 py-4 py-md-5">
+    <div class="form-shell card border-0 shadow-sm w-100">
+      <div class="card-header border-0">
+        <h1 class="h4 mb-1">System Registration</h1>
+        <p class="mb-0">Create your account to access the control panel.</p>
+      </div>
 
-            <div *ngIf="successMessage" class="alert alert-success py-2 small" role="alert">
-              {{ successMessage }}
-            </div>
-
-            <div *ngIf="errorMessage" class="alert alert-danger py-2 small" role="alert">
-              {{ errorMessage }}
-            </div>
-
-            <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" novalidate>
-              <div class="row g-2 g-md-3">
-                <div class="col-12 col-md-6">
-                  <label for="fullName" class="form-label fw-semibold">Full Name</label>
-                  <input
-                    id="fullName"
-                    type="text"
-                    formControlName="fullName"
-                    placeholder="Enter your full name"
-                    class="form-control"
-                    [class.is-invalid]="submitted && f['fullName'].invalid"
-                  />
-                  <div class="invalid-feedback d-block" *ngIf="submitted && f['fullName'].errors">
-                    <span *ngIf="f['fullName'].errors['required']">Full name is required.</span>
-                    <span *ngIf="f['fullName'].errors['minlength']">Full name must be at least 2 characters.</span>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md-6">
-                  <label for="userName" class="form-label fw-semibold">Username</label>
-                  <input
-                    id="userName"
-                    type="text"
-                    formControlName="userName"
-                    placeholder="Enter your username"
-                    class="form-control"
-                    [class.is-invalid]="submitted && f['userName'].invalid"
-                  />
-                  <div class="invalid-feedback d-block" *ngIf="submitted && f['userName'].errors">
-                    <span *ngIf="f['userName'].errors['required']">Username is required.</span>
-                    <span *ngIf="f['userName'].errors['minlength']">Username must be at least 2 characters.</span>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md-6">
-                  <label for="email" class="form-label fw-semibold">Email</label>
-                  <input
-                    id="email"
-                    type="email"
-                    formControlName="email"
-                    placeholder="Enter your email"
-                    class="form-control"
-                    [class.is-invalid]="submitted && f['email'].invalid"
-                  />
-                  <div class="invalid-feedback d-block" *ngIf="submitted && f['email'].errors">
-                    <span *ngIf="f['email'].errors['required']">Email is required.</span>
-                    <span *ngIf="f['email'].errors['email']">Please enter a valid email.</span>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md-6">
-                  <label for="phoneNumber" class="form-label fw-semibold">Phone Number</label>
-                  <input
-                    id="phoneNumber"
-                    type="tel"
-                    inputmode="tel"
-                    formControlName="phoneNumber"
-                    placeholder="0791234567 or +962791234567"
-                    class="form-control"
-                    [class.is-invalid]="submitted && f['phoneNumber'].invalid"
-                  />
-                  <div class="invalid-feedback d-block" *ngIf="submitted && f['phoneNumber'].errors">
-                    <span *ngIf="f['phoneNumber'].errors['required']">Phone number is required.</span>
-                    <span *ngIf="f['phoneNumber'].errors['pattern']">Enter a valid mobile number, such as 0791234567 or +962791234567.</span>
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <label for="address" class="form-label fw-semibold">Address</label>
-                  <textarea
-                    id="address"
-                    formControlName="address"
-                    rows="1"
-                    placeholder="Enter your address"
-                    class="form-control"
-                    [class.is-invalid]="submitted && f['address'].invalid"
-                  ></textarea>
-                  <div class="invalid-feedback d-block" *ngIf="submitted && f['address'].errors">
-                    <span *ngIf="f['address'].errors['required']">Address is required.</span>
-                    <span *ngIf="f['address'].errors['minlength']">Address must be at least 3 characters.</span>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md-6">
-                  <label for="dateOfBirth" class="form-label fw-semibold">Date of Birth</label>
-                  <input
-                    id="dateOfBirth"
-                    type="date"
-                    formControlName="dateOfBirth"
-                    class="form-control"
-                    [class.is-invalid]="submitted && f['dateOfBirth'].invalid"
-                  />
-                  <div class="invalid-feedback d-block" *ngIf="submitted && f['dateOfBirth'].errors">
-                    <span *ngIf="f['dateOfBirth'].errors['required']">Date of birth is required.</span>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md-6">
-                  <label for="gender" class="form-label fw-semibold">Gender</label>
-                  <select
-                    id="gender"
-                    formControlName="gender"
-                    class="form-select"
-                    [class.is-invalid]="submitted && f['gender'].invalid"
-                  >
-                    <option value="" disabled>Select gender</option>
-                    <option *ngFor="let option of genderOptions" [ngValue]="option.value">{{ option.label }}</option>
-                  </select>
-                  <div class="invalid-feedback d-block" *ngIf="submitted && f['gender'].errors">
-                    <span *ngIf="f['gender'].errors['required']">Gender is required.</span>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md-6">
-                  <label for="password" class="form-label fw-semibold">Password</label>
-                  <input
-                    id="password"
-                    type="password"
-                    formControlName="password"
-                    placeholder="Enter password (min 6 characters)"
-                    class="form-control"
-                    [class.is-invalid]="submitted && f['password'].invalid"
-                  />
-                  <div class="invalid-feedback d-block" *ngIf="submitted && f['password'].errors">
-                    <span *ngIf="f['password'].errors['required']">Password is required.</span>
-                    <span *ngIf="f['password'].errors['minlength']">Password must be at least 6 characters.</span>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md-6">
-                  <label for="confirmPassword" class="form-label fw-semibold">Confirm Password</label>
-                  <input
-                    id="confirmPassword"
-                    type="password"
-                    formControlName="confirmPassword"
-                    placeholder="Confirm password"
-                    class="form-control"
-                    [class.is-invalid]="submitted && (f['confirmPassword'].invalid || registrationForm.errors?.['passwordMismatch'])"
-                  />
-                  <div class="invalid-feedback d-block" *ngIf="submitted && f['confirmPassword'].errors">
-                    <span *ngIf="f['confirmPassword'].errors['required']">Please confirm your password.</span>
-                  </div>
-                  <div class="invalid-feedback d-block" *ngIf="submitted && registrationForm.errors?.['passwordMismatch']">
-                    Passwords do not match.
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="d-flex justify-content-between align-items-center mb-3 small">
-                    <a routerLink="/user/login" class="text-decoration-none">Already have an account? Login</a>
-                  </div>
-                  <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold" [disabled]="loading">
-                    <span *ngIf="!loading">Register</span>
-                    <span *ngIf="loading">Registering…</span>
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
+      <div class="card-body">
+        <div *ngIf="successMessage" class="alert alert-success py-2 small mb-3" role="alert">
+          {{ successMessage }}
         </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger py-2 small mb-3" role="alert">
+          {{ errorMessage }}
+        </div>
+
+        <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" novalidate>
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <label for="fullName" class="form-label">Full Name</label>
+              <input
+                id="fullName"
+                type="text"
+                formControlName="fullName"
+                placeholder="e.g. John Doe"
+                class="form-control"
+                [class.is-invalid]="submitted && f['fullName'].invalid"
+              />
+              <div class="invalid-feedback d-block" *ngIf="submitted && f['fullName'].errors">
+                <span *ngIf="f['fullName'].errors['required']">Full name is required.</span>
+                <span *ngIf="f['fullName'].errors['minlength']">Full name must be at least 2 characters.</span>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label for="userName" class="form-label">Username</label>
+              <input
+                id="userName"
+                type="text"
+                formControlName="userName"
+                placeholder="johndoe_admin"
+                class="form-control"
+                [class.is-invalid]="submitted && f['userName'].invalid"
+              />
+              <div class="invalid-feedback d-block" *ngIf="submitted && f['userName'].errors">
+                <span *ngIf="f['userName'].errors['required']">Username is required.</span>
+                <span *ngIf="f['userName'].errors['minlength']">Username must be at least 2 characters.</span>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label for="email" class="form-label">Email Address</label>
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                placeholder="john.doe@systemic.com"
+                class="form-control"
+                [class.is-invalid]="submitted && f['email'].invalid"
+              />
+              <div class="invalid-feedback d-block" *ngIf="submitted && f['email'].errors">
+                <span *ngIf="f['email'].errors['required']">Email is required.</span>
+                <span *ngIf="f['email'].errors['email']">Please enter a valid email.</span>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label for="phoneNumber" class="form-label">Phone Number</label>
+              <input
+                id="phoneNumber"
+                type="tel"
+                inputmode="tel"
+                formControlName="phoneNumber"
+                placeholder="07********"
+                class="form-control"
+                [class.is-invalid]="submitted && f['phoneNumber'].invalid"
+              />
+              <div class="invalid-feedback d-block" *ngIf="submitted && f['phoneNumber'].errors">
+                <span *ngIf="f['phoneNumber'].errors['required']">Phone number is required.</span>
+                <span *ngIf="f['phoneNumber'].errors['pattern']">Enter a valid mobile number in this format: 07********.</span>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label for="dateOfBirth" class="form-label">Date of Birth</label>
+                <input type="date" class="form-control" formControlName="dateOfBirth" />
+                <div *ngIf="registrationForm.get('dateOfBirth')?.errors && (registrationForm.get('dateOfBirth')?.touched || registrationForm.get('dateOfBirth')?.dirty || submitted)" class="text-danger small mt-1">
+                  <div *ngIf="registrationForm.get('dateOfBirth')?.errors?.['required']">Date of birth is required.</div>
+                  <div *ngIf="registrationForm.get('dateOfBirth')?.errors?.['invalidDate']">Please enter a valid date.</div>
+                  <div *ngIf="registrationForm.get('dateOfBirth')?.errors?.['futureDate']">Date of birth cannot be in the future.</div>
+                  <div *ngIf="registrationForm.get('dateOfBirth')?.errors?.['tooYoung']">You must be at least 18 years old.</div>
+                  <div *ngIf="registrationForm.get('dateOfBirth')?.errors?.['tooOld']">Age must be 90 or younger.</div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label for="gender" class="form-label">Gender</label>
+              <select
+                id="gender"
+                formControlName="gender"
+                class="form-select"
+                [class.is-invalid]="submitted && f['gender'].invalid"
+              >
+                <option value="" disabled>Select gender</option>
+                <option *ngFor="let option of genderOptions" [ngValue]="option.value">{{ option.label }}</option>
+              </select>
+              <div class="invalid-feedback d-block" *ngIf="submitted && f['gender'].errors">
+                <span *ngIf="f['gender'].errors['required']">Gender is required.</span>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label for="address" class="form-label">Address</label>
+              <textarea
+                id="address"
+                formControlName="address"
+                rows="2"
+                placeholder="Street, City, State, Zip Code"
+                class="form-control"
+                [class.is-invalid]="submitted && f['address'].invalid"
+              ></textarea>
+              <div class="invalid-feedback d-block" *ngIf="submitted && f['address'].errors">
+                <span *ngIf="f['address'].errors['required']">Address is required.</span>
+                <span *ngIf="f['address'].errors['minlength']">Address must be at least 3 characters.</span>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label for="password" class="form-label">Password</label>
+              <input
+                id="password"
+                type="password"
+                formControlName="password"
+                placeholder="********"
+                class="form-control"
+                [class.is-invalid]="submitted && f['password'].invalid"
+              />
+              <div class="invalid-feedback d-block" *ngIf="submitted && f['password'].errors">
+                <span *ngIf="f['password'].errors['required']">Password is required.</span>
+                <span *ngIf="f['password'].errors['minlength']">Password must be at least 6 characters.</span>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <input
+                id="confirmPassword"
+                type="password"
+                formControlName="confirmPassword"
+                placeholder="********"
+                class="form-control"
+                [class.is-invalid]="submitted && (f['confirmPassword'].invalid || registrationForm.errors?.['passwordMismatch'])"
+              />
+              <div class="invalid-feedback d-block" *ngIf="submitted && f['confirmPassword'].errors">
+                <span *ngIf="f['confirmPassword'].errors['required']">Please confirm your password.</span>
+              </div>
+              <div class="invalid-feedback d-block" *ngIf="submitted && registrationForm.errors?.['passwordMismatch']">
+                Passwords do not match.
+              </div>
+            </div>
+
+            <div class="col-12 mt-2">
+              <button type="submit" class="btn btn-register w-100 fw-semibold" [disabled]="loading">
+                <span *ngIf="!loading">Register Account</span>
+                <span *ngIf="loading">Registering...</span>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <p class="login-note text-center m-4">
+          Already have an account?
+          <a routerLink="/user/login">Login here</a>
+        </p>
       </div>
     </div>
-  </div>
+  </main>
+
 </div>

@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { UserDto, UsersService, UpdateUserRequest } from '../../../shared/services/users.service';
 import { TicketDto, TicketsService } from '../../../shared/services/tickets.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ageRangeValidator } from '../../../shared/validators/age.validator';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -15,7 +16,7 @@ import { environment } from 'src/environments/environment';
 })
 
 export class ClientDetailsComponent implements OnInit {
-  private readonly PhonePattern = /^(?:\+9627|07)\d{8}$/;
+  private readonly PhonePattern = /^07\d{8}$/;
   client: UserDto | null = null;
   tickets: TicketDto[] = [];
   isLoading = false;
@@ -78,7 +79,7 @@ export class ClientDetailsComponent implements OnInit {
       userName: [this.editModel.userName || '', [Validators.required, Validators.minLength(3)]],
       email: [this.editModel.email || '', [Validators.required, Validators.email]],
       phoneNumber: [this.editModel.phoneNumber || '', [Validators.required, Validators.pattern(this.PhonePattern)]],
-      dateOfBirth: [this.editModel.dateOfBirth || ''],
+      dateOfBirth: [this.editModel.dateOfBirth || '', [Validators.required, ageRangeValidator(18, 90)]],
       gender: [this.editModel.gender ?? ''],
       address: [this.editModel.address || '']
     });

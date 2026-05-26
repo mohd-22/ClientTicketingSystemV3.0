@@ -17,14 +17,20 @@
 						<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
 							<div class="mb-3">
 								<label for="emailOrUsername" class="form-label">Email, username or phone</label>
-								<input
-									id="emailOrUsername"
-									type="text"
-									formControlName="emailOrUsername"
-									placeholder="you@example.com"
-									class="form-control"
-									[class.is-invalid]="submitted && f['emailOrUsername'].invalid"
-								/>
+								<div class="input-group">
+									<span class="input-group-text input-icon" id="emailOrUsernameIcon">
+										<i class="bi bi-person"></i>
+									</span>
+									<input
+										id="emailOrUsername"
+										type="text"
+										formControlName="emailOrUsername"
+										placeholder="you@example.com"
+										class="form-control"
+										aria-describedby="emailOrUsernameIcon"
+										[class.is-invalid]="submitted && f['emailOrUsername'].invalid"
+									/>
+								</div>
 								<div class="invalid-feedback d-block" *ngIf="submitted && f['emailOrUsername'].errors">
 									<span *ngIf="f['emailOrUsername'].errors['required']">This field is required.</span>
 								</div>
@@ -32,14 +38,28 @@
 
 							<div class="mb-3">
 								<label for="password" class="form-label">Password</label>
-								<input
-									id="password"
-									type="password"
-									formControlName="password"
-									placeholder="••••••••"
-									class="form-control"
-									[class.is-invalid]="submitted && f['password'].invalid"
-								/>
+								<div class="input-group">
+									<span class="input-group-text input-icon" id="passwordIcon">
+										<i class="bi bi-lock"></i>
+									</span>
+									<input
+										id="password"
+										[type]="showPassword ? 'text' : 'password'"
+										formControlName="password"
+										placeholder="••••••••"
+										class="form-control"
+										aria-describedby="passwordIcon"
+										[class.is-invalid]="submitted && f['password'].invalid"
+									/>
+									<button
+										type="button"
+										class="btn btn-outline-secondary password-toggle"
+										(click)="togglePasswordVisibility()"
+										[attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+									>
+										<i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+									</button>
+								</div>
 								<div class="invalid-feedback d-block" *ngIf="submitted && f['password'].errors">
 									<span *ngIf="f['password'].errors['required']">Password is required.</span>
 									<span *ngIf="f['password'].errors['minlength']">Password must be at least 6 characters.</span>

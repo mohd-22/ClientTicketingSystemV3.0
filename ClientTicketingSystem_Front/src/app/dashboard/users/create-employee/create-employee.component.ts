@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ageRangeValidator } from '../../../shared/validators/age.validator';
 import { UsersService } from '../../../shared/services/users.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
@@ -25,7 +26,7 @@ export class CreateEmployeeComponent implements OnInit {
     { label: 'Male', value: 1 },
     { label: 'Female', value: 2 }
   ];
-  private readonly PhonePattern = /^(?:\+9627|07)\d{8}$/;
+  private readonly PhonePattern = /^07\d{8}$/;
 
   constructor(
     private fb: FormBuilder,
@@ -41,7 +42,7 @@ export class CreateEmployeeComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       phoneNumber: ['', [Validators.required, Validators.pattern(this.PhonePattern)]],
       address: ['', [Validators.required, Validators.minLength(3)]],
-      dateOfBirth: ['', Validators.required],
+      dateOfBirth: ['', [Validators.required, ageRangeValidator(18, 90)]],
       gender: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required],
