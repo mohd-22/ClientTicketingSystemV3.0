@@ -18,7 +18,6 @@ export const ageRangeValidator = (min: number, max: number): ValidatorFn => {
       age--;
     }
     if (age < min) return { tooYoung: { requiredAge: min, actual: age } };
-    if (age > max) return { tooOld: { requiredAge: max, actual: age } };
     return null;
   };
 };

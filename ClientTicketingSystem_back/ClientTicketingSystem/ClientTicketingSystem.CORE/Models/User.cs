@@ -9,7 +9,7 @@ public class User : BaseEntity
     public string Address { get; set; } = string.Empty;
     public string HashedPassword { get; set; } = string.Empty;
     public UserRole Role { get; set; } = UserRole.Client;
-    public string ImageUrl { get; set; } = string.Empty;
+    public string? ImageUrl { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
     public DateTime DateOfBirth { get; set; }

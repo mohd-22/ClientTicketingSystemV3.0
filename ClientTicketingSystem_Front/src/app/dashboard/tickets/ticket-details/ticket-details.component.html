@@ -9,6 +9,9 @@
     {{ errorMessage }}
   </div>
 
+  <div class="m-2">
+      <a href="/dashboard/tickets" class="text-decoration-none"><-- Back To Tickets</a>
+  </div>
   <div *ngIf="ticket && !isLoading" class="row g-4">
     <div class="col-lg-8">
       <div class="card border-0 shadow-sm mb-4">
@@ -17,7 +20,6 @@
             <div>
               <nav aria-label="breadcrumb">
                 <ol class="breadcrumb small mb-2">
-                  <li class="breadcrumb-item"><a href="/dashboard/tickets" class="text-decoration-none">Tickets</a></li>
                 </ol>
               </nav>
               <h1 class="h4 fw-bold text-dark mb-0">{{ ticket.title }}</h1>
@@ -42,18 +44,25 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-4">
             <h5 class="card-title fw-semibold mb-0">Activity & Comments</h5>
-            <button type="button" class="btn btn-sm btn-link text-secondary p-0">
-              <i class="bi bi-funnel"></i>
-            </button>
           </div>
 
           <div *ngIf="comments && comments.length" class="mb-4 pb-4 border-bottom">
             <div *ngFor="let c of comments" class="d-flex gap-3 mb-3">
-              <div
-                class="avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold"
-                style="width: 40px; height: 40px; font-size: 0.75rem;">
-                {{ getInitials(c.userName) }}
-              </div>
+              <ng-container *ngIf="c.imageUrl; else commentAvatarFallback">
+                <img
+                  [src]="getAvatarUrl(c.imageUrl)"
+                  (error)="handleAvatarError($event)"
+                  alt="{{ c.userName }}"
+                  class="rounded-circle border flex-shrink-0"
+                  style="width: 40px; height: 40px; object-fit: cover;">
+              </ng-container>
+              <ng-template #commentAvatarFallback>
+                <div
+                  class="avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+                  style="width: 40px; height: 40px; font-size: 0.75rem;">
+                  {{ getInitials(c.userName) }}
+                </div>
+              </ng-template>
               <div class="flex-grow-1">
                 <div class="fw-semibold text-dark">{{ c.userName }}</div>
                 <div><span [ngClass]="getRoleBadgeClass(c.userRole)">{{ c.userRole }}</span></div>

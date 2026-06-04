@@ -22,7 +22,7 @@ export class RegistrationComponent implements OnInit {
   successMessage = '';
   errorMessage = '';
   loading = false;
-  private readonly PhonePattern = /^07\d{8}$/;
+private readonly PhonePattern = /^07(8|9|7)\d{7}$/;
   genderOptions: GenderOption[] = [
     { label: 'Male', value: 1 },
     { label: 'Female', value: 2 },

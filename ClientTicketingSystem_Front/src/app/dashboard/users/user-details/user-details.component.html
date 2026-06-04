@@ -70,7 +70,7 @@
 									<input formControlName="phoneNumber" type="tel" inputmode="tel" class="form-control" placeholder="07********" [class.is-invalid]="editForm.get('phoneNumber')?.invalid && (editForm.get('phoneNumber')?.touched || editForm.get('phoneNumber')?.dirty)">
 									<div *ngIf="editForm.get('phoneNumber')?.invalid && (editForm.get('phoneNumber')?.touched || editForm.get('phoneNumber')?.dirty)" class="invalid-feedback d-block">
 										<div *ngIf="editForm.get('phoneNumber')?.errors?.['required']">Phone number is required.</div>
-										<div *ngIf="editForm.get('phoneNumber')?.errors?.['pattern']">Enter a valid mobile number in this format: 07********.</div>
+										<div *ngIf="editForm.get('phoneNumber')?.errors?.['pattern']">Please enter a valid mobile number starting with 077, 078, or 079 (10 digits).</div>
 									</div>
 								</div>
 								<div class="col-md-6">
@@ -81,7 +81,6 @@
 										<div *ngIf="editForm.get('dateOfBirth')?.errors?.['invalidDate']">Please enter a valid date.</div>
 										<div *ngIf="editForm.get('dateOfBirth')?.errors?.['futureDate']">Date of birth cannot be in the future.</div>
 										<div *ngIf="editForm.get('dateOfBirth')?.errors?.['tooYoung']">User must be at least 18 years old.</div>
-										<div *ngIf="editForm.get('dateOfBirth')?.errors?.['tooOld']">Age must be 90 or younger.</div>
 									</div>
 								</div>
 								<div class="col-md-6">

@@ -37,11 +37,25 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+
   getAttachmentUrl(path: string | undefined): string {
     if (!path) return 'assets/images/default-avatar.png';
     const cleanPath = path.replace(/\\/g, '/').replace(/^\/+/, '');
     const base = (environment.apiUrl || '').replace(/\/+$/, '');
     return `${base}/${cleanPath}`;
+  }
+
+  get consoleTitle(): string {
+    switch (this.UserRole) {
+      case 'Manager':
+        return 'Manager Console';
+      case 'Employee':
+        return 'Employee Portal';
+      case 'Client':
+        return 'Client Portal';
+      default:
+        return 'Workspace';
+    }
   }
 
   getInitials(name?: string): string {

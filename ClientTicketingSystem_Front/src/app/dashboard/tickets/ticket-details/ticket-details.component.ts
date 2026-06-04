@@ -78,6 +78,18 @@ export class TicketDetailsComponent implements OnInit {
     }
   }
 
+  getAvatarUrl(path?: string): string {
+    if (!path) return 'assets/images/default-avatar.png';
+    const cleanPath = path.replace(/\\/g, '/').replace(/^\/+/, '');
+    const base = (environment.apiUrl || '').replace(/\/+$/, '');
+    return `${base}/${cleanPath}`;
+  }
+
+  handleAvatarError(event: Event): void {
+    const target = event.target as HTMLImageElement;
+    target.src = 'assets/images/default-avatar.png';
+  }
+
   getRoleBadgeClass(role?: string): string {
     if (!role) return 'badge bg-light text-dark border';
     const r = role.toLowerCase();
@@ -134,6 +146,7 @@ export class TicketDetailsComponent implements OnInit {
           text: c.text,
           createdAt: c.createdAt,
           userName: c.userName,
+          imageUrl: c.imageUrl,
           userRole: c.userRole,
           userId: c.userId
         }));

@@ -25,7 +25,7 @@ export class TicketsComponent implements OnInit {
   searchQuery = '';
   selectedStatus = 'All Status';
   currentPage = 1;
-  itemsPerPage = 10;
+  itemsPerPage = 6;
   totalItems = 0;
   isLoading = false;
   errorMessage = '';
@@ -372,7 +372,7 @@ export class TicketsComponent implements OnInit {
         return 'bg-primary';
       case 'inprogress':
       case 'in progress':
-        return 'bg-warning text-dark';
+        return 'bg-info';
       case 'resolved':
       case 'fixed':
         return 'bg-success';

@@ -1,4 +1,5 @@
-﻿using ClientTicketingSystem.Application.Helpers;
+﻿using AutoMapper;
+using ClientTicketingSystem.Application.Helpers;
 using ClientTicketingSystem.Application.Services.Interfaces;
 using ClientTicketingSystem.CORE.Dtos.AuthDtos;
 using ClientTicketingSystem.CORE.Models;
@@ -18,12 +19,14 @@ public class AuthService : IAuthService
     private readonly IConfiguration _configuration;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<AuthService> _logger;
+    private readonly IMapper _mapper;
 
-    public AuthService(IConfiguration configuration, IUnitOfWork unitOfWork, ILogger<AuthService> logger)
+    public AuthService(IConfiguration configuration, IUnitOfWork unitOfWork, ILogger<AuthService> logger, IMapper mapper)
     {
         _configuration = configuration;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _mapper = mapper;
     }
     private string CreateToken(User user)
     {
@@ -153,17 +156,7 @@ public class AuthService : IAuthService
                 };
             }
 
-            var user = new User
-            {
-                UserName = request.UserName,
-                FullName = request.FullName,
-                Email = request.Email,
-                PhoneNumber = request.PhoneNumber,
-                Address = request.Address,
-                DateOfBirth = request.DateOfBirth,
-                Gender = request.Gender,
-                CreatedDate = DateTime.UtcNow
-            };
+            var user = _mapper.Map<User>(request);
             user.HashedPassword = new PasswordHasher<User>().HashPassword(user, request.Password);
 
             await _unitOfWork.Users.AddAsync(user);

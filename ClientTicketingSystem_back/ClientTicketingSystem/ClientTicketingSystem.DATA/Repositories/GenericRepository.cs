@@ -23,17 +23,25 @@ public class GenericRepository <T>: IGenericRepository <T> where T : class
             .Where(match)
             .ToListAsync();
     }
-    public async Task<int> CountAsync(ISpecification<T> spec)
+    public async Task<IReadOnlyList<T>> ListWithSpecAsync(ISpecification<T> spec)
     {
-        return await ApplySpecification(spec).CountAsync();
+        return await ApplySpecification(spec).ToListAsync();
     }
     public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
     {
         return await _context.Set<T>().AnyAsync(predicate);
     }
+    private IQueryable<T> ApplySpecification(ISpecification<T> spec)
+    {
+        return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
+    }
     public async Task<T> FindAsync(Expression<Func<T, bool>> match)
     {
         return (await _context.Set<T>().FirstOrDefaultAsync(match))!;
+    }
+    public async Task<int> CountAsync(ISpecification<T> spec)
+    {
+        return await ApplySpecification(spec).CountAsync();
     }
     public async Task<IEnumerable<T>> GetAllAsync()
     {
@@ -64,13 +72,5 @@ public class GenericRepository <T>: IGenericRepository <T> where T : class
         return entity;
     }
 
-    public async Task<IReadOnlyList<T>> ListWithSpecAsync(ISpecification<T> spec)
-    {
-        return await ApplySpecification(spec).ToListAsync();
-    }
 
-    private IQueryable<T> ApplySpecification(ISpecification<T> spec)
-    {
-        return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
-    }
 }

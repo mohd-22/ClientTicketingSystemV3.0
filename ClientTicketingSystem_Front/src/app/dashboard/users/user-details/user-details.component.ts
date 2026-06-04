@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./user-details.component.css']
 })
 export class UserDetailsComponent implements OnInit {
-  private readonly PhonePattern = /^07\d{8}$/;
+  private readonly PhonePattern = /^07(8|9|7)\d{7}$/;
   user: UserDto | null = null;
   isLoading = false;
   isUpdatingStatus = false;

@@ -2,8 +2,6 @@
 using ClientTicketingSystem.Application.Services.Interfaces;
 using ClientTicketingSystem.CORE.Dtos;
 using ClientTicketingSystem.CORE.Dtos.ProductDtos;
-using ClientTicketingSystem.CORE.Models;
-using ClientTicketingSystem.CORE.Models.Enums;
 using ClientTicketingSystem.CORE.Specifications;
 using Microsoft.Extensions.Logging;
 using SupportHub.DATA.Repositories.Interfaces;
@@ -20,7 +18,7 @@ public class ProductService : IProductService
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
-    public async Task<ApiResponse<PaginationDto<ProductWithCountDto>>> GetAllProducts(string? search,
+    public async Task<ApiResponse<PaginationDto<ProductDto>>> GetAllProducts(string? search,
                                                                                       string? sort,
                                                                                       int pageIndex,
                                                                                       int pageSize)
@@ -36,13 +34,20 @@ public class ProductService : IProductService
             var products = await _unitOfWork.Products.GetProductsAsync(spec);
             var totalCount = await _unitOfWork.Products.CountAsync(countSpec);
 
-            var pagedResult = new PaginationDto<ProductWithCountDto>(pageIndex, pageSize, totalCount, products);
+            var ProductDtos = products.Select(p => new ProductDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+            }).ToList();
+
+            var pagedResult = new PaginationDto<ProductDto>(pageIndex, pageSize, totalCount, ProductDtos);
 
             _logger.LogInformation(
                 "Retrieved {ProductCount} of {TotalCount} products (page {PageIndex}, size {PageSize})",
                 products.Count, totalCount, pageIndex, pageSize);
 
-            return new ApiResponse<PaginationDto<ProductWithCountDto>>
+            return new ApiResponse<PaginationDto<ProductDto>>
             {
                 Success = true,
                 Message = "Products retrieved successfully",
@@ -53,7 +58,7 @@ public class ProductService : IProductService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving products");
-            return new ApiResponse<PaginationDto<ProductWithCountDto>>
+            return new ApiResponse<PaginationDto<ProductDto>>
             {
                 Success = false,
                 Message = "An error occurred while retrieving products",

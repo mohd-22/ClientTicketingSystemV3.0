@@ -9,7 +9,8 @@ public class CommentRepository : GenericRepository<Comment>, ICommentRepository
     public async Task<IEnumerable<Comment>> GetAllCommnets(Guid id)
     {
         return await _context.Set<Comment>()
-        .Include(c => c.Creator).Include(c => c.Ticket)
+        .Include(c => c.Creator)
+        .Include(c => c.Ticket)
         .Where(c => c.TicketId == id).ToListAsync();
     }
 

@@ -31,7 +31,7 @@
 									<input class="form-control" formControlName="phoneNumber" type="tel" inputmode="tel" placeholder="07********" />
 										<div *ngIf="submitted && f.phoneNumber.errors" class="text-danger small mt-1">
 											<div *ngIf="f.phoneNumber.errors?.['required']">Phone is required.</div>
-										<div *ngIf="f.phoneNumber.errors?.['pattern']">Enter a valid mobile number in this format: 07********.</div>
+										<div *ngIf="f.phoneNumber.errors?.['pattern']">Please enter a valid mobile number starting with 077, 078, or 079 (10 digits).</div>
 										</div>
 								</div>
 				<div class="col-md-6">
@@ -68,7 +68,6 @@
 							<div *ngIf="f.dateOfBirth.errors?.['invalidDate']">Please enter a valid date.</div>
 							<div *ngIf="f.dateOfBirth.errors?.['futureDate']">Date of birth cannot be in the future.</div>
 							<div *ngIf="f.dateOfBirth.errors?.['tooYoung']">You must be at least 18 years old.</div>
-							<div *ngIf="f.dateOfBirth.errors?.['tooOld']">Age must be 90 or younger.</div>
 						</div>
 					</div>
 

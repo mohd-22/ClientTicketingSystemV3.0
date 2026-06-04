@@ -26,8 +26,7 @@ export class CreateEmployeeComponent implements OnInit {
     { label: 'Male', value: 1 },
     { label: 'Female', value: 2 }
   ];
-  private readonly PhonePattern = /^07\d{8}$/;
-
+private readonly PhonePattern = /^07(8|9|7)\d{7}$/;
   constructor(
     private fb: FormBuilder,
     private usersService: UsersService,

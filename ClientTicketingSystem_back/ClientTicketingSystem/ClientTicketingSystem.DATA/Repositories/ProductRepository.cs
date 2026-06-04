@@ -26,18 +26,6 @@ public class ProductRepository : GenericRepository<Product>,IProductRepository
         var query = SpecificationEvaluator<Product>.GetQuery(_context.Products.AsQueryable(), spec);
 
         var products = await query.ToListAsync();
-        /*
-        // Previous manual mapping (kept commented):
-        var productsDto = products.Select(p => new ProductWithCountDto
-        {
-            Id = p.Id,
-            Name = p.Name,
-            Description = p.Description,
-            ItemsCount = p.Items == null ? 0 : p.Items.Count
-        }).ToList();
-        return productsDto;
-        */
-
         return _mapper.Map<List<ProductWithCountDto>>(products);
     }
 }

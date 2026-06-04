@@ -3,7 +3,6 @@ using ClientTicketingSystem.Application.Services.Interfaces;
 using ClientTicketingSystem.CORE.Dtos;
 using ClientTicketingSystem.CORE.Models;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -65,7 +64,7 @@ public class AttachmentService : IAttachmentService
     }
     public async Task<ApiResponse<IEnumerable<AttachmentDto>>> GetAttachmentsByTicket(Guid ticketId)
     {
-            var attachments = await _unitOfWork.Attachments.FindAsNoTrackingAsync(a => a.TicketId == ticketId);
+        var attachments = await _unitOfWork.Attachments.FindAsNoTrackingAsync(a => a.TicketId == ticketId);
         try
         {
             _logger.LogInformation("Getting attachments for ticket with ID: {TicketId}", ticketId);
@@ -74,7 +73,7 @@ public class AttachmentService : IAttachmentService
                 return new ApiResponse<IEnumerable<AttachmentDto>> { Data = null, Message = "Attachments not found", Success = false, StatusCode = 404 };
 
             }
-           
+
             var attachmentDtos = _mapper.Map<List<AttachmentDto>>(attachments);
             return new ApiResponse<IEnumerable<AttachmentDto>> { Data = attachmentDtos, Message = "Attachments Fetched Successfully", Success = true, StatusCode = 200 };
         }
@@ -98,7 +97,8 @@ public class AttachmentService : IAttachmentService
             var fileBytes = await System.IO.File.ReadAllBytesAsync(fullPath);
             return (fileBytes, "application/octet-stream", attachment.FileName);
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             _logger.LogError(ex, "Failed to download attachment with ID: {AttachmentId}", id);
             throw new Exception("Failed to download attachment", ex);
         }

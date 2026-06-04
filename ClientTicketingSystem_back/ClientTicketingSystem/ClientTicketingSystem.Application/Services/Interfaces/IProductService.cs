@@ -5,7 +5,7 @@ using ClientTicketingSystem.CORE.Dtos.ProductDtos;
 namespace ClientTicketingSystem.Application.Services.Interfaces;
 public interface IProductService
 {
-    Task<ApiResponse<PaginationDto<ProductWithCountDto>>> GetAllProducts(
+    Task<ApiResponse<PaginationDto<ProductDto>>> GetAllProducts(
         string? search, 
         string? sort,
         int pageIndex,

@@ -70,7 +70,7 @@ export class LoginComponent implements OnInit {
         } else if (err.status === 400) {
           this.errorMessage = 'Your account is deactivated. Please contact support.';
         } else {
-          this.errorMessage = 'Could not reach the server. Is the API running at ' + environment.apiUrl + ' ?';
+          this.errorMessage = 'Internal server error. Please try again later.';
         }
         // this.toastr.error(this.errorMessage, 'Error', { timeOut: 3000 });
       }

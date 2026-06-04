@@ -79,7 +79,7 @@
               />
               <div class="invalid-feedback d-block" *ngIf="submitted && f['phoneNumber'].errors">
                 <span *ngIf="f['phoneNumber'].errors['required']">Phone number is required.</span>
-                <span *ngIf="f['phoneNumber'].errors['pattern']">Enter a valid mobile number in this format: 07********.</span>
+                <span *ngIf="f['phoneNumber'].errors['pattern']">Please enter a valid mobile number starting with 077, 078, or 079 (10 digits).</span>
               </div>
             </div>
 
@@ -91,7 +91,6 @@
                   <div *ngIf="registrationForm.get('dateOfBirth')?.errors?.['invalidDate']">Please enter a valid date.</div>
                   <div *ngIf="registrationForm.get('dateOfBirth')?.errors?.['futureDate']">Date of birth cannot be in the future.</div>
                   <div *ngIf="registrationForm.get('dateOfBirth')?.errors?.['tooYoung']">You must be at least 18 years old.</div>
-                  <div *ngIf="registrationForm.get('dateOfBirth')?.errors?.['tooOld']">Age must be 90 or younger.</div>
                 </div>
             </div>
 

@@ -30,7 +30,8 @@ public class CommentService : ICommentService
             _logger.LogInformation("Comments Fetched Successfully");
             return new ApiResponse<IEnumerable<CommentReadDto>> { Data = commentDtos, Message = "Comments Fetched Successfully", Success = true, StatusCode = 200 };
         }
-        catch(Exception ex) { 
+        catch (Exception ex)
+        {
             _logger.LogError(ex, "Error getting Comments");
             return new ApiResponse<IEnumerable<CommentReadDto>> { Data = null, Message = ex.Message, Success = false, StatusCode = 500 };
         }

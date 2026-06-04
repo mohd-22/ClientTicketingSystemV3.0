@@ -15,6 +15,7 @@ export interface CommentReadDto {
   text: string;
   createdAt: string;
   userName: string;
+  imageUrl?: string;
   userRole: string;
   userId: string;
 }

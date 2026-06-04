@@ -202,7 +202,7 @@
   <div class="card-footer bg-light border-top">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
       <small class="text-muted">
-        Showing {{ tickets.length }} of {{ totalItems }} tickets
+        Showing {{ tickets.length + (itemsPerPage * (currentPage - 1)) }} of {{ totalItems }} tickets
       </small>
       <nav aria-label="Tickets pagination">
         <ul class="pagination pagination-sm mb-0">

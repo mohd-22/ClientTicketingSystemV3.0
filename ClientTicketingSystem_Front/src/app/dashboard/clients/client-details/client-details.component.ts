@@ -16,7 +16,8 @@ import { environment } from 'src/environments/environment';
 })
 
 export class ClientDetailsComponent implements OnInit {
-  private readonly PhonePattern = /^07\d{8}$/;
+  private readonly PhonePattern = /^07(8|9|7)\d{7}$/;
+
   client: UserDto | null = null;
   tickets: TicketDto[] = [];
   isLoading = false;
